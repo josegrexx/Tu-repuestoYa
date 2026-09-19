@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Tiendas - TurespuestoYa</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full flex flex-col gap-6">
+        <div class="text-center">
+            <span class="text-3xl">⚙️</span>
+            <h1 class="text-2xl font-black text-amber-500 mt-2">Portal de Tiendas</h1>
+            <p class="text-xs text-slate-400 mt-1">Inicia sesión o registra tu repuestera</p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <div>
+                <label class="text-xs text-slate-400 font-bold mb-1 block">Correo Electrónico</label>
+                <input type="email" id="email" placeholder="tutienda@repuestos.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+            </div>
+            <div>
+                <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+            </div>
+            <div>
+                <label class="text-xs text-slate-400 font-bold mb-1 block">Número de WhatsApp de la Tienda (Solo para Registro)</label>
+                <input type="text" id="storePhoneReg" placeholder="Ej. 584141234567" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+                <span class="text-[10px] text-slate-500 mt-1 block">Incluye el código de país (ej. 58 para Venezuela). Obligatorio al registrarse.</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5 mt-2">
+            <button id="btnLogin" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition shadow-lg shadow-amber-500/10">Iniciar Sesión</button>
+            <button id="btnRegister" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl transition border border-slate-700">Registrar Nueva Tienda</button>
+        </div>
+
+        <div class="text-center mt-2">
+            <a href="index.html" class="text-xs text-slate-500 hover:text-amber-400 transition">← Volver al catálogo público</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
+            authDomain: "turepuestoya.firebaseapp.com",
+            projectId: "turepuestoya",
+            databaseURL: "https://turepuestoya-default-rtdb.firebaseio.com",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        document.getElementById('btnLogin').addEventListener('click', () => {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!email || !password) return alert("Por favor completa correo y contraseña.");
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    window.location.href = "panel.html";
+                })
+                .catch((error) => {
+                    alert("Error al iniciar sesión: " + error.message);
+                });
+        });
+
+        document.getElementById('btnRegister').addEventListener('click', () => {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const phone = document.getElementById('storePhoneReg').value.trim();
+
+            if (!email || !password || !phone) {
+                return alert("Por favor completa el correo, la contraseña y el número de WhatsApp.");
+            }
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const uid = userCredential.user.uid;
+                    // Guardar el número de teléfono institucional de la tienda de forma permanente
+                    return set(ref(db, `perfiles/${uid}`), {
+                        email: email,
+                        telefonoWhatsApp: phone,
+                        nombreTienda: email.split('@')[0]
+                    });
+                })
+                .then(() => {
+                    alert("¡Tienda registrada con éxito!");
+                    window.location.href = "panel.html";
+                })
+                .catch((error) => {
+                    alert("Error al registrar: " + error.message);
+                });
+        });
+    </script>
+</body>
+</html>
