@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - TurespuestoYa</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans hidden" id="bodyApp">
+
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 p-4 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-black text-amber-500 tracking-tighter">Turespuesto<span class="text-white">Ya</span></span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden sm:block">
+                    <p class="text-[10px] text-slate-400">Conectado como</p>
+                    <p class="text-xs font-bold text-slate-200" id="userEmail">...</p>
+                </div>
+                <a href="panel.html" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium px-4 py-2 rounded-xl text-sm transition">
+                    Ir a Mi Tienda 🏪
+                </a>
+                <button id="btnLogout" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-3 py-2 rounded-xl text-sm transition font-bold">Salir</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 flex-grow w-full flex flex-col gap-6 mt-4">
+        
+        <!-- Buscador Central -->
+        <section class="flex flex-col gap-4 max-w-2xl mx-auto w-full text-center">
+            <h1 class="text-3xl font-black text-white">¿Qué repuesto necesitas hoy?</h1>
+            <div class="relative shadow-lg mt-2">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <span class="text-slate-400">🔍</span>
+                </div>
+                <input type="text" id="searchInput" placeholder="Ej. Correa de tiempo, Pastillas..." class="w-full bg-slate-800 border border-slate-700 rounded-2xl pl-12 pr-4 py-4 text-slate-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-inner">
+            </div>
+
+            <!-- Filtros por Categoría -->
+            <div class="flex gap-2 overflow-x-auto no-scrollbar py-2 justify-start sm:justify-center" id="categoryFilters">
+                <!-- Se llenan con JS -->
+            </div>
+        </section>
+
+        <!-- Cuadrícula de Resultados -->
+        <section>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="catalogList">
+                <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-500">
+                    <span class="animate-spin text-4xl mb-3">⚙️</span>
+                    <p>Cargando inventario de las tiendas...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE PEDIDO SIN MAPA -->
+    <div id="orderModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden justify-center items-end sm:items-center z-50 p-0 sm:p-4 transition-opacity">
+        <div class="bg-slate-800 border-t sm:border border-slate-700 rounded-t-3xl sm:rounded-2xl w-full max-w-md shadow-2xl flex flex-col gap-4 p-6">
+            
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-xl font-black text-slate-100">Datos de Entrega</h3>
+                </div>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 rounded-full w-8 h-8 flex items-center justify-center transition">✕</button>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 p-3 rounded-xl flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-400">Repuesto:</p>
+                    <strong id="modalItemName" class="text-amber-400 block"></strong>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-slate-400">Precio:</p>
+                    <span id="modalItemPrice" class="text-emerald-400 font-black text-lg"></span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <input type="text" id="clientName" placeholder="Tu Nombre y Apellido" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500">
+                <input type="tel" id="clientPhone" placeholder="Teléfono / WhatsApp" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500">
+                <textarea id="clientAddress" rows="2" placeholder="Dirección exacta (Ej. Barrio Obrero, Carrera 20, Casa #15)" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 resize-none"></textarea>
+            </div>
+            
+            <button onclick="enviarPedido()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-4 rounded-xl text-lg transition shadow-lg mt-2">
+                Confirmar y Pedir Ahora 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- TOASTS -->
+    <div id="toastContainer" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] flex flex-col gap-2 pointer-events-none"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
+            authDomain: "turepuestoya.firebaseapp.com",
+            projectId: "turepuestoya",
+            databaseURL: "https://turepuestoya-default-rtdb.firebaseio.com",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let todosLosRepuestos = [];
+        let repuestosFiltrados = [];
+        let repuestoSeleccionado = null;
+        let categoriaSeleccionada = "Todas";
+
+        // Protección de Ruta
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('userEmail').innerText = user.email;
+                document.getElementById('bodyApp').classList.remove('hidden');
+            } else {
+                window.location.href = "login.html"; // Expulsar si no está logueado
+            }
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
+
+        // Descargar inventario
+        onValue(ref(db, 'inventarios'), (snapshot) => {
+            todosLosRepuestos = [];
+            const tiendas = snapshot.val();
+            if (tiendas) {
+                Object.values(tiendas).forEach(productos => {
+                    Object.values(productos).forEach(prod => todosLosRepuestos.push(prod));
+                });
+            }
+            generarFiltros();
+            filtrarYRenderizar();
+        });
+
+        function generarFiltros() {
+            const container = document.getElementById('categoryFilters');
+            const categorias = ["Todas", ...new Set(todosLosRepuestos.map(r => r.categoria || "Otros").filter(c => c))];
+            
+            container.innerHTML = "";
+            categorias.forEach(cat => {
+                const isSelected = cat === categoriaSeleccionada;
+                const baseClass = "px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap cursor-pointer transition ";
+                const colorClass = isSelected ? "bg-amber-500 text-slate-900 shadow-md" : "bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700";
+                container.innerHTML += `<div onclick="seleccionarCategoria('${cat}')" class="${baseClass} ${colorClass}">${cat}</div>`;
+            });
+        }
+
+        window.seleccionarCategoria = function(cat) {
+            categoriaSeleccionada = cat;
+            generarFiltros(); 
+            filtrarYRenderizar(); 
+        };
+
+        function filtrarYRenderizar() {
+            const texto = document.getElementById('searchInput').value.toLowerCase();
+            const list = document.getElementById('catalogList');
+            list.innerHTML = "";
+            
+            repuestosFiltrados = todosLosRepuestos.filter(r => {
+                const matchTexto = r.nombre.toLowerCase().includes(texto);
+                const matchCat = categoriaSeleccionada === "Todas" || (r.categoria || "Otros") === categoriaSeleccionada;
+                return matchTexto && matchCat;
+            });
+            
+            if(repuestosFiltrados.length === 0) { 
+                list.innerHTML = `<div class="col-span-full py-20 text-center text-slate-500"><p class="text-xl">🏜️ No hay repuestos</p></div>`;
+                return; 
+            }
+
+            repuestosFiltrados.forEach((rep, index) => {
+                list.innerHTML += `
+                    <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl flex flex-col justify-between gap-4 transition hover:border-amber-500/50 hover:shadow-lg">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded mb-2 inline-block">${rep.categoria || "Repuesto"}</span>
+                            <h3 class="font-bold text-slate-100 text-lg leading-tight">${rep.nombre}</h3>
+                            <div class="text-emerald-400 font-black text-2xl mt-2">$${parseFloat(rep.precio).toFixed(2)}</div>
+                        </div>
+                        <button onclick="abrirModal(${index})" class="w-full bg-slate-700 hover:bg-amber-500 hover:text-slate-900 text-white font-bold py-2.5 rounded-xl transition">
+                            Pedir
+                        </button>
+                    </div>`;
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filtrarYRenderizar);
+
+        window.abrirModal = function(index) {
+            repuestoSeleccionado = repuestosFiltrados[index];
+            document.getElementById('modalItemName').innerText = repuestoSeleccionado.nombre;
+            document.getElementById('modalItemPrice').innerText = `$${parseFloat(repuestoSeleccionado.precio).toFixed(2)}`;
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModal').classList.add('flex');
+        };
+
+        window.cerrarModal = function() {
+            document.getElementById('orderModal').classList.remove('flex');
+            document.getElementById('orderModal').classList.add('hidden');
+        };
+
+        window.enviarPedido = function() {
+            const nom = document.getElementById('clientName').value.trim();
+            const tel = document.getElementById('clientPhone').value.trim();
+            const dir = document.getElementById('clientAddress').value.trim();
+            
+            if(!nom || !tel || !dir) return mostrarToast("Llena todos los datos, incluida la dirección.", "error");
+
+            const btn = event.target;
+            btn.innerText = "Enviando..."; btn.disabled = true;
+
+            // Enviar con dirección de texto, ya no con lat/lng
+            push(ref(db, `pedidos/${repuestoSeleccionado.tiendaId}`), {
+                cliente: nom, 
+                telefono: tel,
+                direccion: dir,  // <--- AQUÍ GUARDAMOS EL TEXTO
+                repuesto: repuestoSeleccionado.nombre, 
+                precio: parseFloat(repuestoSeleccionado.precio),
+                fecha: new Date().toLocaleTimeString(),
+                usuarioEmail: currentUser.email // Guardamos quién lo pidió
+            }).then(() => {
+                mostrarToast("¡Pedido enviado a la tienda con éxito!", "success");
+                cerrarModal();
+                btn.innerText = "Confirmar y Pedir Ahora 🚀"; btn.disabled = false;
+            }).catch(err => {
+                mostrarToast("Error de conexión.", "error");
+                btn.innerText = "Confirmar y Pedir Ahora 🚀"; btn.disabled = false;
+            });
+        };
+
+        function mostrarToast(mensaje, tipo = "info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            let colorClases = tipo === "success" ? "bg-emerald-900 border-emerald-700 text-emerald-100" : "bg-red-900 border-red-700 text-red-100";
+            toast.className = `px-6 py-3 rounded-full shadow-2xl border text-sm font-medium transform transition-all duration-300 translate-y-10 opacity-0 ${colorClases}`;
+            toast.innerText = mensaje;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
+            setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(() => toast.remove(), 300); }, 3500);
+        }
+    </script>
+</body>
+</html>
