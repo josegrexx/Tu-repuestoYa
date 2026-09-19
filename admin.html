@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperAdmin - TurespuestoYa</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 font-sans">
+
+    <div class="max-w-4xl mx-auto flex flex-col gap-6">
+        
+        <header class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div>
+                <h1 class="text-2xl font-black text-amber-500">Panel SuperAdmin 🛡️</h1>
+                <p class="text-xs text-slate-400">Generador de Tokens para Tiendas de Repuestos</p>
+            </div>
+            <a href="index.html" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition">Volver al Sitio</a>
+        </header>
+
+        <!-- Crear Token -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col gap-4">
+            <h2 class="text-lg font-bold text-white">🔑 Crear Nuevo Token para Tienda</h2>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="storeName" placeholder="Nombre de la Tienda (Ej. Repuestos El Valle C.A.)" class="flex-grow bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none">
+                <button id="btnGenerate" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-3 rounded-xl transition whitespace-nowrap">Generar Token</button>
+            </div>
+        </div>
+
+        <!-- Lista de Tokens -->
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col gap-4">
+            <h2 class="text-lg font-bold text-white">📋 Tokens Registrados</h2>
+            <div id="tokensList" class="flex flex-col gap-3">
+                <p class="text-slate-500 text-sm italic">Cargando tokens...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
+            authDomain: "turepuestoya.firebaseapp.com",
+            projectId: "turepuestoya",
+            databaseURL: "https://turepuestoya-default-rtdb.firebaseio.com",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Generar Token Aleatorio
+        document.getElementById('btnGenerate').addEventListener('click', () => {
+            const nombre = document.getElementById('storeName').value.trim();
+            if(!nombre) return alert("Escribe el nombre de la tienda");
+
+            // Genera un código tipo: TRY-8A2B9X
+            const codigoToken = "TRY-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+            push(ref(db, 'tokens'), {
+                token: codigoToken,
+                nombreTienda: nombre,
+                usado: false,
+                usadoPor: "",
+                fechaCreacion: new Date().toLocaleDateString()
+            }).then(() => {
+                document.getElementById('storeName').value = "";
+                alert(`¡Token generado exitosamente!\n\nCódigo: ${codigoToken}\nCópialo y dáselo a la tienda.`);
+            });
+        });
+
+        // Cargar Lista de Tokens
+        onValue(ref(db, 'tokens'), (snapshot) => {
+            const list = document.getElementById('tokensList');
+            list.innerHTML = "";
+            const datos = snapshot.val();
+
+            if(!datos) {
+                list.innerHTML = `<p class="text-slate-500 text-sm">No has generado ningún token todavía.</p>`;
+                return;
+            }
+
+            Object.entries(datos).reverse().forEach(([id, item]) => {
+                const estado = item.usado 
+                    ? `<span class="bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-bold px-2 py-1 rounded-full">Usado por: ${item.usadoPor}</span>`
+                    : `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-1 rounded-full">Disponible</span>`;
+
+                list.innerHTML += `
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <strong class="text-amber-400 text-lg font-mono">${item.token}</strong>
+                                ${estado}
+                            </div>
+                            <p class="text-slate-300 text-sm font-bold mt-1">${item.nombreTienda}</p>
+                            <p class="text-slate-500 text-[10px]">Creado el: ${item.fechaCreacion}</p>
+                        </div>
+                        <button onclick="eliminarToken('${id}')" class="text-red-400 hover:text-red-300 text-xs bg-red-500/10 hover:bg-red-500/20 px-3 py-2 rounded-lg border border-red-500/20 transition">
+                            Eliminar
+                        </button>
+                    </div>`;
+            });
+        });
+
+        window.eliminarToken = function(id) {
+            if(confirm("¿Seguro que deseas eliminar este token?")) {
+                remove(ref(db, `tokens/${id}`));
+            }
+        };
+    </script>
+</body>
+</html>
