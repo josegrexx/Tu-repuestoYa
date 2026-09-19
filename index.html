@@ -8,12 +8,17 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <!-- Encabezado Limpio (Sin accesos ni logins) -->
+    <!-- Encabezado con el botón "Soy Tienda" -->
     <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 shadow-lg">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <span class="text-2xl">⚙️</span>
                 <h1 class="text-2xl font-black text-amber-500 tracking-wider">Turespuesto<span class="text-white">Ya</span></h1>
+            </div>
+            <div>
+                <a href="panel.html" class="bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 border border-amber-500/30 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+                    <span>🏪</span> Soy Tienda
+                </a>
             </div>
         </div>
     </header>
@@ -40,7 +45,7 @@
             </div>
         </section>
 
-        <!-- Grid de Catálogo (Lista de Repuestos y Precios) -->
+        <!-- Grid de Catálogo -->
         <section>
             <h2 class="text-lg font-bold text-slate-300 mb-4 flex items-center gap-2">
                 📦 Repuestos Disponibles
@@ -121,7 +126,7 @@
             renderCatalog(allProducts);
         });
 
-        // Función para pintar la lista de repuestos en pantalla con su precio y tienda
+        // Función para pintar la lista de repuestos en pantalla
         function renderCatalog(products) {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = "";
