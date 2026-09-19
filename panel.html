@@ -6,54 +6,64 @@
     <title>Mi Tienda - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans hidden" id="bodyApp">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
 
+    <!-- Encabezado del Panel -->
     <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
         <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
             <div>
-                <span class="text-xl font-black text-amber-500" id="nombreTiendaHeader">Mi Tienda</span>
-                <div class="text-xs text-slate-400 mt-1">Vendedor: <span id="userEmail" class="font-bold text-white">...</span></div>
+                <h1 class="text-xl font-black text-amber-500">Panel de Mi Tienda ⚙️</h1>
+                <div class="text-xs text-slate-400 mt-0.5">Usuario: <span id="userEmail" class="font-bold text-white">Cargando...</span></div>
             </div>
             <div class="flex gap-2">
                 <a href="index.html" class="bg-slate-700 hover:bg-slate-600 font-bold px-4 py-2 rounded-lg text-xs transition">Ver Catálogo</a>
-                <button id="btnLogout" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white font-bold px-4 py-2 rounded-lg text-xs transition">Cerrar Sesión</button>
+                <button id="btnLogout" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white font-bold px-4 py-2 rounded-lg text-xs transition border border-red-500/30">Cerrar Sesión</button>
             </div>
         </div>
     </header>
 
+    <!-- Contenido Principal -->
     <main class="max-w-6xl mx-auto p-4 flex-grow w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
         
-        <!-- Formulario de Inventario -->
+        <!-- Formulario para Publicar Repuestos -->
         <section class="bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">📦 Agregar al Inventario</h2>
-            <input type="text" id="prodNombre" placeholder="Nombre (Ej. Base de amortiguador)" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none">
-            <div class="grid grid-cols-2 gap-4">
-                <input type="number" id="prodPrecio" placeholder="Precio ($)" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none">
-                <select id="prodCat" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none">
-                    <option value="" disabled selected>Categoría...</option>
-                    <option value="Motor">Motor</option>
-                    <option value="Frenos">Frenos</option>
-                    <option value="Suspensión">Suspensión</option>
-                    <option value="Eléctrico">Eléctrico</option>
-                    <option value="Carrocería">Carrocería</option>
-                    <option value="Accesorios">Accesorios</option>
-                </select>
+            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">📦 Publicar Nuevo Repuesto</h2>
+            
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre del Repuesto</label>
+                    <input type="text" id="prodNombre" placeholder="Ej. Kit de Embrague / Amortiguador trasero" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Precio ($)</label>
+                        <input type="number" id="prodPrecio" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Categoría</label>
+                        <select id="prodCat" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+                            <option value="" disabled selected>Selecciona...</option>
+                            <option value="Motor">Motor</option>
+                            <option value="Frenos">Frenos</option>
+                            <option value="Suspensión">Suspensión</option>
+                            <option value="Eléctrico">Eléctrico</option>
+                            <option value="Carrocería">Carrocería</option>
+                            <option value="Accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <button id="btnAddProduct" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl transition shadow-lg mt-2">Publicar Repuesto</button>
+
+            <button id="btnAddProduct" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition shadow-lg mt-2">Publicar en el Catálogo</button>
         </section>
 
-        <!-- Pedidos de esta tienda -->
+        <!-- Lista de Repuestos Propios Publicados -->
         <section class="bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                <h2 class="text-xl font-bold text-slate-100">🔔 Pedidos Entrantes</h2>
-                <span class="flex h-3 w-3 relative">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-            </div>
+            <h2 class="text-xl font-bold text-slate-100">📋 Mis Repuestos en Venta</h2>
             
-            <div id="pedidosList" class="flex flex-col gap-4 overflow-y-auto max-h-[500px] pr-1">
-                <p class="text-slate-400 text-sm italic">Esperando pedidos nuevos...</p>
+            <div id="myProductsList" class="flex flex-col gap-3 overflow-y-auto max-h-[420px] pr-1">
+                <p class="text-slate-400 text-sm italic text-center py-10">Cargando tus repuestos...</p>
             </div>
         </section>
 
@@ -62,7 +72,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -74,93 +84,93 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        let miUid = null;
-        let nombreTiendaOficial = "";
+        
+        let currentUserUid = null;
+        let currentUserEmail = "";
 
-        // Proteger panel y VERIFICAR TOKEN
-        onAuthStateChanged(auth, async (user) => {
+        // Proteger la ruta: Si no ha iniciado sesión, mandarlo al login
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                miUid = user.uid;
-                
-                // Verificar si esta cuenta fue autorizada con Token
-                const tiendaSnap = await get(ref(db, `tiendasAutorizadas/${miUid}`));
-                if (!tiendaSnap.exists()) {
-                    alert("Acceso denegado: Tu cuenta no está registrada como tienda. Pídele un Token de Activación al Administrador.");
-                    window.location.href = "index.html";
-                    return;
-                }
-
-                nombreTiendaOficial = tiendaSnap.val().nombreTienda;
-                document.getElementById('nombreTiendaHeader').innerText = nombreTiendaOficial;
-                document.getElementById('userEmail').innerText = user.email;
-                document.getElementById('bodyApp').classList.remove('hidden');
-                escucharPedidos();
+                currentUserUid = user.uid;
+                currentUserEmail = user.email;
+                document.getElementById('userEmail').innerText = currentUserEmail;
+                cargarMisRepuestos(currentUserUid);
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
-
-        // Publicar Producto con el nombre de la Tienda
-        document.getElementById('btnAddProduct').addEventListener('click', () => {
-            const nom = document.getElementById('prodNombre').value.trim();
-            const pre = parseFloat(document.getElementById('prodPrecio').value);
-            const cat = document.getElementById('prodCat').value;
-
-            if(!nom || !pre || !cat) return alert("Llena nombre, precio y selecciona una categoría.");
-
-            push(ref(db, `inventarios/${miUid}`), {
-                nombre: nom, 
-                precio: pre, 
-                categoria: cat, 
-                tiendaId: miUid,
-                nombreTienda: nombreTiendaOficial
-            }).then(() => {
-                alert("¡Repuesto publicado en el catálogo!");
-                document.getElementById('prodNombre').value = "";
-                document.getElementById('prodPrecio').value = "";
-                document.getElementById('prodCat').value = "";
+        // Botón Cerrar Sesión
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
             });
         });
 
-        function escucharPedidos() {
-            onValue(ref(db, `pedidos/${miUid}`), (snapshot) => {
-                const list = document.getElementById('pedidosList');
-                list.innerHTML = "";
-                const datos = snapshot.val();
-                if (!datos) { 
-                    list.innerHTML = `<p class="text-slate-400 text-sm text-center py-10">Sin pedidos por los momentos.</p>`; 
-                    return; 
+        // Lógica para Publicar Repuesto
+        document.getElementById('btnAddProduct').addEventListener('click', () => {
+            const nombre = document.getElementById('prodNombre').value.trim();
+            const precio = parseFloat(document.getElementById('prodPrecio').value);
+            const categoria = document.getElementById('prodCat').value;
+
+            if (!nombre || isNaN(precio) || !categoria) {
+                return alert("Por favor completa todos los campos (nombre, precio y categoría).");
+            }
+
+            // Guardar en la base de datos bajo la ruta: inventarios / [uid_del_usuario] / [nuevo_id]
+            push(ref(db, `inventarios/${currentUserUid}`), {
+                nombre: nombre,
+                precio: precio,
+                categoria: categoria,
+                nombreTienda: currentUserEmail.split('@')[0] // Usa la primera parte del correo como nombre de tienda provisional
+            }).then(() => {
+                alert("¡Repuesto publicado con éxito!");
+                document.getElementById('prodNombre').value = "";
+                document.getElementById('prodPrecio').value = "";
+                document.getElementById('prodCat').value = "";
+            }).catch((error) => {
+                alert("Error al publicar: " + error.message);
+            });
+        });
+
+        // Cargar y mostrar solo los repuestos subidos por este usuario en su panel
+        function cargarMisRepuestos(uid) {
+            onValue(ref(db, `inventarios/${uid}`), (snapshot) => {
+                const listContainer = document.getElementById('myProductsList');
+                listContainer.innerHTML = "";
+                const data = snapshot.val();
+
+                if (!data) {
+                    listContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-10">No has publicado ningún repuesto todavía.</p>`;
+                    return;
                 }
 
-                Object.entries(datos).reverse().forEach(([id, ped]) => {
-                    list.innerHTML += `
-                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl shadow-md">
-                            <div class="flex justify-between items-start mb-2">
-                                <strong class="text-amber-400 text-lg leading-tight">${ped.repuesto}</strong>
-                                <span class="text-emerald-400 font-black text-xl">$${ped.precio}</span>
+                Object.entries(data).reverse().forEach(([prodId, prod]) => {
+                    listContainer.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-700/60 p-4 rounded-xl flex justify-between items-center gap-3">
+                            <div>
+                                <span class="bg-slate-800 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-700">${prod.categoria}</span>
+                                <h3 class="font-bold text-white text-base mt-1">${prod.nombre}</h3>
+                                <span class="text-emerald-400 font-black text-sm">$${prod.precio}</span>
                             </div>
-                            
-                            <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-sm mt-3 space-y-2">
-                                <div><span class="text-slate-400">👤 Cliente:</span> <span class="font-bold text-white">${ped.cliente}</span></div>
-                                <div><span class="text-slate-400">📞 Teléfono:</span> <span class="text-blue-400 font-bold">${ped.telefono}</span></div>
-                                <div><span class="text-slate-400">📍 Entrega:</span> <span class="text-slate-200">${ped.direccion}</span></div>
-                            </div>
-                            
-                            <div class="mt-4 flex justify-end">
-                                <button onclick="despachar('${id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl transition w-full sm:w-auto">
-                                    Marcar como Entregado ✓
-                                </button>
-                            </div>
+                            <button onclick="eliminarRepuesto('${prodId}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 text-xs font-bold px-3 py-2 rounded-lg transition">
+                                Eliminar
+                            </button>
                         </div>`;
                 });
             });
         }
 
-        window.despachar = function(id) {
-            if(confirm("¿Seguro que ya entregaste este repuesto?")) {
-                remove(ref(db, `pedidos/${miUid}/${id}`));
+        // Función global para eliminar un repuesto propio
+        window.eliminarRepuesto = function(prodId) {
+            if (confirm("¿Estás seguro de que deseas eliminar este repuesto de la tienda?")) {
+                remove(ref(db, `inventarios/${currentUserUid}/${prodId}`))
+                    .then(() => {
+                        // Al eliminarse aquí, se borra automáticamente también del index.html
+                    })
+                    .catch((error) => {
+                        alert("No se pudo eliminar: " + error.message);
+                    });
             }
         };
     </script>
