@@ -1,13 +1,8 @@
 <!-- 
   =============================================================
-  ARCHIVO: admin.html (Panel Exclusivo de Superusuario)
-  VERSIÓN: 1.1
-  ÚLTIMO CAMBIO: 
-  - Se rediseñó el diseño visual para mayor orden y claridad.
-  - Se añadió la función interactiva: al hacer clic en el nombre de 
-    cualquier tienda, se abre un modal flotante con sus estadísticas 
-    individuales (inventario, ventas, ingresos en $, pendientes y omitidos).
-  - Se mantiene la gráfica global de operaciones y los controles de superadmin.
+  ARCHIVO: admin.html (Panel de Super Usuario / Administrador General)
+  VERSIÓN: 1.2
+  ÚLTIMO CAMBIO: Vista detallada por tienda (info, pedidos pendientes e inventario propio).
   =============================================================
 -->
 <!DOCTYPE html>
@@ -15,162 +10,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Superusuario - TurespuestoYa</title>
+    <title>Super Administrador - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <!-- Header de Superusuario -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 shadow-lg">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-2xl">⚡</span>
-                <h1 class="text-xl font-black text-amber-500 tracking-wide">Super Admin — TurespuestoYa</h1>
+    <!-- Pantalla de Login de Super Admin -->
+    <div id="loginAdminContainer" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full flex flex-col gap-6">
+            <div class="text-center">
+                <span class="text-3xl">👑</span>
+                <h1 class="text-2xl font-black text-amber-500 tracking-wide mt-2">Super Admin</h1>
+                <p class="text-xs text-slate-400 mt-1">Acceso restringido al sistema general</p>
             </div>
-            <div class="flex items-center gap-3">
-                <a href="index.html" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo ↗</a>
-                <span id="adminEmailBadge" class="text-xs text-slate-400 bg-slate-950 px-3 py-1 rounded-xl border border-slate-800 font-semibold"></span>
-                <button id="btnLogout" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/20">Salir</button>
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-400 font-bold">Correo de Administrador</label>
+                    <input type="email" id="adminEmail" value="josegrexx@gmail.com" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-400 text-xs focus:outline-none cursor-not-allowed">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-400 font-bold">Contraseña</label>
+                    <input type="password" id="adminPassword" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <button id="btnLoginAdmin" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
+                    Ingresar al Panel Master 🚀
+                </button>
             </div>
-        </div>
-    </header>
-
-    <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-4 flex-grow w-full flex flex-col gap-6 mt-4">
-        
-        <!-- Tarjetas de Estadísticas Globales -->
-        <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col gap-1">
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Tiendas Registradas</span>
-                <span id="statTotalTiendas" class="text-3xl font-black text-white">0</span>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col gap-1">
-                <span class="text-[10px] text-amber-500 font-bold uppercase tracking-wider">Pedidos Pendientes</span>
-                <span id="statTotalPendientes" class="text-3xl font-black text-amber-500">0</span>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col gap-1">
-                <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Ventas Realizadas</span>
-                <span id="statTotalVentas" class="text-3xl font-black text-emerald-400">0</span>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-xl flex flex-col gap-1">
-                <span class="text-[10px] text-red-400 font-bold uppercase tracking-wider">Pedidos Omitidos</span>
-                <span id="statTotalOmitidos" class="text-3xl font-black text-red-400">0</span>
-            </div>
-        </section>
-
-        <!-- Gráfica Global de la Plataforma -->
-        <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-            <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">📊 Resumen Gráfico de Operaciones</h2>
-            <div class="w-full h-72 flex justify-center items-center relative">
-                <canvas id="graficaGlobal"></canvas>
-            </div>
-        </section>
-
-        <!-- Grid de Secciones Globales -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            <!-- Directorio de Tiendas (Instrucción: Presionar nombre para ver estadísticas) -->
-            <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col gap-3">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                    <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">🏢 Directorio de Tiendas</h2>
-                    <span class="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 font-semibold">💡 Haz clic en el nombre de una tienda para ver sus estadísticas</span>
-                </div>
-                <div id="listaTiendasAdmin" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
-                    <p class="text-slate-500 text-xs italic text-center py-4">Cargando comercios...</p>
-                </div>
-            </section>
-
-            <!-- Pedidos Pendientes Globales -->
-            <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col gap-3">
-                <div class="border-b border-slate-800 pb-2">
-                    <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">🔔 Pedidos Pendientes (Global)</h2>
-                </div>
-                <div id="listaPedidosPendientesAdmin" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
-                    <p class="text-slate-500 text-xs italic text-center py-4">No hay pedidos pendientes en la plataforma.</p>
-                </div>
-            </section>
-
-            <!-- Ventas Realizadas Globales -->
-            <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col gap-3">
-                <div class="border-b border-slate-800 pb-2">
-                    <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">✅ Ventas Realizadas (Global)</h2>
-                </div>
-                <div id="listaVentasAdmin" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
-                    <p class="text-slate-500 text-xs italic text-center py-4">No hay ventas registradas aún.</p>
-                </div>
-            </section>
-
-            <!-- Pedidos Omitidos Globales -->
-            <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col gap-3">
-                <div class="border-b border-slate-800 pb-2">
-                    <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">❌ Pedidos Omitidos (Global)</h2>
-                </div>
-                <div id="listaOmitidosAdmin" class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
-                    <p class="text-slate-500 text-xs italic text-center py-4">No hay pedidos omitidos registrados.</p>
-                </div>
-            </section>
-
-        </div>
-
-    </main>
-
-    <!-- Modal de Estadísticas Detalladas por Tienda -->
-    <div id="modalDetalleTienda" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-xl w-full flex flex-col gap-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <div class="flex flex-col">
-                    <h3 id="modalNombreTienda" class="text-lg font-black text-amber-500">Detalles de Tienda</h3>
-                    <span id="modalInfoSub" class="text-xs text-slate-400">Estadísticas y rendimiento</span>
-                </div>
-                <button onclick="cerrarModalTienda()" class="text-slate-400 hover:text-white font-bold text-sm bg-slate-800 px-3 py-1.5 rounded-xl">✕ Cerrar</button>
-            </div>
-
-            <!-- Grid de Estadísticas de la Tienda -->
-            <div class="grid grid-cols-3 gap-3">
-                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
-                    <span class="text-[10px] text-slate-400 block font-bold uppercase">Stock Actual</span>
-                    <span id="modalStatStock" class="text-xl font-black text-emerald-400">0</span>
-                </div>
-                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
-                    <span class="text-[10px] text-slate-400 block font-bold uppercase">Ventas Exitosas</span>
-                    <span id="modalStatVentas" class="text-xl font-black text-sky-400">0</span>
-                </div>
-                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-center">
-                    <span class="text-[10px] text-slate-400 block font-bold uppercase">Ingresos ($)</span>
-                    <span id="modalStatIngresos" class="text-xl font-black text-emerald-400">$0</span>
-                </div>
-            </div>
-
-            <!-- Listado de Inventario de la Tienda -->
-            <div class="flex flex-col gap-2">
-                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📦 Repuestos Publicados en Catálogo</h4>
-                <div id="modalListaInventario" class="bg-slate-950 border border-slate-800 p-3 rounded-xl max-h-48 overflow-y-auto flex flex-col gap-2 text-xs">
-                    <p class="text-slate-500 italic text-center">Cargando inventario...</p>
-                </div>
-            </div>
-
-            <!-- Historial de Ventas de la Tienda -->
-            <div class="flex flex-col gap-2">
-                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">✅ Ventas Concretadas</h4>
-                <div id="modalListaVentas" class="bg-slate-950 border border-slate-800 p-3 rounded-xl max-h-48 overflow-y-auto flex flex-col gap-2 text-xs">
-                    <p class="text-slate-500 italic text-center">Cargando ventas...</p>
-                </div>
+            <div class="text-center">
+                <a href="index.html" class="text-xs text-slate-500 hover:text-slate-300 transition">← Volver al Catálogo Público</a>
             </div>
         </div>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="bg-slate-900 border-t border-slate-800 p-6 text-center text-xs text-slate-500 mt-auto">
-        <p>TurespuestoYa — Panel de Supervisión y Control Global del Superusuario.</p>
-        <p class="mt-2 text-[10px] text-slate-700 font-bold">Versión 1.1</p>
-    </footer>
+    <!-- Contenido Principal del Panel Master -->
+    <div id="panelAdminContent" class="flex flex-col min-h-screen hidden">
+        <!-- Header del Super Administrador -->
+        <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-40 shadow-md">
+            <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">👑</span>
+                    <h1 class="text-xl font-black text-amber-500 tracking-wide">Panel Super Administrador</h1>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="index.html" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo ↗</a>
+                    <button id="btnAdminLogout" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/20 cursor-pointer">Cerrar Sesión 🚪</button>
+                </div>
+            </div>
+        </header>
 
-    <!-- Script de Firebase y Lógica del Superusuario -->
+        <!-- Estadísticas Globales -->
+        <section class="max-w-7xl mx-auto px-4 mt-6 w-full">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row gap-6 justify-between items-center">
+                <div>
+                    <span class="text-[10px] uppercase tracking-wider text-amber-500 font-bold">Control General de la Plataforma</span>
+                    <h2 class="text-2xl font-black text-white mt-1">Supervisión TurespuestoYa</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Control de tiendas, pedidos pendientes e inventarios globales.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 w-full md:w-auto">
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col items-center justify-center gap-1 shadow-inner px-6">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Tiendas Registradas</span>
+                        <span id="statTotalTiendas" class="text-3xl font-black text-amber-500">0</span>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col items-center justify-center gap-1 shadow-inner px-6">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Repuestos Totales</span>
+                        <span id="statTotalProductos" class="text-3xl font-black text-emerald-400">0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contenido Principal: Tiendas con sus Pedidos e Inventarios -->
+        <main class="max-w-7xl mx-auto p-4 flex-grow w-full flex flex-col gap-6 mt-2">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">🏢 Detalle y Control de Todas las Tiendas</h2>
+            </div>
+            
+            <div id="listaTiendasAdminDetallada" class="grid grid-cols-1 gap-6">
+                <p class="text-slate-500 text-xs italic text-center py-10">Cargando tiendas y datos del sistema...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script de Firebase y Lógica del Administrador -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-        import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -183,322 +108,190 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const SUPERUSER_EMAIL = "josegrexx@gmail.com";
-        let miGrafica = null;
-        let datosPlataformaGlobal = {};
+        const ADMIN_EMAIL = "josegrexx@gmail.com";
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                if (user.email !== SUPERUSER_EMAIL) {
-                    alert("Acceso denegado. Esta sección es exclusiva para el superusuario.");
-                    window.location.href = "login.html";
-                    return;
-                }
-                document.getElementById('adminEmailBadge').innerText = user.email;
-                cargarDatosGlobales();
+            if (user && user.email === ADMIN_EMAIL) {
+                document.getElementById('loginAdminContainer').classList.add('hidden');
+                document.getElementById('panelAdminContent').classList.remove('hidden');
+                cargarDatosAdmin();
             } else {
-                window.location.href = "login.html";
+                if (user) {
+                    signOut(auth);
+                }
+                document.getElementById('panelAdminContent').classList.add('hidden');
+                document.getElementById('loginAdminContainer').classList.remove('hidden');
+                document.getElementById('loginAdminContainer').classList.add('flex');
             }
         });
 
-        function cargarDatosGlobales() {
+        document.getElementById('btnLoginAdmin').addEventListener('click', () => {
+            const password = document.getElementById('adminPassword').value.trim();
+            if (!password) return alert("Por favor ingresa la contraseña.");
+
+            signInWithEmailAndPassword(auth, ADMIN_EMAIL, password)
+                .then(() => {
+                    document.getElementById('adminPassword').value = "";
+                })
+                .catch((error) => {
+                    alert("Credenciales incorrectas: " + error.message);
+                });
+        });
+
+        document.getElementById('btnAdminLogout').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.reload();
+            });
+        });
+
+        function cargarDatosAdmin() {
             onValue(ref(db), (snapshot) => {
                 const data = snapshot.val() || {};
-                datosPlataformaGlobal = data; // Guardamos para consultar en el modal
-
                 const tiendas = data.tiendas || {};
-                const pedidosPendientes = data.pedidos || {};
-                const pedidosAtendidos = data.pedidos_atendidos || {};
-                const pedidosOmitidos = data.pedidos_omitidos || {};
+                const inventarios = data.inventarios || {};
+                const pedidos = data.pedidos || {};
 
-                renderizarDirectorioTiendas(tiendas);
-                renderizarPedidosPendientes(pedidosPendientes, tiendas);
-                renderizarVentasRealizadas(pedidosAtendidos, tiendas);
-                renderizarPedidosOmitidos(pedidosOmitidos, tiendas);
+                const contenedor = document.getElementById('listaTiendasAdminDetallada');
+                contenedor.innerHTML = "";
 
-                let countTiendas = Object.keys(tiendas).length;
-                let countPendientes = 0;
-                Object.values(pedidosPendientes).forEach(p => countPendientes += Object.keys(p).length);
+                const keysTiendas = Object.keys(tiendas);
+                document.getElementById('statTotalTiendas').innerText = keysTiendas.length;
 
-                let countVentas = 0;
-                Object.values(pedidosAtendidos).forEach(v => countVentas += Object.keys(v).length);
+                let totalProductosGlobal = 0;
 
-                let countOmitidos = 0;
-                Object.values(pedidosOmitidos).forEach(o => countOmitidos += Object.keys(o).length);
+                if (keysTiendas.length > 0) {
+                    keysTiendas.forEach(uid => {
+                        const tienda = tiendas[uid] || {};
+                        const nombre = tienda.nombreTienda || 'Sin Nombre';
+                        const email = tienda.email || 'Sin Correo';
+                        const wsp = tienda.telefonoWsp || 'No registrado';
+                        const dir = tienda.direccionFisica || 'No especificada';
 
-                document.getElementById('statTotalTiendas').innerText = countTiendas;
-                document.getElementById('statTotalPendientes').innerText = countPendientes;
-                document.getElementById('statTotalVentas').innerText = countVentas;
-                document.getElementById('statTotalOmitidos').innerText = countOmitidos;
+                        // Obtener pedidos pendientes de esta tienda
+                        const pedidosTienda = pedidos[uid] || {};
+                        const listaPedidos = Object.entries(pedidosTienda);
 
-                actualizarGrafica(countPendientes, countVentas, countOmitidos);
-            });
-        }
+                        // Obtener inventario de esta tienda
+                        const invTienda = inventarios[uid] || {};
+                        const listaInventario = Object.entries(invTienda);
+                        totalProductosGlobal += listaInventario.length;
 
-        function renderizarDirectorioTiendas(tiendas) {
-            const contenedor = document.getElementById('listaTiendasAdmin');
-            contenedor.innerHTML = "";
-
-            if (Object.keys(tiendas).length === 0) {
-                contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">No hay tiendas registradas.</p>`;
-                return;
-            }
-
-            Object.entries(tiendas).forEach(([uid, info]) => {
-                const nombre = info.nombreTienda || 'TIENDA OFICIAL';
-                const estado = info.estado || 'activa';
-                const verificada = info.verificada === true;
-
-                contenedor.innerHTML += `
-                    <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
-                        <div class="flex flex-col gap-0.5">
-                            <div class="flex items-center gap-1.5">
-                                <!-- Al hacer clic en el nombre muestra las estadísticas de la tienda -->
-                                <button onclick="abrirEstadisticasTienda('${uid}')" class="font-bold text-amber-400 hover:text-amber-300 uppercase underline text-left cursor-pointer transition">
-                                    🏢 ${nombre}
-                                </button>
-                                ${verificada ? '<span class="bg-amber-500/20 text-amber-400 font-bold px-1.5 py-0.5 rounded text-[9px] border border-amber-500/30">⭐ VERIFICADA</span>' : ''}
-                            </div>
-                            <span class="text-slate-400 text-[11px]">📍 ${info.ciudad || 'N/A'} | 📞 ${info.whatsapp || info.telefono || 'Sin tel'}</span>
-                            <span class="text-[10px] text-slate-500">Estado: <strong class="${estado === 'activa' ? 'text-emerald-400' : 'text-amber-400'}">${estado}</strong></span>
-                        </div>
-                        <div class="flex gap-1.5 w-full sm:w-auto">
-                            <button onclick="toggleVerificar('${uid}', ${!verificada})" class="flex-1 sm:flex-initial bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-slate-950 px-2.5 py-1.5 rounded-lg font-bold transition border border-amber-500/20">
-                                ${verificada ? 'Quitar ⭐' : 'Verificar ⭐'}
-                            </button>
-                            <button onclick="togglePausar('${uid}', '${estado}')" class="flex-1 sm:flex-initial bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-lg font-bold transition border border-slate-700">
-                                ${estado === 'activa' ? 'Pausar' : 'Activar'}
-                            </button>
-                            <button onclick="eliminarTiendaAdmin('${uid}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-2 py-1.5 rounded-lg font-bold transition border border-red-500/20">
-                                🗑️
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // Función para abrir el modal con estadísticas de la tienda seleccionada
-        window.abrirEstadisticasTienda = function(uid) {
-            const tiendas = datosPlataformaGlobal.tiendas || {};
-            const inventarios = datosPlataformaGlobal.inventarios || {};
-            const atendidos = datosPlataformaGlobal.pedidos_atendidos || {};
-
-            const infoTienda = tiendas[uid] || {};
-            const stockTienda = inventarios[uid] || {};
-            const ventasTienda = atendidos[uid] || {};
-
-            const nombreTienda = (infoTienda.nombreTienda || 'TIENDA OFICIAL').toUpperCase();
-            document.getElementById('modalNombreTienda').innerText = nombreTienda;
-            document.getElementById('modalInfoSub').innerText = `📍 Ciudad: ${infoTienda.ciudad || 'N/A'} | 📞 Tel: ${infoTienda.whatsapp || infoTienda.telefono || 'N/A'}`;
-
-            // Calcular Stock y Ventas
-            let totalStockCount = 0;
-            let contenedorInv = document.getElementById('modalListaInventario');
-            contenedorInv.innerHTML = "";
-
-            if (Object.keys(stockTienda).length > 0) {
-                Object.values(stockTienda).forEach(prod => {
-                    const cant = parseInt(prod.stock) || 0;
-                    totalStockCount += cant;
-                    contenedorInv.innerHTML += `
-                        <div class="flex justify-between items-center bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <span class="text-white font-bold">${prod.nombre} (${prod.categoria})</span>
-                            <span class="text-emerald-400 font-black">$${prod.precio} | Stock: ${cant}</span>
-                        </div>
-                    `;
-                });
-            } else {
-                contenedorInv.innerHTML = `<p class="text-slate-500 italic text-center py-2">Sin repuestos publicados.</p>`;
-            }
-
-            document.getElementById('modalStatStock').innerText = totalStockCount;
-
-            // Ventas concretadas
-            let totalVentasCount = 0;
-            let totalIngresosDolares = 0;
-            let contenedorVentas = document.getElementById('modalListaVentas');
-            contenedorVentas.innerHTML = "";
-
-            if (Object.keys(ventasTienda).length > 0) {
-                Object.values(ventasTienda).forEach(venta => {
-                    totalVentasCount++;
-                    totalIngresosDolares += parseFloat(venta.precio) || 0;
-                    contenedorVentas.innerHTML += `
-                        <div class="flex justify-between items-center bg-slate-900 p-2 rounded-lg border border-slate-800">
-                            <div>
-                                <span class="text-amber-400 font-bold">${venta.repuesto}</span>
-                                <span class="text-slate-400 block text-[10px]">Cliente: ${venta.cliente}</span>
-                            </div>
-                            <span class="text-emerald-400 font-black">$${venta.precio}</span>
-                        </div>
-                    `;
-                });
-            } else {
-                contenedorVentas.innerHTML = `<p class="text-slate-500 italic text-center py-2">No hay ventas registradas.</p>`;
-            }
-
-            document.getElementById('modalStatVentas').innerText = totalVentasCount;
-            document.getElementById('modalStatIngresos').innerText = `$${totalIngresosDolares.toFixed(2)}`;
-
-            // Mostrar Modal
-            document.getElementById('modalDetalleTienda').classList.remove('hidden');
-            document.getElementById('modalDetalleTienda').classList.add('flex');
-        };
-
-        window.cerrarModalTienda = function() {
-            document.getElementById('modalDetalleTienda').classList.add('hidden');
-            document.getElementById('modalDetalleTienda').classList.remove('flex');
-        };
-
-        function renderizarPedidosPendientes(pedidosGlobales, tiendas) {
-            const contenedor = document.getElementById('listaPedidosPendientesAdmin');
-            contenedor.innerHTML = "";
-            let total = 0;
-
-            Object.entries(pedidosGlobales).forEach(([uidTienda, pedidosTienda]) => {
-                const nombreTienda = (tiendas[uidTienda] ? tiendas[uidTienda].nombreTienda : 'Comercio').toUpperCase();
-                Object.entries(pedidosTienda).forEach(([idPed, pedido]) => {
-                    total++;
-                    contenedor.innerHTML += `
-                        <div class="bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl text-xs flex flex-col gap-1">
-                            <div class="flex justify-between items-start">
-                                <span class="text-amber-400 font-bold">${pedido.repuesto} ($${pedido.precio})</span>
-                                <span class="bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded text-[9px]">${nombreTienda}</span>
-                            </div>
-                            <p class="text-slate-300">👤 Cliente: <strong>${pedido.cliente}</strong> | 📞 ${pedido.telefono}</p>
-                            <p class="text-slate-400">📍 Dir: ${pedido.direccion}</p>
-                        </div>
-                    `;
-                });
-            });
-
-            if (total === 0) {
-                contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">No hay pedidos pendientes en la plataforma.</p>`;
-            }
-        }
-
-        function renderizarVentasRealizadas(ventasGlobales, tiendas) {
-            const contenedor = document.getElementById('listaVentasAdmin');
-            contenedor.innerHTML = "";
-            let total = 0;
-
-            Object.entries(ventasGlobales).forEach(([uidTienda, ventasTienda]) => {
-                const nombreTienda = (tiendas[uidTienda] ? tiendas[uidTienda].nombreTienda : 'Comercio').toUpperCase();
-                Object.entries(ventasTienda).forEach(([idVenta, venta]) => {
-                    total++;
-                    contenedor.innerHTML += `
-                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-xs flex flex-col gap-1">
-                            <div class="flex justify-between items-start">
-                                <span class="text-emerald-400 font-bold">${venta.repuesto} ($${venta.precio})</span>
-                                <span class="bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded text-[9px] border border-emerald-500/30">${nombreTienda}</span>
-                            </div>
-                            <p class="text-slate-300">👤 Comprador: <strong>${venta.cliente}</strong> | 📞 ${venta.telefono}</p>
-                            <span class="text-[9px] text-slate-500">Completado: ${venta.fechaAtendido || 'N/A'}</span>
-                        </div>
-                    `;
-                });
-            });
-
-            if (total === 0) {
-                contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">No hay ventas registradas.</p>`;
-            }
-        }
-
-        function renderizarPedidosOmitidos(omitidosGlobales, tiendas) {
-            const contenedor = document.getElementById('listaOmitidosAdmin');
-            contenedor.innerHTML = "";
-            let total = 0;
-
-            Object.entries(omitidosGlobales).forEach(([uidTienda, omitidosTienda]) => {
-                const nombreTienda = (tiendas[uidTienda] ? tiendas[uidTienda].nombreTienda : 'Comercio').toUpperCase();
-                Object.entries(omitidosTienda).forEach(([idOmitido, omision]) => {
-                    total++;
-                    contenedor.innerHTML += `
-                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl text-xs flex flex-col gap-1">
-                            <div class="flex justify-between items-start">
-                                <span class="text-red-400 font-bold">${omision.repuesto} ($${omision.precio})</span>
-                                <span class="bg-red-500/20 text-red-400 font-bold px-1.5 py-0.5 rounded text-[9px] border border-red-500/30">${nombreTienda}</span>
-                            </div>
-                            <p class="text-slate-300">👤 Cliente: <strong>${omision.cliente}</strong> | 📞 ${omision.telefono}</p>
-                            <span class="text-[9px] text-slate-500">Omitido el: ${omision.fechaOmitido || 'N/A'}</span>
-                        </div>
-                    `;
-                });
-            });
-
-            if (total === 0) {
-                contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">No hay pedidos omitidos registrados.</p>`;
-            }
-        }
-
-        function actualizarGrafica(pendientes, ventas, omitidos) {
-            const ctx = document.getElementById('graficaGlobal').getContext('2d');
-            
-            if (miGrafica) {
-                miGrafica.data.datasets[0].data = [pendientes, ventas, omitidos];
-                miGrafica.update();
-                return;
-            }
-
-            miGrafica = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Pendientes', 'Ventas Realizadas', 'Omitidos'],
-                    datasets: [{
-                        label: 'Cantidad de Operaciones',
-                        data: [pendientes, ventas, omitidos],
-                        backgroundColor: [
-                            'rgba(245, 158, 11, 0.8)',
-                            'rgba(16, 185, 129, 0.8)',
-                            'rgba(239, 68, 68, 0.8)'
-                        ],
-                        borderColor: ['#F59E0B', '#10B981', '#EF4444'],
-                        borderWidth: 1,
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(51, 65, 85, 0.3)' },
-                            ticks: { color: '#94A3B8', font: { size: 11 } }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#94A3B8', font: { size: 11, weight: 'bold' } }
+                        // Renderizar HTML de Pedidos Pendientes
+                        let pedidosHtml = '';
+                        if (listaPedidos.length > 0) {
+                            listaPedidos.forEach(([idPedido, ped]) => {
+                                pedidosHtml += `
+                                    <div class="bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-xl flex flex-col gap-1 text-[11px]">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-amber-400 font-bold">📦 ${ped.repuesto}</span>
+                                            <span class="text-emerald-400 font-black">$${ped.precio}</span>
+                                        </div>
+                                        <p class="text-slate-300"><strong>Cliente:</strong> ${ped.cliente} | 📞 ${ped.telefono}</p>
+                                        <p class="text-slate-400"><strong>Ciudad:</strong> ${ped.ciudad} | Dir: ${ped.direccion}</p>
+                                        <span class="text-[9px] text-slate-500">Recibido: ${ped.fecha}</span>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            pedidosHtml = `<p class="text-slate-500 text-xs italic py-2">No tiene pedidos pendientes.</p>`;
                         }
-                    }
+
+                        // Renderizar HTML de Inventario Publicado
+                        let inventarioHtml = '';
+                        if (listaInventario.length > 0) {
+                            listaInventario.forEach(([idProd, prod]) => {
+                                inventarioHtml += `
+                                    <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center text-xs">
+                                        <div class="flex flex-col gap-0.5">
+                                            <span class="text-slate-200 font-bold">${prod.nombre}</span>
+                                            <div class="flex items-center gap-2 text-[10px] text-slate-400">
+                                                <span class="bg-slate-950 px-2 py-0.5 rounded border border-slate-800">${prod.categoria}</span>
+                                                <span>Stock: <strong class="text-slate-200">${prod.stock}</strong></span>
+                                                <span class="text-emerald-400 font-bold">$${prod.precio}</span>
+                                            </div>
+                                        </div>
+                                        <button onclick="eliminarProducto('${uid}', '${idProd}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-2.5 py-1 rounded-lg font-bold transition border border-red-500/20 cursor-pointer text-[10px]">
+                                            Borrar ✕
+                                        </button>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            inventarioHtml = `<p class="text-slate-500 text-xs italic py-2">No ha publicado repuestos todavía.</p>`;
+                        }
+
+                        // Tarjeta completa de la tienda
+                        contenedor.innerHTML += `
+                            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col gap-5">
+                                <!-- Cabecera de la Tienda -->
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4">
+                                    <div class="flex flex-col gap-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xl">🏢</span>
+                                            <h3 class="text-lg font-black text-amber-500 uppercase tracking-wide">${nombre}</h3>
+                                        </div>
+                                        <div class="flex flex-wrap gap-4 text-xs text-slate-300 mt-1">
+                                            <span>📧 <strong>Correo:</strong> ${email}</span>
+                                            <span>📱 <strong>WhatsApp:</strong> ${wsp}</span>
+                                            <span>📍 <strong>Ubicación:</strong> ${dir}</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="eliminarTienda('${uid}', '${nombre}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-3 py-2 rounded-xl font-bold transition border border-red-500/20 cursor-pointer text-xs">
+                                        🗑️ Eliminar Tienda Completa
+                                    </button>
+                                </div>
+
+                                <!-- Secciones Internas: Pedidos Pendientes e Inventario -->
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <!-- Columna de Pedidos Pendientes -->
+                                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col gap-2">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">🔔 Pedidos Pendientes (${listaPedidos.length})</span>
+                                        </div>
+                                        <div class="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
+                                            ${pedidosHtml}
+                                        </div>
+                                    </div>
+
+                                    <!-- Columna de Inventario Publicado -->
+                                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col gap-2">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">📦 Inventario Publicado (${listaInventario.length})</span>
+                                        </div>
+                                        <div class="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
+                                            ${inventarioHtml}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-10">No hay tiendas registradas en la plataforma.</p>`;
                 }
+
+                document.getElementById('statTotalProductos').innerText = totalProductosGlobal;
             });
         }
 
-        window.toggleVerificar = function(uid, estado) {
-            update(ref(db, `tiendas/${uid}`), { verificada: estado }).catch(e => alert("Error: " + e.message));
-        };
-
-        window.togglePausar = function(uid, estadoActual) {
-            const nuevoEstado = estadoActual === 'activa' ? 'pausada' : 'activa';
-            update(ref(db, `tiendas/${uid}`), { estado: nuevoEstado }).catch(e => alert("Error: " + e.message));
-        };
-
-        window.eliminarTiendaAdmin = function(uid) {
-            if (confirm("¿Estás seguro de eliminar esta tienda y sus registros? Esta acción no se puede deshacer.")) {
+        // Funciones del Super Admin
+        window.eliminarTienda = function(uid, nombreTienda) {
+            if (confirm(`¿Estás completamente seguro de eliminar la tienda "${nombreTienda}"? Se borrarán sus datos, sus pedidos pendientes y todo su inventario.`)) {
                 remove(ref(db, `tiendas/${uid}`));
                 remove(ref(db, `inventarios/${uid}`));
                 remove(ref(db, `pedidos/${uid}`));
                 remove(ref(db, `pedidos_atendidos/${uid}`));
-                remove(ref(db, `pedidos_omitidos/${uid}`));
+                alert(`La tienda "${nombreTienda}" ha sido eliminada con éxito.`);
             }
         };
 
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            signOut(auth).then(() => window.location.href = "login.html");
-        });
+        window.eliminarProducto = function(uidTienda, idProd) {
+            if (confirm("¿Estás seguro de eliminar este repuesto del inventario de la tienda?")) {
+                remove(ref(db, `inventarios/${uidTienda}/${idProd}`))
+                    .then(() => alert("Repuesto eliminado con éxito."))
+                    .catch(e => alert("Error al eliminar: " + e.message));
+            }
+        };
     </script>
 </body>
 </html>

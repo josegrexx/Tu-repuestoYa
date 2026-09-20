@@ -1,3 +1,11 @@
+<!-- 
+  =============================================================
+  ARCHIVO: login.html (Acceso y Registro de Tiendas)
+  VERSIÓN: 3.2
+  ÚLTIMO CAMBIO: Se añadió el selector de las principales ciudades de Venezuela 
+  al crear la cuenta de la tienda.
+  =============================================================
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,77 +14,79 @@
     <title>Acceso y Registro - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-center items-center p-4 font-sans">
-
-    <div class="max-w-md w-full bg-slate-800/80 backdrop-blur-md border border-slate-700 p-8 rounded-2xl shadow-2xl flex flex-col gap-6">
-        
-        <!-- Cabecera -->
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full flex flex-col gap-6">
         <div class="text-center">
-            <h1 class="text-2xl font-black text-amber-500">TurespuestoYa 🚗💨</h1>
-            <p id="subtituloPortal" class="text-xs text-slate-400 mt-1">Portal exclusivo para gestión de tiendas y repuestos.</p>
+            <span class="text-3xl">⚡</span>
+            <h1 class="text-2xl font-black text-amber-500 tracking-wide mt-2">TurespuestoYa</h1>
+            <p id="subtituloForm" class="text-xs text-slate-400 mt-1">Accede a tu panel de tienda</p>
         </div>
 
-        <!-- Pestañas de Navegación -->
-        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
-            <button id="btnTabLogin" onclick="cambiarModo('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950">Iniciar Sesión</button>
-            <button id="btnTabRegistro" onclick="cambiarModo('registro')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Crear Cuenta</button>
+        <!-- Pestañas Login / Registro -->
+        <div class="grid grid-cols-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button id="tabLogin" class="py-2 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition cursor-pointer">Iniciar Sesión</button>
+            <button id="tabRegistro" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer">Crear Tienda</button>
         </div>
 
         <!-- Formulario -->
-        <div class="flex flex-col gap-4">
+        <div id="formContainer" class="flex flex-col gap-4">
             
-            <!-- Campos de Registro (Ocultos en Login) -->
-            <div id="grupoNombreTienda" class="hidden flex flex-col gap-4">
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre de la Tienda</label>
-                    <input type="text" id="regNombreTienda" placeholder="Ej. Repuestos El Topo C.A." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+            <!-- Campos exclusivos de Registro -->
+            <div id="camposRegistroAdicionales" class="hidden flex flex-col gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-400 font-bold">Nombre de la Tienda</label>
+                    <input type="text" id="nombreTienda" placeholder="Ej. AutoRepuestos San Cristóbal" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
                 </div>
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Ciudad Principal (Venezuela)</label>
-                    <select id="regCiudad" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
-                        <option value="San Cristóbal">San Cristóbal (Táchira)</option>
-                        <option value="Maracay">Maracay (Aragua)</option>
-                        <option value="Caracas">Caracas (Distrito Capital)</option>
-                        <option value="Valencia">Valencia (Carabobo)</option>
-                        <option value="Barquisimeto">Barquisimeto (Lara)</option>
-                        <option value="Maracaibo">Maracaibo (Zulia)</option>
-                        <option value="Puerto La Cruz">Puerto La Cruz (Anzoátegui)</option>
-                        <option value="Mérida">Mérida (Mérida)</option>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-amber-400 font-bold">📍 Ciudad Principal (Venezuela)</label>
+                    <select id="ciudadTienda" class="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                        <option value="San Cristóbal">San Cristóbal</option>
+                        <option value="Maracay">Maracay</option>
+                        <option value="Valencia">Valencia</option>
+                        <option value="Caracas">Caracas</option>
+                        <option value="Barquisimeto">Barquisimeto</option>
+                        <option value="Maracaibo">Maracaibo</option>
+                        <option value="Mérida">Mérida</option>
+                        <option value="Barinas">Barinas</option>
+                        <option value="Puerto La Cruz">Puerto La Cruz</option>
+                        <option value="Cúcuta (Frontera)">Cúcuta (Frontera)</option>
                     </select>
                 </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-amber-400 font-bold">📍 Dirección Exacta del Local</label>
+                    <input type="text" id="direccionFisica" placeholder="Ej. Av. 19 de Abril, Local #5" class="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-amber-400 font-bold">📱 Teléfono de WhatsApp de la Tienda</label>
+                    <input type="text" id="telefonoWsp" placeholder="Ej. 04121234567" class="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
             </div>
 
-            <!-- Campo Correo -->
-            <div>
-                <label class="text-xs text-slate-400 font-bold mb-1 block">Correo Electrónico</label>
-                <input type="email" id="email" placeholder="tutienda@gmail.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-400 font-bold">Correo Electrónico</label>
+                <input type="email" id="email" placeholder="tucorreo@email.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
             </div>
 
-            <!-- Campo Contraseña -->
-            <div>
-                <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña</label>
-                <input type="password" id="password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-400 font-bold">Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
             </div>
 
-            <!-- Teléfono (Oculto en Login) -->
-            <div id="grupoTelefono" class="hidden">
-                <label class="text-xs text-slate-400 font-bold mb-1 block">Número de Teléfono / WhatsApp</label>
-                <input type="text" id="regTelefono" placeholder="Ej. 04141234567" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
-                <p class="text-[10px] text-slate-500 mt-1">Los clientes usarán este número para enviarte pedidos.</p>
+            <div id="campoConfirmarPass" class="hidden flex flex-col gap-1">
+                <label class="text-xs text-slate-400 font-bold">Confirmar Contraseña</label>
+                <input type="password" id="confirmPassword" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
             </div>
 
-            <!-- Botón de Acción -->
-            <button id="btnAccion" onclick="ejecutarAccion()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 text-sm mt-2">
-                Entrar al Panel
+            <button id="btnAccion" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
+                Iniciar Sesión
             </button>
         </div>
 
-        <div class="text-center border-t border-slate-700 pt-4">
-            <a href="index.html" class="text-xs text-amber-400 hover:underline font-semibold">← Volver al Catálogo Público</a>
+        <div class="text-center">
+            <a href="index.html" class="text-xs text-slate-500 hover:text-slate-300 transition">← Volver al Catálogo Público</a>
         </div>
     </div>
 
-    <!-- Script de Firebase y Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
@@ -93,55 +103,54 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        let modoActual = 'login';
+        let esRegistro = false;
 
-        window.cambiarModo = function(modo) {
-            modoActual = modo;
-            const btnLogin = document.getElementById('btnTabLogin');
-            const btnRegistro = document.getElementById('btnTabRegistro');
-            const grupoNombre = document.getElementById('grupoNombreTienda');
-            const grupoTel = document.getElementById('grupoTelefono');
-            const btnAccion = document.getElementById('btnAccion');
-            const subtitulo = document.getElementById('subtituloPortal');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegistro = document.getElementById('tabRegistro');
+        const camposRegistroAdicionales = document.getElementById('camposRegistroAdicionales');
+        const campoConfirmarPass = document.getElementById('campoConfirmarPass');
+        const btnAccion = document.getElementById('btnAccion');
+        const subtituloForm = document.getElementById('subtituloForm');
 
-            if (modo === 'login') {
-                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950";
-                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-                grupoNombre.classList.add('hidden');
-                grupoTel.classList.add('hidden');
-                btnAccion.innerText = "Entrar al Panel";
-                subtitulo.innerText = "Portal exclusivo para gestión de tiendas y repuestos.";
-            } else {
-                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950";
-                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
-                grupoNombre.classList.remove('hidden');
-                grupoTel.classList.remove('hidden');
-                btnAccion.innerText = "Registrar Nueva Tienda";
-                subtitulo.innerText = "Crea tu cuenta comercial en TurespuestoYa.";
-            }
-        };
+        tabLogin.addEventListener('click', () => {
+            esRegistro = false;
+            tabLogin.className = "py-2 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition cursor-pointer";
+            tabRegistro.className = "py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
+            camposRegistroAdicionales.classList.add('hidden');
+            campoConfirmarPass.classList.add('hidden');
+            btnAccion.innerText = "Iniciar Sesión";
+            subtituloForm.innerText = "Accede a tu panel de tienda";
+        });
 
-        window.ejecutarAccion = function() {
+        tabRegistro.addEventListener('click', () => {
+            esRegistro = true;
+            tabRegistro.className = "py-2 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition cursor-pointer";
+            tabLogin.className = "py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
+            camposRegistroAdicionales.classList.remove('hidden');
+            campoConfirmarPass.classList.remove('hidden');
+            btnAccion.innerText = "Crear Cuenta de Tienda";
+            subtituloForm.innerText = "Registra los datos y ubicación de tu tienda";
+        });
+
+        btnAccion.addEventListener('click', () => {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            if (!email || !password) {
-                return alert("Por favor completa el correo y la contraseña.");
-            }
+            if (!email || !password) return alert("Por favor completa correo y contraseña.");
 
-            if (modoActual === 'login') {
-                signInWithEmailAndPassword(auth, email, password)
-                    .then(() => { window.location.href = "panel.html"; })
-                    .catch((error) => { alert("Error al iniciar sesión: Verifique sus credenciales."); });
-            } else {
-                const nombreTienda = document.getElementById('regNombreTienda').value.trim();
-                const ciudad = document.getElementById('regCiudad').value;
-                const telefono = document.getElementById('regTelefono').value.trim();
+            if (esRegistro) {
+                const nombreTienda = document.getElementById('nombreTienda').value.trim();
+                const ciudadTienda = document.getElementById('ciudadTienda').value;
+                const direccionFisica = document.getElementById('direccionFisica').value.trim();
+                const telefonoWsp = document.getElementById('telefonoWsp').value.trim();
+                const confirmPassword = document.getElementById('confirmPassword').value.trim();
 
-                if (!nombreTienda || !telefono) {
-                    return alert("Por favor ingresa el nombre de la tienda y tu número de teléfono.");
+                if (!nombreTienda || !direccionFisica || !telefonoWsp) {
+                    return alert("Por favor completa todos los campos de la tienda.");
                 }
-
+                if (password !== confirmPassword) {
+                    return alert("Las contraseñas no coinciden.");
+                }
                 if (password.length < 6) {
                     return alert("La contraseña debe tener al menos 6 caracteres.");
                 }
@@ -149,22 +158,30 @@
                 createUserWithEmailAndPassword(auth, email, password)
                     .then((userCredential) => {
                         const user = userCredential.user;
-
                         set(ref(db, `tiendas/${user.uid}`), {
                             nombreTienda: nombreTienda,
-                            ciudad: ciudad,
-                            email: email,
-                            telefono: telefono,
-                            whatsapp: telefono,
-                            fechaRegistro: new Date().toLocaleString()
+                            ciudad: ciudadTienda,
+                            direccionFisica: direccionFisica,
+                            telefonoWsp: telefonoWsp,
+                            email: email
                         }).then(() => {
-                            alert("¡Cuenta de tienda creada con éxito!");
+                            alert("¡Tienda registrada con éxito!");
                             window.location.href = "panel.html";
                         });
                     })
-                    .catch((error) => { alert("Error al registrar la tienda: " + error.message); });
+                    .catch((error) => {
+                        alert("Error al registrar: " + error.message);
+                    });
+            } else {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => {
+                        window.location.href = "panel.html";
+                    })
+                    .catch((error) => {
+                        alert("Error al iniciar sesión: " + error.message);
+                    });
             }
-        };
+        });
     </script>
 </body>
 </html>

@@ -1,11 +1,8 @@
 <!-- 
   =============================================================
-  ARCHIVO: index.html (Catálogo Público)
-  VERSIÓN: 1.7
-  ÚLTIMO CAMBIO: 
-  - Se incluyó el ID único del repuesto (prodId) en el registro del pedido 
-    hacia Firebase para permitir el descuento automático de stock desde el panel.
-  - Se mantiene el modal de pedidos fluidos, insignia dorada y filtro por categorías.
+  ARCHIVO: index.html (Catálogo Público para Clientes)
+  VERSIÓN: 3.7
+  ÚLTIMO CAMBIO: El filtro de ciudades de Venezuela ahora se encuentra en una ventana flotante (modal).
   =============================================================
 -->
 <!DOCTYPE html>
@@ -13,137 +10,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo Público - TurespuestoYa</title>
+    <title>Catálogo - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <!-- Encabezado Público -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 shadow-lg">
+    <!-- Header Público -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            
-            <!-- Marca e Icono Ilustrado V1.4 -->
-            <div class="flex items-center gap-3">
-                <div class="relative flex items-center justify-center p-2 bg-slate-950 border border-amber-500/30 rounded-2xl shadow-lg shadow-amber-500/5">
-                    <svg class="w-16 h-12 shrink-0" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="80" height="64" rx="12" fill="#020617"/>
-                      <g id="delivery-moto">
-                        <path d="M 3 24 H 8 M 2 30 H 6" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>
-                        <rect x="9" y="16" width="10" height="10" rx="2" fill="#38BDF8" stroke="#0284C7" stroke-width="1.5"/>
-                        <path d="M 12 21 H 16" stroke="#0284C7" stroke-width="1.5" stroke-linecap="round"/>
-                        <path d="M 14 32 L 20 22 H 27 L 31 32" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M 23 22 L 21 16 H 18" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
-                        <circle cx="15" cy="34" r="4.5" fill="#0F172A" stroke="#F59E0B" stroke-width="2.5"/>
-                        <circle cx="30" cy="34" r="4.5" fill="#0F172A" stroke="#F59E0B" stroke-width="2.5"/>
-                      </g>
-                      <g id="mecanico-carro">
-                        <path d="M 42 52 H 74 C 76 52 77.5 50.5 77 48.5 L 74 38 C 73 35 71 34 68 34 H 56 C 53.5 34 52 35.5 51 38 L 49 44 H 42 C 40 44 39 46 40 48 L 41 51 C 41.3 51.6 41.6 52 42 52 Z" fill="#0F172A" stroke="#F59E0B" stroke-width="2"/>
-                        <path d="M 50 38 L 40 24" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M 47 34 L 43 27" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
-                        <rect x="47" y="38" width="8" height="6" rx="1" fill="#EF4444"/>
-                        <circle cx="48" cy="52" r="4.5" fill="#020617" stroke="#F59E0B" stroke-width="2"/>
-                        <circle cx="68" cy="52" r="4.5" fill="#020617" stroke="#F59E0B" stroke-width="2"/>
-                        <circle cx="36" cy="27" r="3" fill="#10B981"/>
-                        <path d="M 31 38 C 31 33 34 31 37 31 C 39 31 41 33 43 35" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M 41 32 L 46 28" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
-                        <circle cx="47" cy="27" r="1.5" fill="#F59E0B"/>
-                      </g>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-xl font-black text-amber-500 tracking-wide leading-none">TurespuestoYa</h1>
-                    <span class="text-[10px] text-slate-400 font-bold block mt-1">Repuestos & Entregas Rápidas</span>
-                </div>
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">⚡</span>
+                <h1 class="text-xl font-black text-amber-500 tracking-wide uppercase">TurespuestoYa</h1>
             </div>
-
-            <!-- Botón Acceso Panel -->
-            <div class="flex flex-wrap gap-2 items-center">
-                <a href="login.html" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition shadow-md shadow-amber-500/20">Portal de Tiendas / Login</a>
+            <div class="flex items-center gap-2">
+                <a href="login.html" class="bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-amber-500/30">Acceso Tiendas 🔐</a>
             </div>
         </div>
     </header>
 
-    <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-4 flex-grow w-full flex flex-col gap-6 mt-4">
-        
-        <!-- Buscador y Filtro por Categoría -->
-        <section class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col md:flex-row gap-4 items-center">
-            <div class="w-full flex-1 relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">🔍</span>
-                <input type="text" id="inputBuscar" placeholder="Buscar repuesto por nombre, marca o modelo..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition">
-            </div>
-            <div class="w-full md:w-auto flex gap-2">
-                <select id="selectCategoria" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-amber-500 transition w-full md:w-64">
-                    <option value="">⚙️ Todas las Categorías</option>
-                    <option value="Motor">Motor</option>
-                    <option value="Frenos">Frenos</option>
-                    <option value="Suspensión">Suspensión</option>
-                    <option value="Eléctrico">Eléctrico</option>
-                    <option value="Carrocería">Carrocería</option>
-                    <option value="Accesorios">Accesorios</option>
-                </select>
-            </div>
-        </section>
+    <!-- Barra de Búsqueda, Filtro de Ciudad Flotante y Categorías -->
+    <section class="max-w-7xl mx-auto px-4 mt-6 w-full flex flex-col lg:flex-row gap-3 items-center justify-between">
+        <div class="w-full lg:w-1/3 relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
+            <input type="text" id="inputBuscar" placeholder="Buscar repuesto, marca o modelo..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl pl-10 pr-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
+        </div>
 
-        <!-- Resultados / Catálogo de Repuestos -->
-        <section class="flex flex-col gap-4">
-            <div class="flex justify-between items-center px-1">
-                <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">📦 Repuestos Disponibles</h2>
-                <span id="contadorResultados" class="text-xs text-slate-400 font-semibold">Cargando catálogo...</span>
-            </div>
+        <!-- Botón para abrir la Ventana Flotante de Ciudades -->
+        <div class="w-full lg:w-auto">
+            <button id="btnAbrirModalCiudad" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-4 py-3 rounded-2xl text-xs transition border border-slate-800 flex items-center justify-between gap-3 cursor-pointer w-full lg:w-auto shadow-md">
+                <span class="flex items-center gap-1.5">📍 Filtrar por Ciudad: <strong id="labelCiudadActual" class="text-white">Todas</strong></span>
+                <span class="text-slate-400">▼</span>
+            </button>
+        </div>
 
-            <div id="gridCatalogo" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <p class="text-slate-500 text-sm italic col-span-full text-center py-12">Buscando repuestos en tiempo real...</p>
-            </div>
-        </section>
+        <div id="categoriasFiltro" class="flex flex-wrap gap-1.5 w-full lg:w-auto justify-start lg:justify-end">
+            <button class="filtro-cat bg-amber-500 text-slate-950 font-bold px-3 py-2.5 rounded-2xl text-xs transition cursor-pointer" data-cat="Todos">Todas Cat.</button>
+            <button class="filtro-cat bg-slate-900 text-slate-300 hover:bg-slate-800 font-bold px-3 py-2.5 rounded-2xl text-xs transition border border-slate-800 cursor-pointer" data-cat="Motor">Motor</button>
+            <button class="filtro-cat bg-slate-900 text-slate-300 hover:bg-slate-800 font-bold px-3 py-2.5 rounded-2xl text-xs transition border border-slate-800 cursor-pointer" data-cat="Frenos">Frenos</button>
+            <button class="filtro-cat bg-slate-900 text-slate-300 hover:bg-slate-800 font-bold px-3 py-2.5 rounded-2xl text-xs transition border border-slate-800 cursor-pointer" data-cat="Suspensión">Suspensión</button>
+            <button class="filtro-cat bg-slate-900 text-slate-300 hover:bg-slate-800 font-bold px-3 py-2.5 rounded-2xl text-xs transition border border-slate-800 cursor-pointer" data-cat="Eléctrico">Eléctrico</button>
+        </div>
+    </section>
 
-    </main>
-
-    <!-- Modal para Pedir Repuesto -->
-    <div id="modalPedido" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl">
+    <!-- Ventana Flotante (Modal) para Seleccionar Ciudad -->
+    <div id="modalFiltroCiudad" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full flex flex-col gap-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-lg font-black text-amber-500 flex items-center gap-2">🛒 Solicitar Repuesto</h3>
-                <button onclick="cerrarModalPedido()" class="text-slate-400 hover:text-white font-bold text-sm">✕</button>
+                <h3 class="text-base font-black text-white flex items-center gap-2">📍 Seleccionar Ciudad de Venezuela</h3>
+                <button onclick="cerrarModalCiudad()" class="text-slate-400 hover:text-white text-lg font-bold px-2 cursor-pointer">✕</button>
             </div>
-            
-            <div id="infoRepuestoModal" class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-xs space-y-1">
-                <!-- Se llena dinámicamente -->
-            </div>
-
-            <div class="flex flex-col gap-3 mt-1">
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Tu Nombre / Apellido</label>
-                    <input type="text" id="clienteNombre" placeholder="Ej. Carlos Pérez" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Teléfono de Contacto</label>
-                    <input type="text" id="clienteTelefono" placeholder="Ej. 04141234567" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Dirección de Entrega / Referencia</label>
-                    <textarea id="clienteDireccion" rows="2" placeholder="Ej. Barrio Obrero, cerca de la plaza..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none text-xs resize-none"></textarea>
-                </div>
-            </div>
-
-            <div class="flex gap-2 mt-2">
-                <button id="btnEnviarPedido" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition flex-1 text-xs shadow-lg shadow-amber-500/10">
-                    Enviar Pedido a WhatsApp 📱
-                </button>
-                <button onclick="cerrarModalPedido()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl transition text-xs">
-                    Cancelar
-                </button>
+            <div id="listaBotonesCiudad" class="flex flex-col gap-2 max-h-72 overflow-y-auto pr-1">
+                <button class="opcion-ciudad text-left bg-amber-500 text-slate-950 font-bold px-4 py-3 rounded-xl text-xs transition cursor-pointer" data-ciudad="Todas">🌐 Todas las Ciudades</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="San Cristóbal">San Cristóbal</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Maracay">Maracay</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Valencia">Valencia</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Caracas">Caracas</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Barquisimeto">Barquisimeto</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Maracaibo">Maracaibo</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Mérida">Mérida</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Barinas">Barinas</button>
+                <button class="opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer" data-ciudad="Puerto La Cruz">Puerto La Cruz</button>
             </div>
         </div>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="bg-slate-900 border-t border-slate-800 p-6 text-center text-xs text-slate-500 mt-auto">
-        <p>TurespuestoYa — Conectando comercios y repuestos automotrices de forma rápida y segura.</p>
-        <p class="mt-2 text-[10px] text-slate-700 font-bold">Versión 1.7</p>
-    </footer>
+    <!-- Catálogo de Repuestos -->
+    <main class="max-w-7xl mx-auto p-4 flex-grow w-full mt-4">
+        <div id="gridCatalogo" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <p class="text-slate-500 text-xs italic col-span-full text-center py-10">Cargando repuestos disponibles...</p>
+        </div>
+    </main>
 
-    <!-- Script de Firebase y Renderizado del Catálogo Público -->
+    <!-- Modal para Solicitar Pedido -->
+    <div id="modalPedido" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl">
+            <div class="flex justify-between items-start">
+                <div>
+                    <span id="modalCatTag" class="text-[10px] uppercase font-bold text-amber-500 tracking-wider">Solicitar Repuesto</span>
+                    <h3 id="modalTituloProd" class="text-lg font-black text-white">Nombre del Repuesto</h3>
+                </div>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2 cursor-pointer">✕</button>
+            </div>
+            
+            <div id="modalInfoDescuento" class="bg-red-500/10 border border-red-500/30 p-2.5 rounded-xl text-xs hidden flex items-center justify-between">
+                <span class="text-red-400 font-bold">🔥 Oferta Aplicada (-<span id="modalValDesc">0</span>%)</span>
+                <span class="text-slate-300">Precio Anterior: <span class="line-through">$<span id="modalPrecioOrig">0</span></span></span>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex justify-between items-center text-xs">
+                <span class="text-slate-400 font-bold">Precio Total:</span>
+                <span id="modalPrecioProd" class="text-emerald-400 font-black text-lg">$0.00</span>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Tu Nombre y Apellido</label>
+                    <input type="text" id="pedCliente" placeholder="Ej. Carlos Pérez" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Teléfono / WhatsApp</label>
+                        <input type="text" id="pedTelefono" placeholder="Ej. 04121234567" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Ciudad</label>
+                        <input type="text" id="pedCiudad" placeholder="Ej. San Cristóbal" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Dirección de Envío / Notas</label>
+                    <textarea id="pedDireccion" rows="2" placeholder="Ej. Barrio La Concordia, calle principal..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none resize-none"></textarea>
+                </div>
+            </div>
+
+            <button id="btnEnviarPedido" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer">
+                Enviar Solicitud de Pedido 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- Script de Firebase y Lógica del Catálogo -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
@@ -158,178 +144,232 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let datosGlobales = { inventarios: {}, tiendas: {} };
-        let pedidoActualData = null;
+        let inventarioGlobal = [];
+        let categoriaSeleccionada = "Todos";
+        let ciudadSeleccionada = "Todas";
+        let productoSeleccionado = null;
 
         onValue(ref(db), (snapshot) => {
             const data = snapshot.val() || {};
-            datosGlobales.inventarios = data.inventarios || {};
-            datosGlobales.tiendas = data.tiendas || {};
+            const tiendas = data.tiendas || {};
+            const inventarios = data.inventarios || {};
+
+            inventarioGlobal = [];
+
+            Object.entries(inventarios).forEach(([uidTienda, repuestos]) => {
+                const infoTienda = tiendas[uidTienda] || {};
+                
+                Object.entries(repuestos).forEach(([idProd, prod]) => {
+                    if (parseInt(prod.stock) > 0) {
+                        inventarioGlobal.push({
+                            id: idProd,
+                            uidTienda: uidTienda,
+                            nombreTienda: infoTienda.nombreTienda || 'Tienda Oficial',
+                            ciudadTienda: infoTienda.ciudad || 'San Cristóbal',
+                            direccionFisica: infoTienda.direccionFisica || 'Ubicación no especificada',
+                            telefonoWsp: infoTienda.telefonoWsp || '',
+                            ...prod
+                        });
+                    }
+                });
+            });
 
             renderizarCatalogo();
         });
 
         function renderizarCatalogo() {
             const grid = document.getElementById('gridCatalogo');
-            const textoBusqueda = document.getElementById('inputBuscar').value.toLowerCase().trim();
-            const categoriaFiltro = document.getElementById('selectCategoria').value;
-
+            const busqueda = document.getElementById('inputBuscar').value.toLowerCase().trim();
             grid.innerHTML = "";
-            let productosMostrados = 0;
 
-            const inventarios = datosGlobales.inventarios;
-            const tiendas = datosGlobales.tiendas;
+            const filtrados = inventarioGlobal.filter(p => {
+                const coincideCat = categoriaSeleccionada === "Todos" || p.categoria === categoriaSeleccionada;
+                const coincideCiudad = ciudadSeleccionada === "Todas" || p.ciudadTienda === ciudadSeleccionada;
+                const coincideBusqueda = p.nombre.toLowerCase().includes(busqueda) || p.categoria.toLowerCase().includes(busqueda) || p.ciudadTienda.toLowerCase().includes(busqueda);
+                return coincideCat && coincideCiudad && coincideBusqueda;
+            });
 
-            Object.entries(inventarios).forEach(([uidTienda, stockTienda]) => {
-                const infoTienda = tiendas[uidTienda] || {};
-                if (infoTienda.estado === 'pausada') return;
+            if (filtrados.length > 0) {
+                filtrados.forEach(prod => {
+                    const stock = parseInt(prod.stock) || 0;
+                    const descVal = parseInt(prod.descuento) || 0;
+                    const precioOriginal = parseFloat(prod.precio) || 0;
+                    const precioFinal = descVal > 0 ? precioOriginal * (1 - descVal / 100) : precioOriginal;
 
-                const nombreTienda = (infoTienda.nombreTienda || 'TIENDA OFICIAL').toUpperCase();
-                const estaVerificada = infoTienda.verificada === true;
-                const ciudadTienda = infoTienda.ciudad || 'Venezuela';
+                    let tagsHtml = '';
+                    if (prod.ofreceDelivery) tagsHtml += `<span class="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded text-[10px] border border-blue-500/20 font-bold">Delivery 🚚</span>`;
+                    if (prod.retiroTienda) tagsHtml += `<span class="bg-purple-500/15 text-purple-300 px-2 py-0.5 rounded text-[10px] border border-purple-500/30 font-bold">Retiro 🏢</span>`;
 
-                if (stockTienda) {
-                    Object.entries(stockTienda).forEach(([prodId, prod]) => {
-                        const nombreProd = (prod.nombre || '').toLowerCase();
-                        const categoriaProd = (prod.categoria || '').toLowerCase();
+                    let precioHtml = `<span class="text-emerald-400 font-black text-xl">$${precioOriginal.toFixed(2)}</span>`;
+                    let badgeOfertaCard = '';
 
-                        if (prod.stock <= 0) return;
-                        if (textoBusqueda && !nombreProd.includes(textoBusqueda) && !categoriaProd.includes(textoBusqueda)) return;
-                        if (categoriaFiltro && prod.categoria !== categoriaFiltro) return;
+                    if (descVal > 0) {
+                        badgeOfertaCard = `<span class="absolute top-3 right-3 bg-red-500 text-slate-950 font-black px-2.5 py-1 rounded-xl text-[10px] shadow-lg uppercase tracking-wider">🔥 -${descVal}% OFF</span>`;
+                        precioHtml = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-emerald-400 font-black text-xl">$${precioFinal.toFixed(2)}</span>
+                                <span class="text-slate-500 text-xs line-through">$${precioOriginal.toFixed(2)}</span>
+                            </div>
+                        `;
+                    }
 
-                        productosMostrados++;
+                    const telWspLimpio = prod.telefonoWsp ? prod.telefonoWsp.replace(/\D/g,'') : '';
+                    const btnWspTienda = telWspLimpio ? `
+                        <a href="https://wa.me/${telWspLimpio}?text=${encodeURIComponent(`¡Hola! 👋 Vi su repuesto *${prod.nombre}* en *TurespuestoYa* y me interesa.`)}" target="_blank" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white font-bold px-2.5 py-1 rounded-lg text-[10px] transition border border-emerald-500/30 flex items-center gap-1">
+                            💬 WhatsApp
+                        </a>
+                    ` : '';
 
-                        const insigniaDorada = estaVerificada 
-                            ? `<span class="inline-flex items-center gap-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm ml-1.5" title="Tienda Oficial Verificada">⭐ OFICIAL</span>`
-                            : '';
-
-                        grid.innerHTML += `
-                            <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between gap-4 shadow-xl hover:border-slate-700 transition">
-                                <div class="flex flex-col gap-2">
-                                    <div class="flex justify-between items-start gap-2">
-                                        <span class="text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-lg">${prod.categoria || 'General'}</span>
-                                        <span class="text-emerald-400 font-black text-lg">$${prod.precio}</span>
-                                    </div>
-                                    <h3 class="font-extrabold text-slate-100 text-base leading-tight mt-1">${prod.nombre}</h3>
-                                    ${prod.descripcion ? `<p class="text-xs text-slate-400 line-clamp-2">${prod.descripcion}</p>` : ''}
+                    grid.innerHTML += `
+                        <div class="bg-slate-900 border ${descVal > 0 ? 'border-red-500/50 shadow-red-500/5' : 'border-slate-800'} p-5 rounded-2xl flex flex-col justify-between gap-4 shadow-xl relative">
+                            ${badgeOfertaCard}
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">${prod.categoria}</span>
+                                <h3 class="text-slate-100 font-bold text-sm mt-3 leading-snug">${prod.nombre}</h3>
+                                <div class="flex items-center gap-1.5 flex-wrap mt-2">
+                                    ${tagsHtml}
                                 </div>
-
-                                <div class="flex flex-col gap-3 pt-3 border-t border-slate-800/80">
-                                    <div class="flex flex-col text-xs">
-                                        <div class="flex items-center flex-wrap gap-1 text-slate-300 font-bold">
-                                            <span>🏢 ${nombreTienda}</span>
-                                            ${insigniaDorada}
-                                        </div>
-                                        <span class="text-[11px] text-slate-400 mt-0.5">📍 ${ciudadTienda} | Stock: <strong class="text-slate-200">${prod.stock} un.</strong></span>
+                            </div>
+                            <div class="flex flex-col gap-3 pt-3 border-t border-slate-800">
+                                <div class="flex justify-between items-end mb-1">
+                                    <div>
+                                        <span class="text-[10px] text-slate-400 block font-bold">Precio</span>
+                                        ${precioHtml}
                                     </div>
-                                    <button onclick="abrirModalPedido('${uidTienda}', '${prodId}')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2.5 px-4 rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
-                                        🛒 Pedir Ya
+                                    <div class="text-right">
+                                        <span class="text-xs font-bold text-slate-300 block">Stock: ${stock}</span>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex flex-col gap-1 text-[11px]">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-amber-400 font-bold truncate">🏢 ${prod.nombreTienda}</span>
+                                        <span class="bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded text-[10px] border border-amber-500/20 font-bold">📍 ${prod.ciudadTienda}</span>
+                                    </div>
+                                    <span class="text-slate-400 truncate">Dir: ${prod.direccionFisica}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    ${btnWspTienda}
+                                    <button onclick='abrirModalPedido(${JSON.stringify(prod)})' class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-lg shadow-amber-500/20 cursor-pointer py-2.5 px-3 rounded-xl text-xs transition text-center flex-1">
+                                        Solicitar Pedido 🛒
                                     </button>
                                 </div>
                             </div>
-                        `;
-                    });
-                }
-            });
-
-            document.getElementById('contadorResultados').innerText = `${productosMostrados} repuesto(s) disponible(s)`;
-
-            if (productosMostrados === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full bg-slate-900/50 border border-slate-800 p-12 rounded-2xl text-center flex flex-col items-center gap-3">
-                        <span class="text-3xl">🔍</span>
-                        <p class="text-slate-400 text-sm font-semibold">No se encontraron repuestos disponibles en este momento.</p>
-                    </div>
-                `;
+                        </div>
+                    `;
+                });
+            } else {
+                grid.innerHTML = `<p class="text-slate-500 text-xs italic col-span-full text-center py-10">No se encontraron repuestos con los filtros seleccionados.</p>`;
             }
         }
 
-        window.abrirModalPedido = function(uidTienda, prodId) {
-            const stockTienda = datosGlobales.inventarios[uidTienda];
-            const prod = stockTienda ? stockTienda[prodId] : null;
-            const infoTienda = datosGlobales.tiendas[uidTienda] || {};
-            if (!prod) return;
+        document.getElementById('inputBuscar').addEventListener('input', renderizarCatalogo);
 
-            const nombreTienda = (infoTienda.nombreTienda || 'TIENDA OFICIAL').toUpperCase();
-            const telefonoTienda = infoTienda.whatsapp || infoTienda.telefono || '';
+        // Control de la Ventana Flotante (Modal) de Ciudades
+        const modalFiltroCiudad = document.getElementById('modalFiltroCiudad');
+        document.getElementById('btnAbrirModalCiudad').addEventListener('click', () => {
+            modalFiltroCiudad.classList.remove('hidden');
+            modalFiltroCiudad.classList.add('flex');
+        });
 
-            pedidoActualData = {
-                storeUid: uidTienda,
-                prodId: prodId, // Guardamos el ID del producto (V1.7)
-                repuesto: prod.nombre,
-                precio: prod.precio,
-                nombreTienda: nombreTienda,
-                telefonoTienda: telefonoTienda
-            };
+        window.cerrarModalCiudad = function() {
+            modalFiltroCiudad.classList.add('hidden');
+            modalFiltroCiudad.classList.remove('flex');
+        };
 
-            document.getElementById('infoRepuestoModal').innerHTML = `
-                <p class="text-slate-300"><strong>Tienda:</strong> <span class="text-amber-400 font-bold">${nombreTienda}</span></p>
-                <p class="text-slate-300 mt-1"><strong>Repuesto:</strong> <span class="text-white font-bold">${prod.nombre}</span></p>
-                <p class="text-slate-300 mt-0.5"><strong>Precio:</strong> <span class="text-emerald-400 font-black">$${prod.precio}</span></p>
-            `;
+        // Eventos para selección de ciudad en la ventana flotante
+        document.querySelectorAll('.opcion-ciudad').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.opcion-ciudad').forEach(b => {
+                    b.className = "opcion-ciudad text-left bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold px-4 py-3 rounded-xl text-xs transition border border-slate-800 cursor-pointer";
+                });
+                e.currentTarget.className = "opcion-ciudad text-left bg-amber-500 text-slate-950 font-bold px-4 py-3 rounded-xl text-xs transition cursor-pointer";
+                
+                ciudadSeleccionada = e.currentTarget.getAttribute('data-ciudad');
+                document.getElementById('labelCiudadActual').innerText = ciudadSeleccionada;
+                
+                cerrarModalCiudad();
+                renderizarCatalogo();
+            });
+        });
+
+        // Eventos para filtros de Categoría
+        document.querySelectorAll('.filtro-cat').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filtro-cat').forEach(b => {
+                    b.className = "filtro-cat bg-slate-900 text-slate-300 hover:bg-slate-800 font-bold px-3 py-2.5 rounded-2xl text-xs transition border border-slate-800 cursor-pointer";
+                });
+                e.target.className = "filtro-cat bg-amber-500 text-slate-950 font-bold px-3 py-2.5 rounded-2xl text-xs transition cursor-pointer";
+                categoriaSeleccionada = e.target.getAttribute('data-cat');
+                renderizarCatalogo();
+            });
+        });
+
+        window.abrirModalPedido = function(prod) {
+            productoSeleccionado = prod;
+            document.getElementById('modalTituloProd').innerText = prod.nombre;
+            document.getElementById('modalCatTag').innerText = prod.categoria;
+            
+            const descVal = parseInt(prod.descuento) || 0;
+            const precioOrig = parseFloat(prod.precio) || 0;
+            const precioFinal = descVal > 0 ? precioOrig * (1 - descVal / 100) : precioOrig;
+
+            if (descVal > 0) {
+                document.getElementById('modalInfoDescuento').classList.remove('hidden');
+                document.getElementById('modalValDesc').innerText = descVal;
+                document.getElementById('modalPrecioOrig').innerText = precioOrig.toFixed(2);
+                document.getElementById('modalPrecioProd').innerText = `$${precioFinal.toFixed(2)}`;
+            } else {
+                document.getElementById('modalInfoDescuento').classList.add('hidden');
+                document.getElementById('modalPrecioProd').innerText = `$${precioOrig.toFixed(2)}`;
+            }
 
             document.getElementById('modalPedido').classList.remove('hidden');
             document.getElementById('modalPedido').classList.add('flex');
         };
 
-        window.cerrarModalPedido = function() {
+        window.cerrarModal = function() {
             document.getElementById('modalPedido').classList.add('hidden');
             document.getElementById('modalPedido').classList.remove('flex');
-            document.getElementById('clienteNombre').value = "";
-            document.getElementById('clienteTelefono').value = "";
-            document.getElementById('clienteDireccion').value = "";
-            pedidoActualData = null;
         };
 
         document.getElementById('btnEnviarPedido').addEventListener('click', () => {
-            const cliente = document.getElementById('clienteNombre').value.trim();
-            const telefono = document.getElementById('clienteTelefono').value.trim();
-            const direccion = document.getElementById('clienteDireccion').value.trim();
+            const cliente = document.getElementById('pedCliente').value.trim();
+            const telefono = document.getElementById('pedTelefono').value.trim();
+            const ciudad = document.getElementById('pedCiudad').value.trim();
+            const direccion = document.getElementById('pedDireccion').value.trim();
 
-            if (!cliente || !telefono || !direccion) {
-                return alert("Por favor completa todos los campos (nombre, teléfono y dirección).");
+            if (!cliente || !telefono || !ciudad || !direccion) {
+                return alert("Por favor completa todos los datos para enviar el pedido.");
             }
 
-            if (!pedidoActualData) return;
+            const descVal = parseInt(productoSeleccionado.descuento) || 0;
+            const precioOrig = parseFloat(productoSeleccionado.precio) || 0;
+            const precioFinal = descVal > 0 ? precioOrig * (1 - descVal / 100) : precioOrig;
 
-            const fechaActual = new Date().toLocaleString();
-
-            push(ref(db, `pedidos/${pedidoActualData.storeUid}`), {
-                prodId: pedidoActualData.prodId, // Incluimos el ID en Firebase (V1.7)
-                repuesto: pedidoActualData.repuesto,
-                precio: pedidoActualData.precio,
+            const datosPedido = {
+                repuesto: productoSeleccionado.nombre,
+                precio: precioFinal.toFixed(2),
+                precioOriginal: descVal > 0 ? precioOrig.toFixed(2) : null,
+                descuento: descVal,
+                prodId: productoSeleccionado.id,
                 cliente: cliente,
                 telefono: telefono,
+                ciudad: ciudad,
                 direccion: direccion,
-                fecha: fechaActual
-            }).then(() => {
-                let wspTienda = pedidoActualData.telefonoTienda ? pedidoActualData.telefonoTienda.replace(/\D/g, '') : '';
+                fecha: new Date().toLocaleString()
+            };
 
-                const mensajeWsp = `🚗💨 *NUEVO PEDIDO - TurespuestoYa*\n\n` +
-                                   `📦 *Repuesto:* ${pedidoActualData.repuesto}\n` +
-                                   `💵 *Precio:* $${pedidoActualData.precio}\n\n` +
-                                   `👤 *Cliente:* ${cliente}\n` +
-                                   `📞 *Teléfono:* ${telefono}\n` +
-                                   `📍 *Dirección:* ${direccion}\n\n` +
-                                   `¡Hola! Quisiera confirmar disponibilidad y coordinar el pago/entrega. ¡Gracias!`;
-
-                const urlWsp = wspTienda 
-                    ? `https://wa.me/${wspTienda}?text=${encodeURIComponent(mensajeWsp)}`
-                    : `https://wa.me/?text=${encodeURIComponent(mensajeWsp)}`;
-
-                cerrarModalPedido();
-
-                setTimeout(() => {
-                    window.open(urlWsp, '_blank');
-                }, 150);
-
-            }).catch((error) => {
-                alert("Error al enviar el pedido: " + error.message);
-            });
+            push(ref(db, `pedidos/${productoSeleccionado.uidTienda}`), datosPedido)
+                .then(() => {
+                    alert(`¡Pedido enviado con éxito a ${productoSeleccionado.nombreTienda}!`);
+                    cerrarModal();
+                    document.getElementById('pedCliente').value = "";
+                    document.getElementById('pedTelefono').value = "";
+                    document.getElementById('pedCiudad').value = "";
+                    document.getElementById('pedDireccion').value = "";
+                })
+                .catch(e => alert("Error al enviar el pedido: " + e.message));
         });
-
-        document.getElementById('inputBuscar').addEventListener('input', renderizarCatalogo);
-        document.getElementById('selectCategoria').addEventListener('change', renderizarCatalogo);
     </script>
 </body>
 </html>
