@@ -1,137 +1,181 @@
+<!-- 
+  =============================================================
+  ARCHIVO: panel.html (Panel Privado de la Tienda)
+  VERSIÓN: 2.1
+  ÚLTIMO CAMBIO: 
+  - Se corrigió el bloqueo de audio del navegador mediante un 
+    desbloqueo automático al interactuar por primera vez con la página.
+  - Se mantiene el control de sonido ON/OFF, descuento de stock, 
+    botón Omitir, historial con filtro de fecha e ingresos en dólares ($).
+  =============================================================
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Tienda - TurespuestoYa</title>
+    <title>Panel de Control - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <!-- Encabezado del Panel -->
-    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
+    <!-- Header del Panel -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div>
-                <h1 class="text-xl font-black text-amber-500">Panel de Mi Tienda ⚙️</h1>
-                <div class="text-xs text-slate-400 mt-0.5">Tienda conectada: <span id="userEmail" class="font-bold text-white">Cargando...</span></div>
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">⚡</span>
+                <h1 class="text-xl font-black text-amber-500 tracking-wide">Panel de Tienda</h1>
             </div>
-            <div class="flex flex-wrap gap-2 items-center">
-                <a href="index.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition border border-slate-600">Ver Catálogo Público ↗</a>
-                <button onclick="openPasswordModal()" class="bg-slate-700 hover:bg-slate-600 text-amber-400 font-bold px-3.5 py-2 rounded-xl text-xs transition border border-slate-600 flex items-center gap-1">
-                    <span>🔒</span> Cambiar Contraseña
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Botón de Control de Sonido -->
+                <button id="btnToggleSonido" class="bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700 flex items-center gap-1 cursor-pointer">
+                    🔊 Sonido: ON
                 </button>
-                <button id="btnLogout" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-bold px-3.5 py-2 rounded-xl text-xs transition border border-red-500/20">Cerrar Sesión</button>
+                <a href="index.html" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo ↗</a>
+                <button id="btnCambiarClave" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Clave</button>
+                <button id="btnLogout" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/20">Salir</button>
             </div>
         </div>
     </header>
 
+    <!-- Dashboard / Estadísticas Principales -->
+    <section class="max-w-7xl mx-auto px-4 mt-6 w-full">
+        <div class="bg-slate-900/90 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row gap-6 justify-between items-center">
+            
+            <!-- Nombre de Tienda y Reloj -->
+            <div class="flex flex-col gap-1 w-full md:w-1/3">
+                <span class="text-[10px] uppercase tracking-wider text-amber-500 font-bold">Gestión de Inventario</span>
+                <h2 id="dashboardNombreTienda" class="text-2xl md:text-3xl font-black text-white leading-tight uppercase truncate">Cargando...</h2>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-lg">🕒</span>
+                    <p id="relojEnVivo" class="text-sm font-semibold text-slate-400 capitalize"></p>
+                </div>
+            </div>
+
+            <!-- Cajas de Estadísticas -->
+            <div class="grid grid-cols-3 gap-3 w-full md:w-2/3">
+                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col items-center justify-center gap-1 shadow-inner">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide text-center">Total en Stock</span>
+                    <span id="statStock" class="text-3xl font-black text-emerald-400">0</span>
+                </div>
+                <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-xl flex flex-col items-center justify-center gap-1 shadow-inner shadow-amber-500/5">
+                    <span class="text-[10px] text-amber-500 font-bold uppercase tracking-wide text-center">Pendientes</span>
+                    <span id="statPendientes" class="text-3xl font-black text-amber-500">0</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col items-center justify-center gap-1 shadow-inner">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide text-center">Atendidos</span>
+                    <span id="statAtendidos" class="text-3xl font-black text-sky-400">0</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-4 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
+    <main class="max-w-7xl mx-auto p-4 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Columna 1: Publicar Repuestos -->
-        <div class="flex flex-col gap-6">
-            <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-                <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">📦 Publicar Repuesto</h2>
-                <p class="text-xs text-slate-400">Los repuestos que publiques aquí se reflejarán automáticamente en tiempo real en la página principal.</p>
-                
-                <div class="flex flex-col gap-3 mt-2">
+        <!-- Columna Izquierda: Formulario de Publicación -->
+        <section class="lg:col-span-1 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl h-fit">
+            <h2 class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">➕ Nuevo Repuesto</h2>
+            <div class="flex flex-col gap-4">
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre / Marca / Modelo</label>
+                    <input type="text" id="nombreRepuesto" placeholder="Ej. Pastillas de Freno Corolla 2015" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre del Repuesto</label>
-                        <input type="text" id="prodNombre" placeholder="Ej. Amortiguador Delantero" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Precio ($)</label>
+                        <input type="number" id="precioRepuesto" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
                     </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs text-slate-400 font-bold mb-1 block">Precio ($)</label>
-                            <input type="number" step="0.01" id="prodPrecio" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 font-bold mb-1 block">Stock (Cantidad)</label>
-                            <input type="number" id="prodStock" placeholder="Ej. 5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
-                        </div>
-                    </div>
-
                     <div>
-                        <label class="text-xs text-slate-400 font-bold mb-1 block">Categoría</label>
-                        <select id="prodCat" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
-                            <option value="" disabled selected>Selecciona...</option>
-                            <option value="Motor">Motor</option>
-                            <option value="Frenos">Frenos</option>
-                            <option value="Suspensión">Suspensión</option>
-                            <option value="Eléctrico">Eléctrico</option>
-                            <option value="Carrocería">Carrocería</option>
-                            <option value="Accesorios">Accesorios</option>
-                        </select>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Cantidad (Stock)</label>
+                        <input type="number" id="stockRepuesto" placeholder="Ej. 5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
                     </div>
                 </div>
-
-                <button id="btnAddProduct" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 mt-2">Publicar en el Catálogo</button>
-            </section>
-        </div>
-
-        <!-- Columna 2: Lista de Mis Repuestos en Stock -->
-        <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4 h-fit">
-            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">📋 Mis Repuestos en Stock</h2>
-            <p class="text-xs text-slate-400">Inventario activo de tu tienda.</p>
-            
-            <div id="myProductsList" class="flex flex-col gap-3 overflow-y-auto max-h-[600px] pr-1">
-                <p class="text-slate-500 text-sm italic text-center py-12">Cargando tu inventario...</p>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Categoría</label>
+                    <select id="categoriaRepuesto" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
+                        <option value="Motor">Motor</option>
+                        <option value="Frenos">Frenos</option>
+                        <option value="Suspensión">Suspensión</option>
+                        <option value="Eléctrico">Eléctrico</option>
+                        <option value="Carrocería">Carrocería</option>
+                        <option value="Accesorios">Accesorios</option>
+                    </select>
+                </div>
+                <button id="btnPublicar" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition shadow-lg shadow-amber-500/20 text-xs mt-2 cursor-pointer">
+                    Publicar Repuesto
+                </button>
             </div>
         </section>
 
-        <!-- Columna 3: Historial de Pedidos Activos y Atendidos -->
-        <div class="flex flex-col gap-6">
-            <!-- Pedidos Recibidos (Activos) -->
-            <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4 h-fit">
-                <h2 class="text-xl font-bold text-amber-500 flex items-center gap-2">🛒 Pedidos Recibidos</h2>
-                <p class="text-xs text-slate-400">Clientes que han solicitado repuestos de tu tienda.</p>
-                
-                <div id="ordersList" class="flex flex-col gap-3 overflow-y-auto max-h-[350px] pr-1">
-                    <p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos nuevos...</p>
-                </div>
-            </section>
-
-            <!-- Historial de Pedidos Atendidos -->
-            <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4 h-fit">
-                <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">✅ Pedidos Atendidos</h2>
-                <p class="text-xs text-slate-400">Registro histórico de ventas y pedidos completados.</p>
-                
-                <div id="completedOrdersList" class="flex flex-col gap-3 overflow-y-auto max-h-[350px] pr-1">
-                    <p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos atendidos aún...</p>
-                </div>
-            </section>
-        </div>
-
-    </main>
-
-    <!-- Modal para Cambiar Contraseña -->
-    <div id="modalPassword" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl">
-            <h3 class="text-xl font-black text-amber-500">🔒 Cambiar Contraseña</h3>
-            <p class="text-xs text-slate-400">Ingresa tu contraseña actual y la nueva clave que deseas utilizar.</p>
+        <!-- Columna Derecha: Inventario y Pedidos -->
+        <section class="lg:col-span-2 flex flex-col gap-6">
             
-            <div class="flex flex-col gap-3 mt-1">
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña Actual</label>
-                    <input type="password" id="currentPass" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none">
+            <!-- Pedidos Activos -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        🔔 Pedidos Activos <span id="badgePedidos" class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full hidden">Nuevo</span>
+                    </h2>
                 </div>
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nueva Contraseña</label>
-                    <input type="password" id="newPass" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none">
+                <div id="listaPedidos" class="flex flex-col gap-3">
+                    <p class="text-slate-500 text-xs italic text-center py-4">No tienes pedidos pendientes en este momento.</p>
                 </div>
             </div>
 
-            <div class="flex gap-2 mt-2">
-                <button id="btnChangePass" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition flex-1 text-xs">Actualizar Contraseña</button>
-                <button onclick="closePasswordModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl transition text-xs">Cancelar</button>
+            <!-- Mi Inventario -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                <h2 class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">📦 Mi Inventario Público</h2>
+                <div id="listaInventario" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <p class="text-slate-500 text-xs italic text-center col-span-full py-4">Aún no has publicado repuestos.</p>
+                </div>
+            </div>
+
+            <!-- Historial de Ventas -->
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                    <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">✅ Historial de Ventas</h2>
+                    <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                        <div class="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5">
+                            <span class="text-xs text-slate-400">📅</span>
+                            <input type="date" id="filtroFecha" class="bg-transparent text-xs text-slate-200 focus:outline-none">
+                        </div>
+                        <button id="btnVerTodas" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2 rounded-xl text-xs transition border border-slate-700 cursor-pointer">Ver Todas</button>
+                    </div>
+                </div>
+
+                <div id="resumenVentasDia" class="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl mb-4 flex justify-between items-center text-xs">
+                    <span id="textoResumenFecha" class="text-emerald-400 font-bold">Ventas del día:</span>
+                    <span id="montoTotalDia" class="text-emerald-400 font-black text-sm">$0.00</span>
+                </div>
+
+                <div id="listaAtendidos" class="flex flex-col gap-3">
+                    <p class="text-slate-500 text-xs italic text-center py-4">El historial de ventas está vacío.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Modal Cambio de Contraseña -->
+    <div id="modalClave" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full flex flex-col gap-4">
+            <h3 class="text-lg font-bold text-white">Seguridad</h3>
+            <p class="text-xs text-slate-400">Ingresa tu nueva contraseña (mínimo 6 caracteres).</p>
+            <input type="password" id="nuevaClave" placeholder="Nueva contraseña" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+            <div class="flex gap-2">
+                <button id="btnGuardarClave" class="bg-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl flex-1 text-xs cursor-pointer">Actualizar</button>
+                <button onclick="document.getElementById('modalClave').classList.add('hidden')" class="bg-slate-800 text-slate-300 font-bold py-2.5 px-4 rounded-xl text-xs cursor-pointer">Cancelar</button>
             </div>
         </div>
     </div>
 
+    <!-- Script de Firebase y Lógica del Panel -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, updatePassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, remove, set, update } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -143,312 +187,367 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        
-        let currentUserUid = null;
-        let currentUserEmail = "";
-        let initialLoadOrders = true;
 
-        function playNotificationSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
+        let userActual = null;
+        let conteoPedidosAnterior = 0;
+        let nombreTiendaOficial = "";
+        let historialGlobalDatos = {};
+        let sonidoHabilitado = true;
+        let audioCtxGlobal = null;
 
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15);
-
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
-
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.6);
-            } catch (e) {
-                console.log("Audio no soportado automáticamente sin interacción previa.");
+        // Desbloqueo automático de AudioContext con la primera interacción del usuario en la página
+        function desbloquearAudio() {
+            if (!audioCtxGlobal) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtxGlobal = new AudioContextClass();
+                }
+            }
+            if (audioCtxGlobal && audioCtxGlobal.state === 'suspended') {
+                audioCtxGlobal.resume();
             }
         }
+        document.addEventListener('click', desbloquearAudio, { once: true });
+        document.addEventListener('keydown', desbloquearAudio, { once: true });
+
+        // Control de Interruptor de Sonido
+        const btnToggleSonido = document.getElementById('btnToggleSonido');
+        btnToggleSonido.addEventListener('click', () => {
+            desbloquearAudio();
+            sonidoHabilitado = !sonidoHabilitado;
+            if (sonidoHabilitado) {
+                btnToggleSonido.innerHTML = "🔊 Sonido: ON";
+                btnToggleSonido.className = "bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700 flex items-center gap-1 cursor-pointer";
+                reproducirSonidoAlerta(); // Prueba de sonido al encender
+            } else {
+                btnToggleSonido.innerHTML = "🔇 Sonido: OFF";
+                btnToggleSonido.className = "bg-slate-800 hover:bg-slate-700 text-slate-500 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700 flex items-center gap-1 cursor-pointer";
+            }
+        });
+
+        // Reloj en vivo
+        function actualizarReloj() {
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const fechaHora = new Date().toLocaleDateString('es-VE', opciones);
+            document.getElementById('relojEnVivo').innerText = fechaHora;
+        }
+        setInterval(actualizarReloj, 1000);
+        actualizarReloj();
+
+        const hoyIso = new Date().toISOString().split('T')[0];
+        document.getElementById('filtroFecha').value = hoyIso;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                currentUserUid = user.uid;
-                currentUserEmail = user.email;
-                document.getElementById('userEmail').innerText = currentUserEmail;
-                cargarMisRepuestos(currentUserUid);
-                cargarPedidos(currentUserUid);
-                cargarPedidosAtendidos(currentUserUid);
+                userActual = user;
+
+                get(ref(db, `tiendas/${user.uid}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        nombreTiendaOficial = snapshot.val().nombreTienda || "Mi Tienda";
+                        document.getElementById('dashboardNombreTienda').innerText = nombreTiendaOficial;
+                    }
+                });
+
+                onValue(ref(db, `inventarios/${user.uid}`), (snapshot) => {
+                    const contenedor = document.getElementById('listaInventario');
+                    contenedor.innerHTML = "";
+                    const data = snapshot.val();
+                    let stockGlobal = 0;
+
+                    if (data) {
+                        Object.entries(data).forEach(([id, repuesto]) => {
+                            const cantStock = parseInt(repuesto.stock) || 0;
+                            stockGlobal += cantStock;
+
+                            contenedor.innerHTML += `
+                                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex flex-col justify-between gap-3 text-xs">
+                                    <div>
+                                        <div class="flex justify-between items-start mb-1">
+                                            <span class="text-amber-400 font-bold truncate pr-2">${repuesto.nombre}</span>
+                                            <span class="text-emerald-400 font-black">$${repuesto.precio}</span>
+                                        </div>
+                                        <span class="text-slate-500 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">${repuesto.categoria}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                                        <span class="text-slate-300 font-bold">Stock: ${cantStock}</span>
+                                        <div class="flex gap-1.5">
+                                            <button onclick="venderUno('${id}', ${cantStock})" class="bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-slate-950 px-2.5 py-1.5 rounded-lg font-bold transition border border-amber-500/20 cursor-pointer">Vender 1</button>
+                                            <button onclick="eliminarRepuesto('${id}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-2.5 py-1.5 rounded-lg font-bold transition border border-red-500/20 cursor-pointer">Borrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        contenedor.innerHTML = `<p class="text-slate-500 text-xs italic col-span-full">Sin inventario activo.</p>`;
+                    }
+                    
+                    document.getElementById('statStock').innerText = stockGlobal;
+                });
+
+                onValue(ref(db, `pedidos/${user.uid}`), (snapshot) => {
+                    const contenedor = document.getElementById('listaPedidos');
+                    contenedor.innerHTML = "";
+                    const data = snapshot.val();
+                    let pedidosPendientes = 0;
+
+                    if (data) {
+                        const lista = Object.entries(data);
+                        pedidosPendientes = lista.length;
+
+                        // Si hay más pedidos que antes (y no es la primera carga de la página), suena la alerta
+                        if (pedidosPendientes > conteoPedidosAnterior && conteoPedidosAnterior !== 0) {
+                            reproducirSonidoAlerta();
+                            document.getElementById('badgePedidos').classList.remove('hidden');
+                        }
+                        conteoPedidosAnterior = pedidosPendientes;
+
+                        lista.reverse().forEach(([id, pedido]) => {
+                            const telCliente = pedido.telefono ? pedido.telefono.replace(/\D/g,'') : '';
+                            const textoMensaje = `¡Hola, ${pedido.cliente}! 👋 Le saludamos de la tienda *${nombreTiendaOficial}* a través de *TurespuestoYa*.\n\n` +
+                                                 `Recibimos su solicitud para el repuesto:\n` +
+                                                 `📦 *${pedido.repuesto}* (Precio: *$${pedido.precio}*)\n\n` +
+                                                 `¿Está disponible para coordinar el pago y la entrega en su dirección? Quedamos atentos. ¡Gracias!`;
+                            
+                            const urlWp = telCliente ? `https://wa.me/${telCliente}?text=${encodeURIComponent(textoMensaje)}` : `https://wa.me/?text=${encodeURIComponent(textoMensaje)}`;
+
+                            contenedor.innerHTML += `
+                                <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                                    <div class="flex flex-col gap-1 text-xs">
+                                        <div class="flex items-center gap-2">
+                                            <span class="bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-md text-[10px]">NUEVO</span>
+                                            <span class="text-amber-400 font-bold">${pedido.repuesto}</span>
+                                            <span class="text-emerald-400 font-black">$${pedido.precio}</span>
+                                        </div>
+                                        <p class="text-slate-300"><strong class="text-slate-400">Cliente:</strong> ${pedido.cliente} | 📞 ${pedido.telefono}</p>
+                                        <p class="text-slate-300"><strong class="text-slate-400">Dir:</strong> ${pedido.direccion}</p>
+                                        <p class="text-[10px] text-slate-500">Recibido: ${pedido.fecha}</p>
+                                    </div>
+                                    <div class="flex flex-wrap sm:flex-row w-full md:w-auto gap-2 items-center justify-center pt-2 md:pt-0">
+                                        <a href="${urlWp}" target="_blank" class="text-center bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-2 px-3 rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1">
+                                            💬 WhatsApp
+                                        </a>
+                                        <button onclick="marcarVendido('${id}')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2 px-3 rounded-xl text-xs transition shadow-lg cursor-pointer">
+                                            Vendido ✅
+                                        </button>
+                                        <button onclick="omitirPedido('${id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 px-3 rounded-xl text-xs transition border border-slate-700 cursor-pointer">
+                                            Omitir ✕
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        conteoPedidosAnterior = 0;
+                        contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-2">No hay pedidos pendientes.</p>`;
+                        document.getElementById('badgePedidos').classList.add('hidden');
+                    }
+
+                    document.getElementById('statPendientes').innerText = pedidosPendientes;
+                });
+
+                onValue(ref(db, `pedidos_atendidos/${user.uid}`), (snapshot) => {
+                    historialGlobalDatos = snapshot.val() || {};
+                    renderizarHistorial();
+                });
+
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
+        function renderizarHistorial() {
+            const contenedor = document.getElementById('listaAtendidos');
+            const fechaFiltro = document.getElementById('filtroFecha').value;
+            contenedor.innerHTML = "";
+
+            const lista = Object.entries(historialGlobalDatos);
+            let totalMontoDia = 0;
+
+            const listaFiltrada = lista.filter(([id, pedido]) => {
+                if (!fechaFiltro) return true;
+                return pedido.fechaISO === fechaFiltro;
             });
-        });
 
-        window.openPasswordModal = function() {
-            document.getElementById('modalPassword').classList.remove('hidden');
-            document.getElementById('modalPassword').classList.add('flex');
-        };
+            if (listaFiltrada.length > 0) {
+                listaFiltrada.reverse().forEach(([id, pedido]) => {
+                    totalMontoDia += parseFloat(pedido.precio) || 0;
 
-        window.closePasswordModal = function() {
-            document.getElementById('modalPassword').classList.add('hidden');
-            document.getElementById('modalPassword').classList.remove('flex');
-            document.getElementById('currentPass').value = "";
-            document.getElementById('newPass').value = "";
-        };
-
-        document.getElementById('btnAddProduct').addEventListener('click', () => {
-            const nombre = document.getElementById('prodNombre').value.trim();
-            const precio = parseFloat(document.getElementById('prodPrecio').value);
-            const stock = parseInt(document.getElementById('prodStock').value);
-            const categoria = document.getElementById('prodCat').value;
-
-            if (!nombre || isNaN(precio) || isNaN(stock) || !categoria) {
-                return alert("Por favor completa todos los campos (nombre, precio, stock y categoría).");
-            }
-
-            const nombreTiendaLimpio = currentUserEmail.split('@')[0];
-
-            push(ref(db, `inventarios/${currentUserUid}`), {
-                nombre: nombre,
-                precio: precio,
-                stock: stock,
-                categoria: categoria,
-                nombreTienda: nombreTiendaLimpio
-            }).then(() => {
-                alert("¡Repuesto publicado con éxito y sincronizado en el catálogo!");
-                document.getElementById('prodNombre').value = "";
-                document.getElementById('prodPrecio').value = "";
-                document.getElementById('prodStock').value = "";
-                document.getElementById('prodCat').value = "";
-            }).catch((error) => {
-                alert("Error al publicar: " + error.message);
-            });
-        });
-
-        function cargarMisRepuestos(uid) {
-            onValue(ref(db, `inventarios/${uid}`), (snapshot) => {
-                const listContainer = document.getElementById('myProductsList');
-                listContainer.innerHTML = "";
-                const data = snapshot.val();
-
-                if (!data) {
-                    listContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-12">Aún no has publicado ningún repuesto en tu stock.</p>`;
-                    return;
-                }
-
-                Object.entries(data).reverse().forEach(([prodId, prod]) => {
-                    const stockDisponible = prod.stock !== undefined ? prod.stock : 0;
-                    listContainer.innerHTML += `
-                        <div class="bg-slate-900 border border-slate-700/80 p-4 rounded-xl flex justify-between items-center gap-3 shadow-sm">
+                    contenedor.innerHTML += `
+                        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
                             <div class="flex flex-col gap-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="bg-slate-800 border border-slate-700 text-amber-400 text-[10px] font-bold px-2.5 py-0.5 rounded-md">
-                                        ${prod.categoria}
-                                    </span>
-                                    <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-semibold">
-                                        Stock: ${stockDisponible}
-                                    </span>
+                                    <span class="text-amber-400 font-bold">${pedido.repuesto}</span>
+                                    <span class="text-emerald-400 font-black">$${pedido.precio}</span>
                                 </div>
-                                <h3 class="font-bold text-white text-base leading-snug">${prod.nombre}</h3>
-                                <span class="text-emerald-400 font-black text-sm">$${prod.precio}</span>
+                                <p class="text-slate-300">👤 Entregado a: <strong class="text-white">${pedido.cliente}</strong> | 📞 ${pedido.telefono}</p>
+                                <p class="text-slate-400">📍 Dirección: ${pedido.direccion}</p>
                             </div>
-                            <div class="flex flex-col gap-1.5 shrink-0">
-                                <button onclick="registrarVenta('${prodId}', ${stockDisponible})" class="bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 text-xs font-bold px-3 py-1.5 rounded-xl transition">
-                                    🛒 Vendido
-                                </button>
-                                <button onclick="eliminarRepuesto('${prodId}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 text-xs font-bold px-3 py-1.5 rounded-xl transition">
-                                    Eliminar
-                                </button>
+                            <div class="text-right sm:text-right w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800">
+                                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-md border border-emerald-500/20 block mb-1">Vendido</span>
+                                <span class="text-[9px] text-slate-500 block">Culminado: ${pedido.fechaAtendido}</span>
                             </div>
-                        </div>`;
+                        </div>
+                    `;
                 });
-            });
-        }
-
-        function cargarPedidos(uid) {
-            let previousCount = null;
-
-            onValue(ref(db, `pedidos/${uid}`), (snapshot) => {
-                const ordersContainer = document.getElementById('ordersList');
-                ordersContainer.innerHTML = "";
-                const data = snapshot.val();
-
-                if (!data) {
-                    ordersContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos nuevos por ahora.</p>`;
-                    previousCount = 0;
-                    initialLoadOrders = false;
-                    return;
-                }
-
-                const currentKeys = Object.keys(data);
-                
-                if (!initialLoadOrders && previousCount !== null && currentKeys.length > previousCount) {
-                    playNotificationSound();
-                }
-                
-                previousCount = currentKeys.length;
-                initialLoadOrders = false;
-
-                Object.entries(data).reverse().forEach(([orderId, order]) => {
-                    const cleanPhone = order.telefono.replace(/\D/g, '');
-                    const mensajeWp = encodeURIComponent(`¡Hola ${order.cliente}! Te escribimos de la tienda en TurespuestoYa por tu pedido del repuesto: *${order.repuesto}*.`);
-                    const whatsappLink = `https://wa.me/${cleanPhone}?text=${mensajeWp}`;
-
-                    ordersContainer.innerHTML += `
-                        <div class="bg-slate-900 border border-slate-700/80 p-4 rounded-xl flex flex-col gap-2 shadow-sm">
-                            <div class="flex justify-between items-start">
-                                <span class="text-xs text-slate-400 font-medium">📅 Pedido el: ${order.fecha}</span>
-                                <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold">$${order.precio}</span>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-amber-400 text-base">${order.repuesto}</h3>
-                            </div>
-                            <div class="text-xs text-slate-300 flex flex-col gap-1 border-t border-slate-800 pt-2 mt-1">
-                                <p><strong>Cliente:</strong> ${order.cliente}</p>
-                                <p class="flex items-center gap-1.5 flex-wrap">
-                                    <strong>Teléfono:</strong> 
-                                    <a href="${whatsappLink}" target="_blank" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-lg font-bold flex items-center gap-1 transition">
-                                        <span>💬</span> ${order.telefono} (Hablar)
-                                    </a>
-                                </p>
-                                <p><strong>Dirección:</strong> ${order.direccion}</p>
-                            </div>
-                            <button onclick="marcarAtendido('${orderId}')" class="mt-1 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 text-xs font-bold py-2 px-3 rounded-lg transition self-end">
-                                ✔️ Marcar como Atendido
-                            </button>
-                        </div>`;
-                });
-            });
-        }
-
-        function cargarPedidosAtendidos(uid) {
-            onValue(ref(db, `pedidos_atendidos/${uid}`), (snapshot) => {
-                const historyContainer = document.getElementById('completedOrdersList');
-                historyContainer.innerHTML = "";
-                const data = snapshot.val();
-
-                if (!data) {
-                    historyContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos atendidos aún...</p>`;
-                    return;
-                }
-
-                Object.entries(data).reverse().forEach(([orderId, order]) => {
-                    const cleanPhone = order.telefono ? order.telefono.replace(/\D/g, '') : '';
-                    const whatsappLink = cleanPhone ? `https://wa.me/${cleanPhone}` : '#';
-
-                    historyContainer.innerHTML += `
-                        <div class="bg-slate-900 border border-slate-700/80 p-4 rounded-xl flex flex-col gap-2 shadow-sm opacity-90">
-                            <div class="flex justify-between items-start">
-                                <span class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">✅ Atendido: ${order.fechaAtendido || 'N/D'}</span>
-                                <span class="text-xs bg-slate-800 text-emerald-400 border border-slate-700 px-2 py-0.5 rounded font-bold">$${order.precio}</span>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-200 text-base">${order.repuesto}</h3>
-                            </div>
-                            <div class="text-xs text-slate-400 flex flex-col gap-1 border-t border-slate-800 pt-2 mt-1">
-                                <p><strong>Cliente:</strong> ${order.cliente}</p>
-                                <p><strong>Teléfono:</strong> ${order.telefono}</p>
-                                <p><strong>Dirección:</strong> ${order.direccion}</p>
-                                <p class="text-[10px] text-slate-500 mt-0.5">Fecha de solicitud original: ${order.fecha}</p>
-                            </div>
-                            <button onclick="eliminarHistorial('${orderId}')" class="mt-1 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-slate-700 text-[11px] font-bold py-1.5 px-3 rounded-lg transition self-end">
-                                🗑️ Borrar del Historial
-                            </button>
-                        </div>`;
-                });
-            });
-        }
-
-        window.registrarVenta = function(prodId, stockActual) {
-            if (stockActual <= 0) {
-                return alert("¡Este repuesto ya no tiene stock disponible (0 unidades)!");
+            } else {
+                contenedor.innerHTML = `<p class="text-slate-500 text-xs italic py-4 text-center">No hay ventas registradas para esta fecha.</p>`;
             }
 
+            document.getElementById('statAtendidos').innerText = lista.length;
+            document.getElementById('montoTotalDia').innerText = `$${totalMontoDia.toFixed(2)}`;
+            document.getElementById('textoResumenFecha').innerText = fechaFiltro ? `Ventas del día (${fechaFiltro}):` : `Ventas Totales (${lista.length}):`;
+        }
+
+        document.getElementById('filtroFecha').addEventListener('change', renderizarHistorial);
+        document.getElementById('btnVerTodas').addEventListener('click', () => {
+            document.getElementById('filtroFecha').value = "";
+            renderizarHistorial();
+        });
+
+        document.getElementById('btnPublicar').addEventListener('click', () => {
+            const nombre = document.getElementById('nombreRepuesto').value.trim();
+            const precio = document.getElementById('precioRepuesto').value.trim();
+            const stock = document.getElementById('stockRepuesto').value.trim();
+            const categoria = document.getElementById('categoriaRepuesto').value;
+
+            if (!nombre || !precio || !stock) return alert("Completa todos los campos obligatorios.");
+
+            push(ref(db, `inventarios/${userActual.uid}`), {
+                nombre: nombre,
+                precio: precio,
+                stock: parseInt(stock),
+                categoria: categoria,
+                nombreTienda: nombreTiendaOficial
+            }).then(() => {
+                document.getElementById('nombreRepuesto').value = "";
+                document.getElementById('precioRepuesto').value = "";
+                document.getElementById('stockRepuesto').value = "";
+                alert("Repuesto publicado en el catálogo.");
+            });
+        });
+
+        window.venderUno = function(id, stockActual) {
             const nuevoStock = stockActual - 1;
-            update(ref(db, `inventarios/${currentUserUid}/${prodId}`), {
-                stock: nuevoStock
-            }).catch((error) => {
-                alert("Error al actualizar el stock: " + error.message);
+            if (nuevoStock < 0) return alert("El stock ya está en cero.");
+            set(ref(db, `inventarios/${userActual.uid}/${id}/stock`), nuevoStock);
+        };
+
+        window.eliminarRepuesto = function(id) {
+            if (confirm("¿Borrar este repuesto del catálogo?")) {
+                remove(ref(db, `inventarios/${userActual.uid}/${id}`));
+            }
+        };
+
+        window.omitirPedido = function(pedidoId) {
+            if (confirm("¿Estás seguro de omitir este pedido? Se registrará como omitido.")) {
+                const refPedido = ref(db, `pedidos/${userActual.uid}/${pedidoId}`);
+                get(refPedido).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const datosPedido = snapshot.val();
+                        datosPedido.fechaOmitido = new Date().toLocaleString();
+
+                        push(ref(db, `pedidos_omitidos/${userActual.uid}`), datosPedido).then(() => {
+                            remove(refPedido);
+                        });
+                    }
+                });
+            }
+        };
+
+        window.marcarVendido = function(pedidoId) {
+            const refPedido = ref(db, `pedidos/${userActual.uid}/${pedidoId}`);
+            
+            get(refPedido).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const datosPedido = snapshot.val();
+                    const ahora = new Date();
+                    datosPedido.fechaAtendido = ahora.toLocaleString();
+                    datosPedido.fechaISO = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;
+
+                    if (datosPedido.prodId) {
+                        const refProdStock = ref(db, `inventarios/${userActual.uid}/${datosPedido.prodId}/stock`);
+                        get(refProdStock).then((stockSnap) => {
+                            if (stockSnap.exists()) {
+                                const stockActual = parseInt(stockSnap.val()) || 0;
+                                set(refProdStock, Math.max(0, stockActual - 1));
+                            }
+                        });
+                    } else {
+                        const refInventario = ref(db, `inventarios/${userActual.uid}`);
+                        get(refInventario).then((invSnap) => {
+                            if (invSnap.exists()) {
+                                const inventario = invSnap.val();
+                                for (const [prodId, prod] of Object.entries(inventario)) {
+                                    if (prod.nombre && prod.nombre.toLowerCase() === datosPedido.repuesto.toLowerCase()) {
+                                        const stockActual = parseInt(prod.stock) || 0;
+                                        set(ref(db, `inventarios/${userActual.uid}/${prodId}/stock`), Math.max(0, stockActual - 1));
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    push(ref(db, `pedidos_atendidos/${userActual.uid}`), datosPedido).then(() => {
+                        remove(refPedido);
+                    });
+                }
             });
         };
 
-        window.marcarAtendido = function(orderId) {
-            if (confirm("¿Marcar este pedido como atendido y moverlo al historial?")) {
-                const orderRef = ref(db, `pedidos/${currentUserUid}/${orderId}`);
-                onValue(orderRef, (snapshot) => {
-                    const orderData = snapshot.val();
-                    if (orderData) {
-                        // Agregamos la fecha y hora exacta en la que se completó/atendió el pedido
-                        const fechaAtendidoActual = new Date().toLocaleString();
-                        const pedidoCompleto = {
-                            ...orderData,
-                            fechaAtendido: fechaAtendidoActual
-                        };
+        // Función de Alerta Sonora Robusta y Garantizada
+        function reproducirSonidoAlerta() {
+            if (!sonidoHabilitado) return;
+            try {
+                if (!audioCtxGlobal) {
+                    audioCtxGlobal = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtxGlobal.state === 'suspended') {
+                    audioCtxGlobal.resume();
+                }
 
-                        set(ref(db, `pedidos_atendidos/${currentUserUid}/${orderId}`), pedidoCompleto)
-                            .then(() => {
-                                remove(orderRef);
-                            })
-                            .catch((error) => {
-                                alert("Error al actualizar el pedido: " + error.message);
-                            });
-                    }
-                }, { onlyOnce: true });
+                const oscillator = audioCtxGlobal.createOscillator();
+                const gainNode = audioCtxGlobal.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, audioCtxGlobal.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtxGlobal.currentTime + 0.15);
+                
+                gainNode.gain.setValueAtTime(0, audioCtxGlobal.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.6, audioCtxGlobal.currentTime + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtxGlobal.currentTime + 0.4);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtxGlobal.destination);
+                
+                oscillator.start(audioCtxGlobal.currentTime);
+                oscillator.stop(audioCtxGlobal.currentTime + 0.4);
+            } catch (e) {
+                console.log("Error al reproducir audio:", e);
             }
-        };
+        }
 
-        window.eliminarRepuesto = function(prodId) {
-            if (confirm("¿Estás seguro de que deseas eliminar este repuesto de tu tienda?")) {
-                remove(ref(db, `inventarios/${currentUserUid}/${prodId}`))
-                    .catch((error) => {
-                        alert("No se pudo eliminar: " + error.message);
-                    });
-            }
-        };
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "login.html");
+        });
 
-        window.eliminarHistorial = function(orderId) {
-            if (confirm("¿Deseas eliminar este registro del historial permanentemente?")) {
-                remove(ref(db, `pedidos_atendidos/${currentUserUid}/${orderId}`))
-                    .catch((error) => {
-                        alert("No se pudo eliminar el registro: " + error.message);
-                    });
-            }
-        };
+        document.getElementById('btnCambiarClave').addEventListener('click', () => {
+            document.getElementById('modalClave').classList.remove('hidden');
+            document.getElementById('modalClave').classList.add('flex');
+        });
 
-        document.getElementById('btnChangePass').addEventListener('click', () => {
-            const currentPass = document.getElementById('currentPass').value.trim();
-            const newPass = document.getElementById('newPass').value.trim();
+        document.getElementById('btnGuardarClave').addEventListener('click', () => {
+            const nueva = document.getElementById('nuevaClave').value.trim();
+            if (nueva.length < 6) return alert("Mínimo 6 caracteres.");
 
-            if (!currentPass || !newPass) {
-                return alert("Por favor ingresa tu contraseña actual y la nueva contraseña.");
-            }
-
-            if (newPass.length < 6) {
-                return alert("La nueva contraseña debe tener al menos 6 caracteres.");
-            }
-
-            const user = auth.currentUser;
-
-            signInWithEmailAndPassword(auth, currentUserEmail, currentPass)
-                .then(() => {
-                    updatePassword(user, newPass)
-                        .then(() => {
-                            alert("¡Contraseña actualizada con éxito!");
-                            closePasswordModal();
-                        })
-                        .catch((error) => {
-                            alert("Error al actualizar la contraseña: " + error.message);
-                        });
-                })
-                .catch(() => {
-                    alert("La contraseña actual que ingresaste es incorrecta.");
-                });
+            updatePassword(userActual, nueva).then(() => {
+                alert("Contraseña actualizada con éxito.");
+                document.getElementById('modalClave').classList.add('hidden');
+            }).catch(e => {
+                alert("Debes volver a iniciar sesión para cambiar la clave.");
+                signOut(auth);
+            });
         });
     </script>
 </body>
