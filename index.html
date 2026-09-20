@@ -24,14 +24,27 @@
     <!-- Contenido Principal -->
     <main class="max-w-7xl mx-auto p-4 flex-grow w-full flex flex-col gap-6 mt-2">
         
-        <!-- Barra de Búsqueda y Filtros -->
+        <!-- Barra de Búsqueda, Filtros y Ubicación -->
         <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-4 rounded-2xl shadow-xl flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div class="w-full md:w-2/3">
+            <div class="w-full md:w-2/5">
                 <input type="text" id="inputBuscar" placeholder="🔍 Buscar repuesto por nombre..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
             </div>
-            <div class="w-full md:w-1/3">
+            <div class="w-full md:w-1/4">
+                <select id="selectUbicacion" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+                    <option value="">📍 Todas las Ciudades</option>
+                    <option value="San Cristóbal">San Cristóbal</option>
+                    <option value="Maracay">Maracay</option>
+                    <option value="Caracas">Caracas</option>
+                    <option value="Valencia">Valencia</option>
+                    <option value="Barquisimeto">Barquisimeto</option>
+                    <option value="Maracaibo">Maracaibo</option>
+                    <option value="Puerto La Cruz">Puerto La Cruz</option>
+                    <option value="Mérida">Mérida</option>
+                </select>
+            </div>
+            <div class="w-full md:w-1/4">
                 <select id="selectCategoria" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
-                    <option value="">Todas las categorías</option>
+                    <option value="">📦 Todas las Categorías</option>
                     <option value="Motor">Motor</option>
                     <option value="Frenos">Frenos</option>
                     <option value="Suspensión">Suspensión</option>
@@ -44,7 +57,7 @@
 
         <!-- Cuadrícula de Catálogo Público -->
         <section>
-            <h2 class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">📦 Repuestos Disponibles</h2>
+            <h2 class="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">🛒 Repuestos Disponibles en Venezuela</h2>
             <div id="catalogoPublico" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <p class="text-slate-500 text-sm italic text-center col-span-full py-12">Cargando catálogo en tiempo real...</p>
             </div>
@@ -121,13 +134,31 @@
                     let hayProductos = false;
 
                     Object.entries(data).forEach(([storeUid, productosTienda]) => {
-                        Object.entries(productosTienda).forEach(([prodId, prod]) => {
-                            const stockDisponible = prod.stock !== undefined ? prod.stock : 0;
-                            if (stockDisponible > 0) {
-                                hayProductos = true;
-                                globalInventarioCache[prodId] = { storeUid, ...prod };
-                            }
-                        });
+                        const infoTienda = tiendasInfoCache[storeUid] || {};
+                        
+                        if (infoTienda.estado === 'pausada') return;
+
+                        const nombreTiendaBase = infoTienda.nombreTienda || 'TIENDA OFICIAL';
+                        const nombreTiendaMayus = nombreTiendaBase.toUpperCase();
+                        const ciudadTienda = infoTienda.ciudad || 'San Cristóbal';
+                        const telefonoTienda = infoTienda.whatsapp || infoTienda.telefono || "";
+
+                        if (productosTienda) {
+                            Object.entries(productosTienda).forEach(([prodId, prod]) => {
+                                const stockDisponible = prod.stock !== undefined ? prod.stock : 0;
+                                
+                                if (stockDisponible > 0) {
+                                    hayProductos = true;
+                                    globalInventarioCache[prodId] = { 
+                                        storeUid, 
+                                        ...prod, 
+                                        nombreTienda: nombreTiendaMayus,
+                                        ciudadTienda: ciudadTienda,
+                                        telefonoTienda: telefonoTienda
+                                    };
+                                }
+                            });
+                        }
                     });
 
                     if (!hayProductos) {
@@ -143,6 +174,7 @@
         function renderizarTarjetas() {
             const contenedor = document.getElementById('catalogoPublico');
             const filtroTexto = document.getElementById('inputBuscar').value.toLowerCase().trim();
+            const filtroUbicacion = document.getElementById('selectUbicacion').value;
             const filtroCat = document.getElementById('selectCategoria').value;
 
             contenedor.innerHTML = "";
@@ -150,20 +182,22 @@
 
             Object.entries(globalInventarioCache).forEach(([prodId, prod]) => {
                 const nombreMatch = prod.nombre.toLowerCase().includes(filtroTexto);
+                const ubicacionMatch = !filtroUbicacion || prod.ciudadTienda === filtroUbicacion;
                 const catMatch = !filtroCat || prod.categoria === filtroCat;
 
-                if (nombreMatch && catMatch) {
+                if (nombreMatch && ubicacionMatch && catMatch) {
                     contadorResultados++;
                     const stockDisponible = prod.stock !== undefined ? prod.stock : 0;
-                    const nombreTiendaLimpio = prod.nombreTienda || 'Tienda Oficial';
 
                     contenedor.innerHTML += `
                         <div class="bg-slate-800/80 backdrop-blur-md border border-slate-700/80 p-5 rounded-2xl flex flex-col justify-between gap-4 shadow-xl">
                             <div class="flex flex-col gap-2.5">
-                                <!-- Nombre de la Tienda Destacado y Mucho Más Grande -->
-                                <div class="bg-amber-500/15 border-2 border-amber-500/40 px-3.5 py-2.5 rounded-xl flex flex-col gap-0.5 shadow-inner">
-                                    <span class="text-[9px] uppercase tracking-wider text-amber-400 font-black">🏢 Tienda Asociada:</span>
-                                    <span class="text-base text-amber-300 font-black tracking-wide leading-tight">${nombreTiendaLimpio}</span>
+                                <div class="bg-amber-500/15 border-2 border-amber-500/40 px-3.5 py-2.5 rounded-xl flex flex-col gap-1 shadow-inner">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[9px] uppercase tracking-wider text-amber-400 font-black">🏢 Tienda Asociada:</span>
+                                        <span class="text-[10px] bg-slate-900 text-sky-400 font-bold px-2 py-0.5 rounded-md border border-slate-700">📍 ${prod.ciudadTienda}</span>
+                                    </div>
+                                    <span class="text-base text-amber-300 font-black tracking-wide leading-tight">${prod.nombreTienda}</span>
                                 </div>
                                 <div class="flex justify-between items-center mt-0.5">
                                     <span class="bg-slate-900 border border-slate-700 text-slate-300 text-[10px] font-bold px-2.5 py-0.5 rounded-md">
@@ -182,11 +216,12 @@
             });
 
             if (contadorResultados === 0) {
-                contenedor.innerHTML = `<p class="text-slate-500 text-sm italic text-center col-span-full py-12">No se encontraron repuestos con esos criterios.</p>`;
+                contenedor.innerHTML = `<p class="text-slate-500 text-sm italic text-center col-span-full py-12">No se encontraron repuestos con esos criterios en esta ciudad.</p>`;
             }
         }
 
         document.getElementById('inputBuscar').addEventListener('input', renderizarTarjetas);
+        document.getElementById('selectUbicacion').addEventListener('change', renderizarTarjetas);
         document.getElementById('selectCategoria').addEventListener('change', renderizarTarjetas);
 
         window.abrirModalPedido = function(prodId) {
@@ -197,11 +232,12 @@
                 storeUid: prod.storeUid,
                 repuesto: prod.nombre,
                 precio: prod.precio,
-                nombreTienda: prod.nombreTienda || 'Tienda'
+                nombreTienda: prod.nombreTienda,
+                telefonoTienda: prod.telefonoTienda
             };
 
             document.getElementById('infoRepuestoModal').innerHTML = `
-                <p><strong>Tienda:</strong> <span class="text-amber-400 font-bold text-sm">${prod.nombreTienda || 'Tienda Oficial'}</span></p>
+                <p><strong>Tienda:</strong> <span class="text-amber-400 font-bold text-sm">${prod.nombreTienda} (${prod.ciudadTienda})</span></p>
                 <p class="mt-1"><strong>Repuesto:</strong> <span class="text-white font-bold">${prod.nombre}</span></p>
                 <p><strong>Precio:</strong> <span class="text-emerald-400 font-bold">$${prod.precio}</span></p>
             `;
@@ -240,8 +276,7 @@
                 direccion: direccion,
                 fecha: fechaActual
             }).then(() => {
-                const datosTienda = tiendasInfoCache[pedidoActualData.storeUid] || {};
-                let wspTienda = datosTienda.whatsapp || datosTienda.telefono || "";
+                let wspTienda = pedidoActualData.telefonoTienda;
                 wspTienda = wspTienda.replace(/\D/g, '');
 
                 const mensajeWsp = `¡Hola! 👋 Vengo de *TurespuestoYa* y quiero hacer el siguiente pedido:\n\n` +

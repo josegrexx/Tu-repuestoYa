@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Tiendas - TurespuestoYa</title>
+    <title>Acceso y Registro - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-center items-center p-4 font-sans">
@@ -13,22 +13,60 @@
         <!-- Cabecera -->
         <div class="text-center">
             <h1 class="text-2xl font-black text-amber-500">TurespuestoYa 🚗💨</h1>
-            <p class="text-xs text-slate-400 mt-1">Portal exclusivo para gestión de tiendas y repuestos.</p>
+            <p id="subtituloPortal" class="text-xs text-slate-400 mt-1">Portal exclusivo para gestión de tiendas y repuestos.</p>
         </div>
 
-        <!-- Formulario de Acceso -->
+        <!-- Pestañas de Navegación -->
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
+            <button id="btnTabLogin" onclick="cambiarModo('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950">Iniciar Sesión</button>
+            <button id="btnTabRegistro" onclick="cambiarModo('registro')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white">Crear Cuenta</button>
+        </div>
+
+        <!-- Formulario -->
         <div class="flex flex-col gap-4">
+            
+            <!-- Campos de Registro (Ocultos en Login) -->
+            <div id="grupoNombreTienda" class="hidden flex flex-col gap-4">
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre de la Tienda</label>
+                    <input type="text" id="regNombreTienda" placeholder="Ej. Repuestos El Topo C.A." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Ciudad Principal (Venezuela)</label>
+                    <select id="regCiudad" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+                        <option value="San Cristóbal">San Cristóbal (Táchira)</option>
+                        <option value="Maracay">Maracay (Aragua)</option>
+                        <option value="Caracas">Caracas (Distrito Capital)</option>
+                        <option value="Valencia">Valencia (Carabobo)</option>
+                        <option value="Barquisimeto">Barquisimeto (Lara)</option>
+                        <option value="Maracaibo">Maracaibo (Zulia)</option>
+                        <option value="Puerto La Cruz">Puerto La Cruz (Anzoátegui)</option>
+                        <option value="Mérida">Mérida (Mérida)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campo Correo -->
             <div>
                 <label class="text-xs text-slate-400 font-bold mb-1 block">Correo Electrónico</label>
                 <input type="email" id="email" placeholder="tutienda@gmail.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
             </div>
 
+            <!-- Campo Contraseña -->
             <div>
                 <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña</label>
-                <input type="password" id="password" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+                <input type="password" id="password" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
             </div>
 
-            <button id="btnLogin" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 text-sm mt-2">
+            <!-- Teléfono (Oculto en Login) -->
+            <div id="grupoTelefono" class="hidden">
+                <label class="text-xs text-slate-400 font-bold mb-1 block">Número de Teléfono / WhatsApp</label>
+                <input type="text" id="regTelefono" placeholder="Ej. 04141234567" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition text-sm">
+                <p class="text-[10px] text-slate-500 mt-1">Los clientes usarán este número para enviarte pedidos.</p>
+            </div>
+
+            <!-- Botón de Acción -->
+            <button id="btnAccion" onclick="ejecutarAccion()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 text-sm mt-2">
                 Entrar al Panel
             </button>
         </div>
@@ -38,10 +76,11 @@
         </div>
     </div>
 
-    <!-- Script de Firebase y Lógica de Autenticación -->
+    <!-- Script de Firebase y Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -52,23 +91,80 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getDatabase(app);
 
-        document.getElementById('btnLogin').addEventListener('click', () => {
+        let modoActual = 'login';
+
+        window.cambiarModo = function(modo) {
+            modoActual = modo;
+            const btnLogin = document.getElementById('btnTabLogin');
+            const btnRegistro = document.getElementById('btnTabRegistro');
+            const grupoNombre = document.getElementById('grupoNombreTienda');
+            const grupoTel = document.getElementById('grupoTelefono');
+            const btnAccion = document.getElementById('btnAccion');
+            const subtitulo = document.getElementById('subtituloPortal');
+
+            if (modo === 'login') {
+                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950";
+                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+                grupoNombre.classList.add('hidden');
+                grupoTel.classList.add('hidden');
+                btnAccion.innerText = "Entrar al Panel";
+                subtitulo.innerText = "Portal exclusivo para gestión de tiendas y repuestos.";
+            } else {
+                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950";
+                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white";
+                grupoNombre.classList.remove('hidden');
+                grupoTel.classList.remove('hidden');
+                btnAccion.innerText = "Registrar Nueva Tienda";
+                subtitulo.innerText = "Crea tu cuenta comercial en TurespuestoYa.";
+            }
+        };
+
+        window.ejecutarAccion = function() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
             if (!email || !password) {
-                return alert("Por favor completa tu correo y contraseña.");
+                return alert("Por favor completa el correo y la contraseña.");
             }
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    window.location.href = "panel.html";
-                })
-                .catch((error) => {
-                    alert("Error al iniciar sesión: Verifique sus credenciales.");
-                });
-        });
+            if (modoActual === 'login') {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => { window.location.href = "panel.html"; })
+                    .catch((error) => { alert("Error al iniciar sesión: Verifique sus credenciales."); });
+            } else {
+                const nombreTienda = document.getElementById('regNombreTienda').value.trim();
+                const ciudad = document.getElementById('regCiudad').value;
+                const telefono = document.getElementById('regTelefono').value.trim();
+
+                if (!nombreTienda || !telefono) {
+                    return alert("Por favor ingresa el nombre de la tienda y tu número de teléfono.");
+                }
+
+                if (password.length < 6) {
+                    return alert("La contraseña debe tener al menos 6 caracteres.");
+                }
+
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+
+                        set(ref(db, `tiendas/${user.uid}`), {
+                            nombreTienda: nombreTienda,
+                            ciudad: ciudad,
+                            email: email,
+                            telefono: telefono,
+                            whatsapp: telefono,
+                            fechaRegistro: new Date().toLocaleString()
+                        }).then(() => {
+                            alert("¡Cuenta de tienda creada con éxito!");
+                            window.location.href = "panel.html";
+                        });
+                    })
+                    .catch((error) => { alert("Error al registrar la tienda: " + error.message); });
+            }
+        };
     </script>
 </body>
 </html>
