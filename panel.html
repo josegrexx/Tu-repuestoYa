@@ -10,33 +10,34 @@
 
     <!-- Encabezado del Panel -->
     <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
-        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
             <div>
                 <h1 class="text-xl font-black text-amber-500">Panel de Mi Tienda ⚙️</h1>
-                <div class="text-xs text-slate-400 mt-0.5">Tienda: <span id="userEmail" class="font-bold text-white">Cargando...</span> | WhatsApp: <span id="storePhoneDisplay" class="font-bold text-emerald-400">Cargando...</span></div>
+                <div class="text-xs text-slate-400 mt-0.5">Tienda conectada: <span id="userEmail" class="font-bold text-white">Cargando...</span></div>
             </div>
-            <div class="flex gap-2">
-                <a href="index.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-xs transition border border-slate-600">Ver Catálogo ↗</a>
-                <button id="btnLogout" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-bold px-4 py-2 rounded-xl text-xs transition border border-red-500/20">Cerrar Sesión</button>
+            <div class="flex flex-wrap gap-2 items-center">
+                <a href="index.html" target="_blank" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition border border-slate-600">Ver Catálogo Público ↗</a>
+                <button onclick="openPasswordModal()" class="bg-slate-700 hover:bg-slate-600 text-amber-400 font-bold px-3.5 py-2 rounded-xl text-xs transition border border-slate-600 flex items-center gap-1">
+                    <span>🔒</span> Cambiar Contraseña
+                </button>
+                <button id="btnLogout" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-bold px-3.5 py-2 rounded-xl text-xs transition border border-red-500/20">Cerrar Sesión</button>
             </div>
         </div>
     </header>
 
     <!-- Contenido Principal -->
-    <main class="max-w-6xl mx-auto p-4 flex-grow w-full flex flex-col gap-6 mt-4">
+    <main class="max-w-7xl mx-auto p-4 flex-grow w-full grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
         
-        <!-- Grid Superior: Publicar y Stock -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- Formulario para Publicar Repuestos -->
-            <section class="bg-slate-800/85 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-                <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">📦 Publicar Nuevo Repuesto</h2>
-                <p class="text-xs text-slate-400">El repuesto aparecerá instantáneamente en el catálogo con tu número de WhatsApp vinculado.</p>
+        <!-- Columna 1: Publicar Repuestos -->
+        <div class="flex flex-col gap-6">
+            <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
+                <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">📦 Publicar Repuesto</h2>
+                <p class="text-xs text-slate-400">Los repuestos que publiques aquí se reflejarán automáticamente en tiempo real en la página principal.</p>
                 
-                <div class="flex flex-col gap-3 mt-1">
+                <div class="flex flex-col gap-3 mt-2">
                     <div>
                         <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre del Repuesto</label>
-                        <input type="text" id="prodNombre" placeholder="Ej. Amortiguador Delantero / Kit de Embrague" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+                        <input type="text" id="prodNombre" placeholder="Ej. Amortiguador Delantero" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -45,64 +46,92 @@
                             <input type="number" step="0.01" id="prodPrecio" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
                         </div>
                         <div>
-                            <label class="text-xs text-slate-400 font-bold mb-1 block">Categoría</label>
-                            <select id="prodCat" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
-                                <option value="" disabled selected>Selecciona...</option>
-                                <option value="Motor">Motor</option>
-                                <option value="Frenos">Frenos</option>
-                                <option value="Suspensión">Suspensión</option>
-                                <option value="Eléctrico">Eléctrico</option>
-                                <option value="Carrocería">Carrocería</option>
-                                <option value="Accesorios">Accesorios</option>
-                            </select>
+                            <label class="text-xs text-slate-400 font-bold mb-1 block">Stock (Cantidad)</label>
+                            <input type="number" id="prodStock" placeholder="Ej. 5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
                         </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Categoría</label>
+                        <select id="prodCat" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none transition">
+                            <option value="" disabled selected>Selecciona...</option>
+                            <option value="Motor">Motor</option>
+                            <option value="Frenos">Frenos</option>
+                            <option value="Suspensión">Suspensión</option>
+                            <option value="Eléctrico">Eléctrico</option>
+                            <option value="Carrocería">Carrocería</option>
+                            <option value="Accesorios">Accesorios</option>
+                        </select>
                     </div>
                 </div>
 
                 <button id="btnAddProduct" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition shadow-lg shadow-amber-500/20 mt-2">Publicar en el Catálogo</button>
             </section>
+        </div>
 
-            <!-- Lista de Repuestos Propios Publicados -->
-            <section class="bg-slate-800/85 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-                <h2 class="text-xl font-bold text-slate-100">📋 Mis Repuestos en Stock</h2>
+        <!-- Columna 2: Lista de Mis Repuestos en Stock -->
+        <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4 h-fit">
+            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">📋 Mis Repuestos en Stock</h2>
+            <p class="text-xs text-slate-400">Inventario activo de tu tienda.</p>
+            
+            <div id="myProductsList" class="flex flex-col gap-3 overflow-y-auto max-h-[600px] pr-1">
+                <p class="text-slate-500 text-sm italic text-center py-12">Cargando tu inventario...</p>
+            </div>
+        </section>
+
+        <!-- Columna 3: Historial de Pedidos Activos y Atendidos -->
+        <div class="flex flex-col gap-6">
+            <!-- Pedidos Recibidos (Activos) -->
+            <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4 h-fit">
+                <h2 class="text-xl font-bold text-amber-500 flex items-center gap-2">🛒 Pedidos Recibidos</h2>
+                <p class="text-xs text-slate-400">Clientes que han solicitado repuestos de tu tienda.</p>
                 
-                <div id="myProductsList" class="flex flex-col gap-3 overflow-y-auto max-h-[380px] pr-1">
-                    <p class="text-slate-500 text-sm italic text-center py-12">Cargando inventario...</p>
+                <div id="ordersList" class="flex flex-col gap-3 overflow-y-auto max-h-[350px] pr-1">
+                    <p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos nuevos...</p>
                 </div>
             </section>
 
+            <!-- Historial de Pedidos Atendidos -->
+            <section class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4 h-fit">
+                <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">✅ Pedidos Atendidos</h2>
+                <p class="text-xs text-slate-400">Registro histórico de ventas y pedidos completados.</p>
+                
+                <div id="completedOrdersList" class="flex flex-col gap-3 overflow-y-auto max-h-[350px] pr-1">
+                    <p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos atendidos aún...</p>
+                </div>
+            </section>
         </div>
-
-        <!-- Pedidos Entrantes con Alerta -->
-        <section class="bg-slate-800/85 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-amber-400 flex items-center gap-2">🔔 Pedidos Entrantes de Clientes</h2>
-                <span id="orderCountBadge" class="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold px-3 py-1 rounded-full">0 nuevos</span>
-            </div>
-            
-            <div id="ordersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
-                <p class="text-slate-500 text-sm italic col-span-full text-center py-8">No hay pedidos pendientes.</p>
-            </div>
-        </section>
-
-        <!-- Historial -->
-        <section class="bg-slate-800/85 backdrop-blur-md border border-slate-700 p-6 rounded-2xl shadow-xl flex flex-col gap-4">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-emerald-400 flex items-center gap-2">📂 Historial de Pedidos Atendidos</h2>
-                <button id="btnClearHistory" class="hidden bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 text-xs font-bold px-3 py-1.5 rounded-lg transition">Limpiar Historial</button>
-            </div>
-            
-            <div id="historyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
-                <p class="text-slate-500 text-sm italic col-span-full text-center py-8">Aún no hay historial.</p>
-            </div>
-        </section>
 
     </main>
 
+    <!-- Modal para Cambiar Contraseña -->
+    <div id="modalPassword" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl">
+            <h3 class="text-xl font-black text-amber-500">🔒 Cambiar Contraseña</h3>
+            <p class="text-xs text-slate-400">Ingresa tu contraseña actual y la nueva clave que deseas utilizar.</p>
+            
+            <div class="flex flex-col gap-3 mt-1">
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña Actual</label>
+                    <input type="password" id="currentPass" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nueva Contraseña</label>
+                    <input type="password" id="newPass" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 focus:border-amber-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-2">
+                <button id="btnChangePass" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition flex-1 text-xs">Actualizar Contraseña</button>
+                <button onclick="closePasswordModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl transition text-xs">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, remove, set, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, updatePassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getDatabase, ref, push, onValue, remove, set, update } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -117,35 +146,28 @@
         
         let currentUserUid = null;
         let currentUserEmail = "";
-        let storeWhatsAppNumber = "";
         let initialLoadOrders = true;
 
-        function playAlertSound() {
+        function playNotificationSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc1 = audioCtx.createOscillator();
-                const gain1 = audioCtx.createGain();
-                osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                gain1.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                osc1.connect(gain1);
-                gain1.connect(audioCtx.destination);
-                osc1.start();
-                osc1.stop(audioCtx.currentTime + 0.15);
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
 
-                setTimeout(() => {
-                    const osc2 = audioCtx.createOscillator();
-                    const gain2 = audioCtx.createGain();
-                    osc2.type = 'sine';
-                    osc2.frequency.setValueAtTime(880, audioCtx.currentTime);
-                    gain2.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                    osc2.connect(gain2);
-                    gain2.connect(audioCtx.destination);
-                    osc2.start();
-                    osc2.stop(audioCtx.currentTime + 0.3);
-                }, 180);
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15);
+
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.6);
             } catch (e) {
-                console.log("Audio bloqueado.");
+                console.log("Audio no soportado automáticamente sin interacción previa.");
             }
         }
 
@@ -154,21 +176,9 @@
                 currentUserUid = user.uid;
                 currentUserEmail = user.email;
                 document.getElementById('userEmail').innerText = currentUserEmail;
-
-                // Cargar perfil con el WhatsApp registrado de la tienda
-                get(ref(db, `perfiles/${currentUserUid}`)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        storeWhatsAppNumber = snapshot.val().telefonoWhatsApp || "No configurado";
-                        document.getElementById('storePhoneDisplay').innerText = `+${storeWhatsAppNumber}`;
-                    } else {
-                        storeWhatsAppNumber = "584141234567";
-                        document.getElementById('storePhoneDisplay').innerText = "Predeterminado";
-                    }
-                });
-
                 cargarMisRepuestos(currentUserUid);
-                cargarPedidosEntrantes(currentUserUid);
-                cargarHistorialPedidos(currentUserUid);
+                cargarPedidos(currentUserUid);
+                cargarPedidosAtendidos(currentUserUid);
             } else {
                 window.location.href = "login.html";
             }
@@ -180,14 +190,26 @@
             });
         });
 
-        // Publicar repuesto usando el WhatsApp registrado en su perfil
+        window.openPasswordModal = function() {
+            document.getElementById('modalPassword').classList.remove('hidden');
+            document.getElementById('modalPassword').classList.add('flex');
+        };
+
+        window.closePasswordModal = function() {
+            document.getElementById('modalPassword').classList.add('hidden');
+            document.getElementById('modalPassword').classList.remove('flex');
+            document.getElementById('currentPass').value = "";
+            document.getElementById('newPass').value = "";
+        };
+
         document.getElementById('btnAddProduct').addEventListener('click', () => {
             const nombre = document.getElementById('prodNombre').value.trim();
             const precio = parseFloat(document.getElementById('prodPrecio').value);
+            const stock = parseInt(document.getElementById('prodStock').value);
             const categoria = document.getElementById('prodCat').value;
 
-            if (!nombre || isNaN(precio) || !categoria) {
-                return alert("Por favor completa el nombre, precio y categoría del repuesto.");
+            if (!nombre || isNaN(precio) || isNaN(stock) || !categoria) {
+                return alert("Por favor completa todos los campos (nombre, precio, stock y categoría).");
             }
 
             const nombreTiendaLimpio = currentUserEmail.split('@')[0];
@@ -195,13 +217,14 @@
             push(ref(db, `inventarios/${currentUserUid}`), {
                 nombre: nombre,
                 precio: precio,
+                stock: stock,
                 categoria: categoria,
-                nombreTienda: nombreTiendaLimpio,
-                telefonoTienda: storeWhatsAppNumber
+                nombreTienda: nombreTiendaLimpio
             }).then(() => {
-                alert("¡Repuesto publicado con éxito!");
+                alert("¡Repuesto publicado con éxito y sincronizado en el catálogo!");
                 document.getElementById('prodNombre').value = "";
                 document.getElementById('prodPrecio').value = "";
+                document.getElementById('prodStock').value = "";
                 document.getElementById('prodCat').value = "";
             }).catch((error) => {
                 alert("Error al publicar: " + error.message);
@@ -215,85 +238,32 @@
                 const data = snapshot.val();
 
                 if (!data) {
-                    listContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-12">Aún no has publicado repuestos.</p>`;
+                    listContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-12">Aún no has publicado ningún repuesto en tu stock.</p>`;
                     return;
                 }
 
                 Object.entries(data).reverse().forEach(([prodId, prod]) => {
+                    const stockDisponible = prod.stock !== undefined ? prod.stock : 0;
                     listContainer.innerHTML += `
                         <div class="bg-slate-900 border border-slate-700/80 p-4 rounded-xl flex justify-between items-center gap-3 shadow-sm">
-                            <div>
-                                <span class="bg-slate-800 border border-slate-700 text-amber-400 text-[10px] font-bold px-2.5 py-0.5 rounded-md">
-                                    ${prod.categoria}
-                                </span>
-                                <h3 class="font-bold text-white text-base mt-1 leading-snug">${prod.nombre}</h3>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-slate-800 border border-slate-700 text-amber-400 text-[10px] font-bold px-2.5 py-0.5 rounded-md">
+                                        ${prod.categoria}
+                                    </span>
+                                    <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-md font-semibold">
+                                        Stock: ${stockDisponible}
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-white text-base leading-snug">${prod.nombre}</h3>
                                 <span class="text-emerald-400 font-black text-sm">$${prod.precio}</span>
                             </div>
-                            <button onclick="eliminarRepuesto('${prodId}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 text-xs font-bold px-3 py-2 rounded-xl transition shrink-0">
-                                Eliminar
-                            </button>
-                        </div>`;
-                });
-            });
-        }
-
-        function cargarPedidosEntrantes(uid) {
-            let previousCount = null;
-
-            onValue(ref(db, `pedidos/${uid}`), (snapshot) => {
-                const ordersContainer = document.getElementById('ordersList');
-                const badge = document.getElementById('orderCountBadge');
-                ordersContainer.innerHTML = "";
-                const data = snapshot.val();
-
-                if (!data) {
-                    badge.innerText = `0 nuevos`;
-                    ordersContainer.innerHTML = `<p class="text-slate-500 text-sm italic col-span-full text-center py-8">No hay pedidos pendientes.</p>`;
-                    previousCount = 0;
-                    initialLoadOrders = false;
-                    return;
-                }
-
-                const ordersArray = Object.entries(data);
-                const currentCount = ordersArray.length;
-
-                badge.innerText = `${currentCount} pedido${currentCount > 1 ? 's' : ''}`;
-
-                if (!initialLoadOrders && previousCount !== null && currentCount > previousCount) {
-                    playAlertSound();
-                }
-
-                previousCount = currentCount;
-                initialLoadOrders = false;
-
-                ordersArray.reverse().forEach(([orderId, order]) => {
-                    const cleanPhone = order.telefono.replace(/\D/g,'');
-                    const chatUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('¡Hola ' + order.cliente + '! Recibimos tu pedido del repuesto *' + order.repuesto + '* por $' + order.precio + ' en TurespuestoYa. ¿Cómo coordinamos la entrega?')}`;
-
-                    ordersContainer.innerHTML += `
-                        <div class="bg-slate-900 border border-amber-500/30 hover:border-amber-500 p-5 rounded-2xl shadow-lg flex flex-col justify-between gap-3 transition">
-                            <div>
-                                <div class="flex justify-between items-start gap-2 mb-2">
-                                    <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold px-2.5 py-1 rounded-lg">
-                                        📅 ${order.fecha}
-                                    </span>
-                                    <span class="text-emerald-400 font-black text-base">$${order.precio}</span>
-                                </div>
-                                <h3 class="font-bold text-white text-lg leading-snug">${order.repuesto}</h3>
-                            </div>
-
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex flex-col gap-1.5 text-xs">
-                                <p class="text-slate-300">👤 <strong class="text-white">Cliente:</strong> ${order.cliente}</p>
-                                <p class="text-slate-300">📞 <strong class="text-white">Teléfono:</strong> ${order.telefono}</p>
-                                <p class="text-slate-300">📍 <strong class="text-white">Dirección:</strong> ${order.direccion}</p>
-                            </div>
-
-                            <div class="flex gap-2">
-                                <a href="${chatUrl}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1 shadow-sm flex-1">
-                                    💬 Chatear con Cliente
-                                </a>
-                                <button onclick='atenderPedido(${JSON.stringify(orderId)}, ${JSON.stringify(order)})' class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold py-2.5 px-3 rounded-xl text-xs transition">
-                                    Completar ✓
+                            <div class="flex flex-col gap-1.5 shrink-0">
+                                <button onclick="registrarVenta('${prodId}', ${stockDisponible})" class="bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+                                    🛒 Vendido
+                                </button>
+                                <button onclick="eliminarRepuesto('${prodId}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/20 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+                                    Eliminar
                                 </button>
                             </div>
                         </div>`;
@@ -301,70 +271,184 @@
             });
         }
 
-        function cargarHistorialPedidos(uid) {
-            onValue(ref(db, `historial_pedidos/${uid}`), (snapshot) => {
-                const historyContainer = document.getElementById('historyList');
-                const btnClear = document.getElementById('btnClearHistory');
-                historyContainer.innerHTML = "";
+        function cargarPedidos(uid) {
+            let previousCount = null;
+
+            onValue(ref(db, `pedidos/${uid}`), (snapshot) => {
+                const ordersContainer = document.getElementById('ordersList');
+                ordersContainer.innerHTML = "";
                 const data = snapshot.val();
 
                 if (!data) {
-                    btnClear.classList.add('hidden');
-                    historyContainer.innerHTML = `<p class="text-slate-500 text-sm italic col-span-full text-center py-8">Aún no hay historial.</p>`;
+                    ordersContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos nuevos por ahora.</p>`;
+                    previousCount = 0;
+                    initialLoadOrders = false;
                     return;
                 }
 
-                btnClear.classList.remove('hidden');
-                const historyArray = Object.entries(data);
+                const currentKeys = Object.keys(data);
+                
+                if (!initialLoadOrders && previousCount !== null && currentKeys.length > previousCount) {
+                    playNotificationSound();
+                }
+                
+                previousCount = currentKeys.length;
+                initialLoadOrders = false;
 
-                historyArray.reverse().forEach(([hId, order]) => {
-                    historyContainer.innerHTML += `
-                        <div class="bg-slate-900 border border-slate-700/60 p-4 rounded-xl flex flex-col justify-between gap-2 shadow-sm">
+                Object.entries(data).reverse().forEach(([orderId, order]) => {
+                    const cleanPhone = order.telefono.replace(/\D/g, '');
+                    const mensajeWp = encodeURIComponent(`¡Hola ${order.cliente}! Te escribimos de la tienda en TurespuestoYa por tu pedido del repuesto: *${order.repuesto}*.`);
+                    const whatsappLink = `https://wa.me/${cleanPhone}?text=${mensajeWp}`;
+
+                    ordersContainer.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-700/80 p-4 rounded-xl flex flex-col gap-2 shadow-sm">
                             <div class="flex justify-between items-start">
-                                <span class="bg-slate-800 text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-md border border-slate-700">
-                                    Atendido: ${order.fechaAtencion || order.fecha}
-                                </span>
-                                <span class="text-emerald-400 font-black text-sm">$${order.precio}</span>
+                                <span class="text-xs text-slate-400 font-medium">📅 Pedido el: ${order.fecha}</span>
+                                <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold">$${order.precio}</span>
                             </div>
-                            <h3 class="font-bold text-white text-base leading-snug">${order.repuesto}</h3>
-                            <div class="text-[11px] text-slate-400 border-t border-slate-800 pt-2 flex flex-col gap-0.5">
-                                <p>👤 <strong>Cliente:</strong> ${order.cliente} (${order.telefono})</p>
-                                <p>📍 <strong>Destino:</strong> ${order.direccion}</p>
+                            <div>
+                                <h3 class="font-bold text-amber-400 text-base">${order.repuesto}</h3>
                             </div>
+                            <div class="text-xs text-slate-300 flex flex-col gap-1 border-t border-slate-800 pt-2 mt-1">
+                                <p><strong>Cliente:</strong> ${order.cliente}</p>
+                                <p class="flex items-center gap-1.5 flex-wrap">
+                                    <strong>Teléfono:</strong> 
+                                    <a href="${whatsappLink}" target="_blank" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-lg font-bold flex items-center gap-1 transition">
+                                        <span>💬</span> ${order.telefono} (Hablar)
+                                    </a>
+                                </p>
+                                <p><strong>Dirección:</strong> ${order.direccion}</p>
+                            </div>
+                            <button onclick="marcarAtendido('${orderId}')" class="mt-1 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 border border-emerald-500/30 text-xs font-bold py-2 px-3 rounded-lg transition self-end">
+                                ✔️ Marcar como Atendido
+                            </button>
                         </div>`;
                 });
             });
         }
 
-        window.eliminarRepuesto = function(prodId) {
-            if (confirm("¿Estás seguro de eliminar este repuesto?")) {
-                remove(ref(db, `inventarios/${currentUserUid}/${prodId}`)).catch((error) => {
-                    alert("Error: " + error.message);
+        function cargarPedidosAtendidos(uid) {
+            onValue(ref(db, `pedidos_atendidos/${uid}`), (snapshot) => {
+                const historyContainer = document.getElementById('completedOrdersList');
+                historyContainer.innerHTML = "";
+                const data = snapshot.val();
+
+                if (!data) {
+                    historyContainer.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-6">No hay pedidos atendidos aún...</p>`;
+                    return;
+                }
+
+                Object.entries(data).reverse().forEach(([orderId, order]) => {
+                    const cleanPhone = order.telefono ? order.telefono.replace(/\D/g, '') : '';
+                    const whatsappLink = cleanPhone ? `https://wa.me/${cleanPhone}` : '#';
+
+                    historyContainer.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-700/80 p-4 rounded-xl flex flex-col gap-2 shadow-sm opacity-90">
+                            <div class="flex justify-between items-start">
+                                <span class="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">✅ Atendido: ${order.fechaAtendido || 'N/D'}</span>
+                                <span class="text-xs bg-slate-800 text-emerald-400 border border-slate-700 px-2 py-0.5 rounded font-bold">$${order.precio}</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-200 text-base">${order.repuesto}</h3>
+                            </div>
+                            <div class="text-xs text-slate-400 flex flex-col gap-1 border-t border-slate-800 pt-2 mt-1">
+                                <p><strong>Cliente:</strong> ${order.cliente}</p>
+                                <p><strong>Teléfono:</strong> ${order.telefono}</p>
+                                <p><strong>Dirección:</strong> ${order.direccion}</p>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Fecha de solicitud original: ${order.fecha}</p>
+                            </div>
+                            <button onclick="eliminarHistorial('${orderId}')" class="mt-1 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-slate-700 text-[11px] font-bold py-1.5 px-3 rounded-lg transition self-end">
+                                🗑️ Borrar del Historial
+                            </button>
+                        </div>`;
                 });
+            });
+        }
+
+        window.registrarVenta = function(prodId, stockActual) {
+            if (stockActual <= 0) {
+                return alert("¡Este repuesto ya no tiene stock disponible (0 unidades)!");
+            }
+
+            const nuevoStock = stockActual - 1;
+            update(ref(db, `inventarios/${currentUserUid}/${prodId}`), {
+                stock: nuevoStock
+            }).catch((error) => {
+                alert("Error al actualizar el stock: " + error.message);
+            });
+        };
+
+        window.marcarAtendido = function(orderId) {
+            if (confirm("¿Marcar este pedido como atendido y moverlo al historial?")) {
+                const orderRef = ref(db, `pedidos/${currentUserUid}/${orderId}`);
+                onValue(orderRef, (snapshot) => {
+                    const orderData = snapshot.val();
+                    if (orderData) {
+                        // Agregamos la fecha y hora exacta en la que se completó/atendió el pedido
+                        const fechaAtendidoActual = new Date().toLocaleString();
+                        const pedidoCompleto = {
+                            ...orderData,
+                            fechaAtendido: fechaAtendidoActual
+                        };
+
+                        set(ref(db, `pedidos_atendidos/${currentUserUid}/${orderId}`), pedidoCompleto)
+                            .then(() => {
+                                remove(orderRef);
+                            })
+                            .catch((error) => {
+                                alert("Error al actualizar el pedido: " + error.message);
+                            });
+                    }
+                }, { onlyOnce: true });
             }
         };
 
-        window.atenderPedido = function(orderId, orderData) {
-            if (confirm("¿Marcar pedido como atendido? Se moverá al historial.")) {
-                orderData.fechaAtencion = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
-                const newHistoryRef = push(ref(db, `historial_pedidos/${currentUserUid}`));
-                set(newHistoryRef, orderData)
-                    .then(() => {
-                        return remove(ref(db, `pedidos/${currentUserUid}/${orderId}`));
-                    })
+        window.eliminarRepuesto = function(prodId) {
+            if (confirm("¿Estás seguro de que deseas eliminar este repuesto de tu tienda?")) {
+                remove(ref(db, `inventarios/${currentUserUid}/${prodId}`))
                     .catch((error) => {
-                        alert("Error al procesar: " + error.message);
+                        alert("No se pudo eliminar: " + error.message);
                     });
             }
         };
 
-        document.getElementById('btnClearHistory').addEventListener('click', () => {
-            if (confirm("¿Deseas vaciar el historial?")) {
-                remove(ref(db, `historial_pedidos/${currentUserUid}`)).catch((error) => {
-                    alert("Error: " + error.message);
-                });
+        window.eliminarHistorial = function(orderId) {
+            if (confirm("¿Deseas eliminar este registro del historial permanentemente?")) {
+                remove(ref(db, `pedidos_atendidos/${currentUserUid}/${orderId}`))
+                    .catch((error) => {
+                        alert("No se pudo eliminar el registro: " + error.message);
+                    });
             }
+        };
+
+        document.getElementById('btnChangePass').addEventListener('click', () => {
+            const currentPass = document.getElementById('currentPass').value.trim();
+            const newPass = document.getElementById('newPass').value.trim();
+
+            if (!currentPass || !newPass) {
+                return alert("Por favor ingresa tu contraseña actual y la nueva contraseña.");
+            }
+
+            if (newPass.length < 6) {
+                return alert("La nueva contraseña debe tener al menos 6 caracteres.");
+            }
+
+            const user = auth.currentUser;
+
+            signInWithEmailAndPassword(auth, currentUserEmail, currentPass)
+                .then(() => {
+                    updatePassword(user, newPass)
+                        .then(() => {
+                            alert("¡Contraseña actualizada con éxito!");
+                            closePasswordModal();
+                        })
+                        .catch((error) => {
+                            alert("Error al actualizar la contraseña: " + error.message);
+                        });
+                })
+                .catch(() => {
+                    alert("La contraseña actual que ingresaste es incorrecta.");
+                });
         });
     </script>
 </body>
