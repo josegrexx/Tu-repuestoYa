@@ -1,8 +1,8 @@
 <!-- 
   =============================================================
   ARCHIVO: panel.html (Panel Privado de la Tienda)
-  VERSIÓN: 3.9.11
-  ÚLTIMO CAMBIO: Modal personalizado para registrar ventas de tienda solicitando nombre, teléfono y dirección del comprador.
+  VERSIÓN: 3.9.12
+  ÚLTIMO CAMBIO: Incorporación de barra de navegación flotante inferior con botones de Inicio y Panel.
   =============================================================
 -->
 <!DOCTYPE html>
@@ -13,7 +13,7 @@
     <title>Panel de Control - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans pb-20">
 
     <!-- Header del Panel -->
     <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50">
@@ -217,6 +217,16 @@
         </section>
     </main>
 
+    <!-- 🧭 Botón Flotante de Navegación Rápida (Inicio / Panel) -->
+    <div class="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-slate-900/95 border border-slate-700/80 p-2.5 rounded-2xl shadow-2xl backdrop-blur-md">
+        <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold px-3.5 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm border border-slate-700 cursor-pointer">
+            <span>🏠</span> Inicio
+        </a>
+        <a href="panel.html" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-3.5 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer">
+            <span>⚡</span> Panel
+        </a>
+    </div>
+
     <!-- Modal para Registrar Venta Física en Tienda -->
     <div id="modalVentaTienda" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl">
@@ -298,7 +308,6 @@
         let cantidadAvisosAdmin = 0;
         let cantidadPedidosPendientes = 0;
 
-        // Variables temporales para el registro de venta en tienda
         let ventaProdIdActual = null;
         let ventaStockActual = 0;
 
@@ -568,7 +577,6 @@
             }
         };
 
-        // 🛒 Funcionalidad para abrir el modal de Venta en Tienda
         window.venderUno = function(id, stockActual) {
             const nuevoStock = stockActual - 1;
             if (nuevoStock < 0) return alert("El stock ya está en cero.");
@@ -595,7 +603,6 @@
             modal.classList.remove('flex');
         };
 
-        // Confirmar la venta física con los datos ingresados
         document.getElementById('btnConfirmarVentaTienda').addEventListener('click', () => {
             const cliente = document.getElementById('ventaCliente').value.trim();
             const telefono = document.getElementById('ventaTelefono').value.trim();
