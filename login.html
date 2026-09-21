@@ -1,9 +1,8 @@
 <!-- 
   =============================================================
-  ARCHIVO: login.html (Acceso y Registro de Tiendas)
-  VERSIÓN: 3.2
-  ÚLTIMO CAMBIO: Se añadió el selector de las principales ciudades de Venezuela 
-  al crear la cuenta de la tienda.
+  ARCHIVO: login.html (Acceso, Registro y Recuperación de Contraseña)
+  VERSIÓN: 3.3
+  ÚLTIMO CAMBIO: Se añadió opción y ventana modal para recuperar contraseña mediante Firebase.
   =============================================================
 -->
 <!DOCTYPE html>
@@ -49,7 +48,6 @@
                         <option value="Mérida">Mérida</option>
                         <option value="Barinas">Barinas</option>
                         <option value="Puerto La Cruz">Puerto La Cruz</option>
-                        <option value="Cúcuta (Frontera)">Cúcuta (Frontera)</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -80,16 +78,43 @@
             <button id="btnAccion" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
                 Iniciar Sesión
             </button>
+
+            <!-- Enlace para recuperar contraseña (solo visible en modo login) -->
+            <div id="contenedorOlvidoClave" class="text-center mt-1">
+                <button id="btnAbrirModalRecuperar" type="button" class="text-xs text-amber-500 hover:text-amber-400 transition cursor-pointer font-semibold">
+                    ¿Olvidaste tu contraseña?
+                </button>
+            </div>
         </div>
 
-        <div class="text-center">
+        <div class="text-center border-t border-slate-800 pt-4">
             <a href="index.html" class="text-xs text-slate-500 hover:text-slate-300 transition">← Volver al Catálogo Público</a>
         </div>
     </div>
 
+    <!-- Modal para Recuperar Contraseña -->
+    <div id="modalRecuperar" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full flex flex-col gap-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-base font-black text-white">Recuperar Contraseña</h3>
+                <button onclick="cerrarModalRecuperar()" class="text-slate-400 hover:text-white text-lg font-bold px-2 cursor-pointer">✕</button>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">Ingresa tu correo electrónico registrado y te enviaremos un enlace para restablecer tu contraseña.</p>
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-400 font-bold">Correo Electrónico</label>
+                <input type="email" id="emailRecuperar" placeholder="tucorreo@email.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button id="btnEnviarCorreoRecuperacion" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2.5 px-4 rounded-xl flex-1 text-xs cursor-pointer shadow-lg shadow-amber-500/20">Enviar Enlace</button>
+                <button onclick="cerrarModalRecuperar()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-4 rounded-xl text-xs cursor-pointer">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
         import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
@@ -109,6 +134,7 @@
         const tabRegistro = document.getElementById('tabRegistro');
         const camposRegistroAdicionales = document.getElementById('camposRegistroAdicionales');
         const campoConfirmarPass = document.getElementById('campoConfirmarPass');
+        const contenedorOlvidoClave = document.getElementById('contenedorOlvidoClave');
         const btnAccion = document.getElementById('btnAccion');
         const subtituloForm = document.getElementById('subtituloForm');
 
@@ -118,6 +144,7 @@
             tabRegistro.className = "py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
             camposRegistroAdicionales.classList.add('hidden');
             campoConfirmarPass.classList.add('hidden');
+            contenedorOlvidoClave.classList.remove('hidden');
             btnAccion.innerText = "Iniciar Sesión";
             subtituloForm.innerText = "Accede a tu panel de tienda";
         });
@@ -128,8 +155,39 @@
             tabLogin.className = "py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
             camposRegistroAdicionales.classList.remove('hidden');
             campoConfirmarPass.classList.remove('hidden');
+            contenedorOlvidoClave.classList.add('hidden');
             btnAccion.innerText = "Crear Cuenta de Tienda";
             subtituloForm.innerText = "Registra los datos y ubicación de tu tienda";
+        });
+
+        // Control de Modal de Recuperación
+        const modalRecuperar = document.getElementById('modalRecuperar');
+        document.getElementById('btnAbrirModalRecuperar').addEventListener('click', () => {
+            const emailActual = document.getElementById('email').value.trim();
+            if (emailActual) {
+                document.getElementById('emailRecuperar').value = emailActual;
+            }
+            modalRecuperar.classList.remove('hidden');
+            modalRecuperar.classList.add('flex');
+        });
+
+        window.cerrarModalRecuperar = function() {
+            modalRecuperar.classList.add('hidden');
+            modalRecuperar.classList.remove('flex');
+        };
+
+        document.getElementById('btnEnviarCorreoRecuperacion').addEventListener('click', () => {
+            const emailRecu = document.getElementById('emailRecuperar').value.trim();
+            if (!emailRecu) return alert("Por favor ingresa tu correo electrónico.");
+
+            sendPasswordResetEmail(auth, emailRecu)
+                .then(() => {
+                    alert("¡Correo enviado! Revisa tu bandeja de entrada o spam para restablecer tu contraseña.");
+                    cerrarModalRecuperar();
+                })
+                .catch((error) => {
+                    alert("Error al enviar el correo: " + error.message);
+                });
         });
 
         btnAccion.addEventListener('click', () => {

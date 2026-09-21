@@ -1,8 +1,8 @@
 <!-- 
   =============================================================
   ARCHIVO: panel.html (Panel Privado de la Tienda)
-  VERSIÓN: 3.4
-  ÚLTIMO CAMBIO: Muestra la Dirección Física y el WhatsApp guardados en el registro.
+  VERSIÓN: 3.9
+  ÚLTIMO CAMBIO: Panel con Firebase, sonido de éxito y subida de fotos de repuestos.
   =============================================================
 -->
 <!DOCTYPE html>
@@ -27,8 +27,8 @@
                     🔊 Sonido: ON
                 </button>
                 <a href="index.html" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo ↗</a>
-                <button id="btnCambiarClave" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Clave</button>
-                <button id="btnLogout" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/20">Salir</button>
+                <button id="btnCambiarClave" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700 cursor-pointer">Clave</button>
+                <button id="btnLogout" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/20 cursor-pointer">Salir</button>
             </div>
         </div>
     </header>
@@ -119,6 +119,12 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Subir Imagen del Repuesto -->
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-amber-400 font-bold block">📷 Foto del Repuesto (Opcional)</label>
+                    <input type="file" id="imagenRepuesto" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 text-xs focus:border-amber-500 focus:outline-none file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+                </div>
                 
                 <div class="flex flex-col gap-2 bg-slate-950 border border-slate-800 p-3 rounded-xl">
                     <span class="text-[10px] text-amber-500 font-bold uppercase tracking-wider">Métodos de Entrega Disponibles</span>
@@ -167,7 +173,7 @@
             </div>
 
             <!-- Historial de Ventas -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
+            <div id="seccionHistorialVentas" class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl scroll-mt-20">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                     <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">✅ Historial de Ventas por Publicación</h2>
                     <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
@@ -225,6 +231,7 @@
 
         let userActual = null;
         let conteoPedidosAnterior = 0;
+        let primerCargaPedidos = true;
         let nombreTiendaOficial = "";
         let direccionTiendaOficial = "";
         let telefonoWspTienda = "";
@@ -270,7 +277,8 @@
         setInterval(actualizarReloj, 1000);
         actualizarReloj();
 
-        const hoyIso = new Date().toISOString().split('T')[0];
+        const ahoraLocal = new Date();
+        const hoyIso = `${ahoraLocal.getFullYear()}-${String(ahoraLocal.getMonth() + 1).padStart(2, '0')}-${String(ahoraLocal.getDate()).padStart(2, '0')}`;
         document.getElementById('filtroFecha').value = hoyIso;
 
         onAuthStateChanged(auth, (user) => {
@@ -311,23 +319,30 @@
                                 tagsEntrega += `<span class="bg-red-500/15 text-red-400 px-1.5 py-0.5 rounded text-[9px] border border-red-500/30 font-bold">-${descVal}% OFF</span>`;
                             }
 
+                            const miniaturaImg = repuesto.imagenUrl 
+                                ? `<div class="w-10 h-10 rounded-lg overflow-hidden border border-slate-800 shrink-0"><img src="${repuesto.imagenUrl}" class="w-full h-full object-cover"></div>` 
+                                : `<div class="w-10 h-10 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 text-xs shrink-0">📷</div>`;
+
                             contenedor.innerHTML += `
                                 <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex flex-col justify-between gap-3 text-xs">
-                                    <div>
-                                        <div class="flex justify-between items-start mb-1">
-                                            <span class="text-amber-400 font-bold truncate pr-2">${repuesto.nombre}</span>
-                                            <span class="text-emerald-400 font-black">$${repuesto.precio}</span>
-                                        </div>
-                                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                                            <span class="text-slate-500 bg-slate-900 px-2 py-0.5 rounded-md border border-slate-800">${repuesto.categoria}</span>
-                                            ${tagsEntrega}
+                                    <div class="flex gap-3 items-center">
+                                        ${miniaturaImg}
+                                        <div class="flex-grow min-w-0">
+                                            <div class="flex justify-between items-start mb-0.5">
+                                                <span class="text-amber-400 font-bold truncate pr-2">${repuesto.nombre}</span>
+                                                <span class="text-emerald-400 font-black shrink-0">$${repuesto.precio}</span>
+                                            </div>
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <span class="text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded-md border border-slate-800 text-[10px]">${repuesto.categoria}</span>
+                                                ${tagsEntrega}
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="flex items-center justify-between pt-2 border-t border-slate-800">
                                         <span class="text-slate-300 font-bold">Stock: ${cantStock}</span>
                                         <div class="flex gap-1.5 flex-wrap">
                                             <button onclick="cargarParaEditar('${id}')" class="bg-blue-500/15 hover:bg-blue-500 text-blue-300 hover:text-white px-2 py-1.5 rounded-lg font-bold transition border border-blue-500/30 cursor-pointer">Editar ✏️</button>
-                                            <button onclick="venderUno('${id}', ${cantStock})" class="bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-slate-950 px-2 py-1.5 rounded-lg font-bold transition border border-amber-500/20 cursor-pointer">Vender 1</button>
+                                            <button onclick="venderUno('${id}', ${cantStock})" class="bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-slate-950 px-2 py-1.5 rounded-lg font-bold transition border border-amber-500/20 cursor-pointer">Venta Tienda 🛒</button>
                                             <button onclick="eliminarRepuesto('${id}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-2 py-1.5 rounded-lg font-bold transition border border-red-500/20 cursor-pointer">Borrar</button>
                                         </div>
                                     </div>
@@ -351,9 +366,13 @@
                         const lista = Object.entries(data);
                         pedidosPendientes = lista.length;
 
-                        if (pedidosPendientes > conteoPedidosAnterior && conteoPedidosAnterior !== 0) {
-                            reproducirSonidoAlerta();
-                            document.getElementById('badgePedidos').classList.remove('hidden');
+                        if (!primerCargaPedidos) {
+                            if (pedidosPendientes > conteoPedidosAnterior) {
+                                reproducirSonidoAlerta();
+                                document.getElementById('badgePedidos').classList.remove('hidden');
+                            }
+                        } else {
+                            primerCargaPedidos = false;
                         }
                         conteoPedidosAnterior = pedidosPendientes;
 
@@ -413,6 +432,7 @@
                         });
                     } else {
                         conteoPedidosAnterior = 0;
+                        primerCargaPedidos = false;
                         contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-2">No hay pedidos pendientes.</p>`;
                         document.getElementById('badgePedidos').classList.add('hidden');
                     }
@@ -579,13 +599,23 @@
             document.getElementById('precioRepuesto').value = "";
             document.getElementById('stockRepuesto').value = "";
             document.getElementById('descuentoRepuesto').value = "0";
+            document.getElementById('imagenRepuesto').value = "";
             document.getElementById('checkDelivery').checked = false;
             document.getElementById('checkRetiro').checked = true;
         }
 
         document.getElementById('btnCancelarEdicion').addEventListener('click', cancelarEdicion);
 
-        document.getElementById('btnPublicar').addEventListener('click', () => {
+        function convertirArchivoABase64(archivo) {
+            return new Promise((resolve, reject) => {
+                const lector = new FileReader();
+                lector.readAsDataURL(archivo);
+                lector.onload = () => resolve(lector.result);
+                lector.onerror = error => reject(error);
+            });
+        }
+
+        document.getElementById('btnPublicar').addEventListener('click', async () => {
             const nombre = document.getElementById('nombreRepuesto').value.trim();
             const precio = document.getElementById('precioRepuesto').value.trim();
             const stock = document.getElementById('stockRepuesto').value.trim();
@@ -593,8 +623,19 @@
             const descuento = parseInt(document.getElementById('descuentoRepuesto').value) || 0;
             const ofreceDelivery = document.getElementById('checkDelivery').checked;
             const retiroTienda = document.getElementById('checkRetiro').checked;
+            const inputArchivo = document.getElementById('imagenRepuesto');
 
             if (!nombre || !precio || !stock) return alert("Completa todos los campos obligatorios.");
+
+            let imagenUrl = editandoIdProd && inventarioLocalMapa[editandoIdProd] ? (inventarioLocalMapa[editandoIdProd].imagenUrl || "") : "";
+
+            if (inputArchivo.files && inputArchivo.files[0]) {
+                try {
+                    imagenUrl = await convertirArchivoABase64(inputArchivo.files[0]);
+                } catch (e) {
+                    console.error("Error al procesar la imagen:", e);
+                }
+            }
 
             const datosRepuesto = {
                 nombre: nombre,
@@ -604,6 +645,7 @@
                 descuento: descuento,
                 ofreceDelivery: ofreceDelivery,
                 retiroTienda: retiroTienda,
+                imagenUrl: imagenUrl,
                 nombreTienda: nombreTiendaOficial,
                 direccionFisica: direccionTiendaOficial,
                 telefonoWsp: telefonoWspTienda
@@ -645,15 +687,20 @@
                 cliente: "Venta Directa (Local)",
                 telefono: "N/A",
                 ciudad: "Tienda Física",
-                direccion: "Venta Rápida desde Inventario",
+                direccion: "Venta Rápida en Local",
                 fecha: ahora.toLocaleString(),
                 fechaISO: fechaISOStr,
                 fechaAtendido: ahora.toLocaleString()
             };
 
+            reproducirSonidoAlerta();
+
             set(ref(db, `inventarios/${userActual.uid}/${id}/stock`), nuevoStock)
                 .then(() => {
                     return push(ref(db, `pedidos_atendidos/${userActual.uid}`), ventaDirecta);
+                })
+                .then(() => {
+                    document.getElementById('seccionHistorialVentas').scrollIntoView({ behavior: 'smooth' });
                 })
                 .catch(e => alert("Error al registrar la venta: " + e.message));
         };
@@ -732,22 +779,25 @@
                     audioCtxGlobal.resume();
                 }
 
-                const oscillator = audioCtxGlobal.createOscillator();
-                const gainNode = audioCtxGlobal.createGain();
+                const notasFrecuencias = [523.25, 659.25, 783.99, 1046.50];
                 
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(880, audioCtxGlobal.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtxGlobal.currentTime + 0.15);
-                
-                gainNode.gain.setValueAtTime(0, audioCtxGlobal.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.6, audioCtxGlobal.currentTime + 0.05);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtxGlobal.currentTime + 0.4);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtxGlobal.destination);
-                
-                oscillator.start(audioCtxGlobal.currentTime);
-                oscillator.stop(audioCtxGlobal.currentTime + 0.4);
+                notasFrecuencias.forEach((freq, index) => {
+                    const oscillator = audioCtxGlobal.createOscillator();
+                    const gainNode = audioCtxGlobal.createGain();
+                    
+                    oscillator.type = 'triangle';
+                    oscillator.frequency.setValueAtTime(freq, audioCtxGlobal.currentTime + (index * 0.08));
+                    
+                    gainNode.gain.setValueAtTime(0, audioCtxGlobal.currentTime + (index * 0.08));
+                    gainNode.gain.linearRampToValueAtTime(0.35, audioCtxGlobal.currentTime + (index * 0.08) + 0.02);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtxGlobal.currentTime + (index * 0.08) + 0.35);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtxGlobal.destination);
+                    
+                    oscillator.start(audioCtxGlobal.currentTime + (index * 0.08));
+                    oscillator.stop(audioCtxGlobal.currentTime + (index * 0.08) + 0.35);
+                });
             } catch (e) {
                 console.log("Error al reproducir audio:", e);
             }
