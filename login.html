@@ -1,8 +1,8 @@
 <!-- 
   =============================================================
-  ARCHIVO: login.html (Acceso, Registro y Recuperación de Contraseña)
-  VERSIÓN: 3.3
-  ÚLTIMO CAMBIO: Se añadió opción y ventana modal para recuperar contraseña mediante Firebase.
+  ARCHIVO: login.html (Acceso y Registro de Tiendas y Super Admin)
+  VERSIÓN: 3.9.7
+  ÚLTIMO CAMBIO: Integración con lista negra de teléfonos, redirección inteligente a panel de super admin y diseño uniforme.
   =============================================================
 -->
 <!DOCTYPE html>
@@ -10,112 +10,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso y Registro - TurespuestoYa</title>
+    <title>Acceso Tiendas - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
-    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full flex flex-col gap-6">
-        <div class="text-center">
-            <span class="text-3xl">⚡</span>
-            <h1 class="text-2xl font-black text-amber-500 tracking-wide mt-2">TurespuestoYa</h1>
-            <p id="subtituloForm" class="text-xs text-slate-400 mt-1">Accede a tu panel de tienda</p>
-        </div>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans">
 
-        <!-- Pestañas Login / Registro -->
-        <div class="grid grid-cols-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
-            <button id="tabLogin" class="py-2 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition cursor-pointer">Iniciar Sesión</button>
-            <button id="tabRegistro" class="py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer">Crear Tienda</button>
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">⚡</span>
+                <h1 class="text-xl font-black text-amber-500 tracking-wide uppercase">TurespuestoYa</h1>
+            </div>
+            <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo ↗</a>
         </div>
+    </header>
 
-        <!-- Formulario -->
-        <div id="formContainer" class="flex flex-col gap-4">
+    <!-- Contenedor Principal -->
+    <main class="max-w-md mx-auto p-4 w-full flex-grow flex items-center justify-center my-6">
+        <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full flex flex-col gap-6">
             
-            <!-- Campos exclusivos de Registro -->
-            <div id="camposRegistroAdicionales" class="hidden flex flex-col gap-4">
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs text-slate-400 font-bold">Nombre de la Tienda</label>
-                    <input type="text" id="nombreTienda" placeholder="Ej. AutoRepuestos San Cristóbal" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                </div>
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs text-amber-400 font-bold">📍 Ciudad Principal (Venezuela)</label>
-                    <select id="ciudadTienda" class="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                        <option value="San Cristóbal">San Cristóbal</option>
-                        <option value="Maracay">Maracay</option>
-                        <option value="Valencia">Valencia</option>
-                        <option value="Caracas">Caracas</option>
-                        <option value="Barquisimeto">Barquisimeto</option>
-                        <option value="Maracaibo">Maracaibo</option>
-                        <option value="Mérida">Mérida</option>
-                        <option value="Barinas">Barinas</option>
-                        <option value="Puerto La Cruz">Puerto La Cruz</option>
-                    </select>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs text-amber-400 font-bold">📍 Dirección Exacta del Local</label>
-                    <input type="text" id="direccionFisica" placeholder="Ej. Av. 19 de Abril, Local #5" class="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                </div>
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs text-amber-400 font-bold">📱 Teléfono de WhatsApp de la Tienda</label>
-                    <input type="text" id="telefonoWsp" placeholder="Ej. 04121234567" class="w-full bg-slate-950 border border-amber-500/40 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                </div>
+            <!-- Selector de Pestañas (Login / Registro) -->
+            <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                <button id="tabBtnLogin" onclick="cambiarTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950 cursor-pointer">Iniciar Sesión</button>
+                <button id="tabBtnRegistro" onclick="cambiarTab('registro')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white cursor-pointer">Registrar Tienda</button>
             </div>
 
-            <div class="flex flex-col gap-1">
-                <label class="text-xs text-slate-400 font-bold">Correo Electrónico</label>
-                <input type="email" id="email" placeholder="tucorreo@email.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-            </div>
+            <!-- Caja de Alertas / Errores -->
+            <div id="errorBox" class="bg-red-500/20 border border-red-500 text-red-300 p-3 rounded-xl text-xs hidden"></div>
 
-            <div class="flex flex-col gap-1">
-                <label class="text-xs text-slate-400 font-bold">Contraseña</label>
-                <input type="password" id="password" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-            </div>
-
-            <div id="campoConfirmarPass" class="hidden flex flex-col gap-1">
-                <label class="text-xs text-slate-400 font-bold">Confirmar Contraseña</label>
-                <input type="password" id="confirmPassword" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-            </div>
-
-            <button id="btnAccion" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
-                Iniciar Sesión
-            </button>
-
-            <!-- Enlace para recuperar contraseña (solo visible en modo login) -->
-            <div id="contenedorOlvidoClave" class="text-center mt-1">
-                <button id="btnAbrirModalRecuperar" type="button" class="text-xs text-amber-500 hover:text-amber-400 transition cursor-pointer font-semibold">
-                    ¿Olvidaste tu contraseña?
+            <!-- FORMULARIO DE INICIO DE SESIÓN -->
+            <form id="formLogin" class="flex flex-col gap-4">
+                <h2 class="text-lg font-black text-white uppercase tracking-wide">Acceso Propietarios</h2>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" placeholder="tu-correo@gmail.com" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <button type="submit" id="btnLoginSubmit" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
+                    Ingresar al Panel 🚀
                 </button>
-            </div>
-        </div>
+            </form>
 
-        <div class="text-center border-t border-slate-800 pt-4">
-            <a href="index.html" class="text-xs text-slate-500 hover:text-slate-300 transition">← Volver al Catálogo Público</a>
-        </div>
-    </div>
+            <!-- FORMULARIO DE REGISTRO DE TIENDA -->
+            <form id="formRegistro" class="flex flex-col gap-3.5 hidden">
+                <h2 class="text-lg font-black text-white uppercase tracking-wide">Registro de Nueva Tienda</h2>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre del Local / Tienda</label>
+                    <input type="text" id="regNombreTienda" placeholder="Ej. Repuestos El Chamo" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none uppercase">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Propietario</label>
+                        <input type="text" id="regPropietario" placeholder="Tu nombre" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">WhatsApp</label>
+                        <input type="text" id="regTelefono" placeholder="Ej. 04121234567" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Ciudad</label>
+                        <select id="regCiudad" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                            <option value="San Cristóbal">San Cristóbal</option>
+                            <option value="Maracay">Maracay</option>
+                            <option value="Valencia">Valencia</option>
+                            <option value="Caracas">Caracas</option>
+                            <option value="Barquisimeto">Barquisimeto</option>
+                            <option value="Maracaibo">Maracaibo</option>
+                            <option value="Mérida">Mérida</option>
+                            <option value="Barinas">Barinas</option>
+                            <option value="Puerto La Cruz">Puerto La Cruz</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 font-bold mb-1 block">Dirección Física</label>
+                        <input type="text" id="regDireccion" placeholder="Av. Principal..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Correo Electrónico</label>
+                    <input type="email" id="regEmail" placeholder="correo@tienda.com" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña (mínimo 6 caracteres)</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <button type="submit" id="btnRegSubmit" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
+                    Registrar Tienda 🏢
+                </button>
+            </form>
 
-    <!-- Modal para Recuperar Contraseña -->
-    <div id="modalRecuperar" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full flex flex-col gap-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-base font-black text-white">Recuperar Contraseña</h3>
-                <button onclick="cerrarModalRecuperar()" class="text-slate-400 hover:text-white text-lg font-bold px-2 cursor-pointer">✕</button>
-            </div>
-            <p class="text-xs text-slate-400 leading-relaxed">Ingresa tu correo electrónico registrado y te enviaremos un enlace para restablecer tu contraseña.</p>
-            <div class="flex flex-col gap-1">
-                <label class="text-xs text-slate-400 font-bold">Correo Electrónico</label>
-                <input type="email" id="emailRecuperar" placeholder="tucorreo@email.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-            </div>
-            <div class="flex gap-2 mt-2">
-                <button id="btnEnviarCorreoRecuperacion" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2.5 px-4 rounded-xl flex-1 text-xs cursor-pointer shadow-lg shadow-amber-500/20">Enviar Enlace</button>
-                <button onclick="cerrarModalRecuperar()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-4 rounded-xl text-xs cursor-pointer">Cancelar</button>
-            </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Script de Firebase -->
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 p-4 text-center text-slate-500 text-xs">
+        TurespuestoYa © 2026 — Todos los derechos reservados
+    </footer>
+
+    <!-- Script de Firebase y Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -128,116 +130,116 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        let esRegistro = false;
+        const CORREO_SUPER_ADMIN = "josegrexx@gmail.com";
 
-        const tabLogin = document.getElementById('tabLogin');
-        const tabRegistro = document.getElementById('tabRegistro');
-        const camposRegistroAdicionales = document.getElementById('camposRegistroAdicionales');
-        const campoConfirmarPass = document.getElementById('campoConfirmarPass');
-        const contenedorOlvidoClave = document.getElementById('contenedorOlvidoClave');
-        const btnAccion = document.getElementById('btnAccion');
-        const subtituloForm = document.getElementById('subtituloForm');
+        window.cambiarTab = function(tab) {
+            const formLogin = document.getElementById('formLogin');
+            const formRegistro = document.getElementById('formRegistro');
+            const btnLogin = document.getElementById('tabBtnLogin');
+            const btnRegistro = document.getElementById('tabBtnRegistro');
+            ocultarError();
 
-        tabLogin.addEventListener('click', () => {
-            esRegistro = false;
-            tabLogin.className = "py-2 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition cursor-pointer";
-            tabRegistro.className = "py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
-            camposRegistroAdicionales.classList.add('hidden');
-            campoConfirmarPass.classList.add('hidden');
-            contenedorOlvidoClave.classList.remove('hidden');
-            btnAccion.innerText = "Iniciar Sesión";
-            subtituloForm.innerText = "Accede a tu panel de tienda";
-        });
-
-        tabRegistro.addEventListener('click', () => {
-            esRegistro = true;
-            tabRegistro.className = "py-2 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition cursor-pointer";
-            tabLogin.className = "py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer";
-            camposRegistroAdicionales.classList.remove('hidden');
-            campoConfirmarPass.classList.remove('hidden');
-            contenedorOlvidoClave.classList.add('hidden');
-            btnAccion.innerText = "Crear Cuenta de Tienda";
-            subtituloForm.innerText = "Registra los datos y ubicación de tu tienda";
-        });
-
-        // Control de Modal de Recuperación
-        const modalRecuperar = document.getElementById('modalRecuperar');
-        document.getElementById('btnAbrirModalRecuperar').addEventListener('click', () => {
-            const emailActual = document.getElementById('email').value.trim();
-            if (emailActual) {
-                document.getElementById('emailRecuperar').value = emailActual;
+            if (tab === 'login') {
+                formLogin.classList.remove('hidden');
+                formRegistro.classList.add('hidden');
+                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950 cursor-pointer";
+                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white cursor-pointer";
+            } else {
+                formRegistro.classList.remove('hidden');
+                formLogin.classList.add('hidden');
+                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950 cursor-pointer";
+                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white cursor-pointer";
             }
-            modalRecuperar.classList.remove('hidden');
-            modalRecuperar.classList.add('flex');
-        });
-
-        window.cerrarModalRecuperar = function() {
-            modalRecuperar.classList.add('hidden');
-            modalRecuperar.classList.remove('flex');
         };
 
-        document.getElementById('btnEnviarCorreoRecuperacion').addEventListener('click', () => {
-            const emailRecu = document.getElementById('emailRecuperar').value.trim();
-            if (!emailRecu) return alert("Por favor ingresa tu correo electrónico.");
+        function mostrarError(msj) {
+            const box = document.getElementById('errorBox');
+            box.innerText = `⚠️ ${msj}`;
+            box.classList.remove('hidden');
+        }
 
-            sendPasswordResetEmail(auth, emailRecu)
-                .then(() => {
-                    alert("¡Correo enviado! Revisa tu bandeja de entrada o spam para restablecer tu contraseña.");
-                    cerrarModalRecuperar();
-                })
-                .catch((error) => {
-                    alert("Error al enviar el correo: " + error.message);
-                });
+        function ocultarError() {
+            const box = document.getElementById('errorBox');
+            box.classList.add('hidden');
+        }
+
+        // Manejar Inicio de Sesión
+        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            ocultarError();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+
+                // Redirección automática si es el Super Admin
+                if (email.toLowerCase() === CORREO_SUPER_ADMIN.toLowerCase()) {
+                    window.location.href = "admin.html";
+                    return;
+                }
+
+                // Verificar si la tienda está bloqueada
+                const tiendaSnap = await get(ref(db, `tiendas/${user.uid}`));
+                if (tiendaSnap.exists()) {
+                    const tiendaData = tiendaSnap.val();
+                    if (tiendaData.status === 'blocked') {
+                        alert("Tu tienda ha sido bloqueada permanentemente por el administrador.");
+                        await auth.signOut();
+                        return;
+                    }
+                }
+
+                window.location.href = "panel.html";
+            } catch (err) {
+                mostrarError("Error al iniciar sesión: Verifique su correo y contraseña.");
+            }
         });
 
-        btnAccion.addEventListener('click', () => {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
+        // Manejar Registro de Tienda
+        document.getElementById('formRegistro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            ocultarError();
 
-            if (!email || !password) return alert("Por favor completa correo y contraseña.");
+            const nombreTienda = document.getElementById('regNombreTienda').value.trim().toUpperCase();
+            const propietario = document.getElementById('regPropietario').value.trim();
+            const telefono = document.getElementById('regTelefono').value.trim();
+            const ciudad = document.getElementById('regCiudad').value;
+            const direccion = document.getElementById('regDireccion').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPassword').value.trim();
 
-            if (esRegistro) {
-                const nombreTienda = document.getElementById('nombreTienda').value.trim();
-                const ciudadTienda = document.getElementById('ciudadTienda').value;
-                const direccionFisica = document.getElementById('direccionFisica').value.trim();
-                const telefonoWsp = document.getElementById('telefonoWsp').value.trim();
-                const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            if (pass.length < 6) {
+                return mostrarError("La contraseña debe tener al menos 6 caracteres.");
+            }
 
-                if (!nombreTienda || !direccionFisica || !telefonoWsp) {
-                    return alert("Por favor completa todos los campos de la tienda.");
+            const telLimpio = telefono.replace(/\D/g, '');
+            try {
+                // Comprobar lista negra de teléfonos
+                const blockedSnap = await get(ref(db, `blocked_phones/${telLimpio}`));
+                if (blockedSnap.exists()) {
+                    return mostrarError("Este número de teléfono está bloqueado y no puede registrar una tienda.");
                 }
-                if (password !== confirmPassword) {
-                    return alert("Las contraseñas no coinciden.");
-                }
-                if (password.length < 6) {
-                    return alert("La contraseña debe tener al menos 6 caracteres.");
-                }
 
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        const user = userCredential.user;
-                        set(ref(db, `tiendas/${user.uid}`), {
-                            nombreTienda: nombreTienda,
-                            ciudad: ciudadTienda,
-                            direccionFisica: direccionFisica,
-                            telefonoWsp: telefonoWsp,
-                            email: email
-                        }).then(() => {
-                            alert("¡Tienda registrada con éxito!");
-                            window.location.href = "panel.html";
-                        });
-                    })
-                    .catch((error) => {
-                        alert("Error al registrar: " + error.message);
-                    });
-            } else {
-                signInWithEmailAndPassword(auth, email, password)
-                    .then(() => {
-                        window.location.href = "panel.html";
-                    })
-                    .catch((error) => {
-                        alert("Error al iniciar sesión: " + error.message);
-                    });
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+
+                await set(ref(db, `tiendas/${user.uid}`), {
+                    nombreTienda: nombreTienda,
+                    propietario: propietario,
+                    telefonoWsp: telefono,
+                    ciudad: ciudad,
+                    direccionFisica: direccion,
+                    email: email,
+                    status: 'active',
+                    createdAt: new Date().toLocaleString()
+                });
+
+                alert("¡Tienda registrada con éxito!");
+                window.location.href = "panel.html";
+            } catch (err) {
+                mostrarError("Error en el registro: " + err.message);
             }
         });
     </script>
