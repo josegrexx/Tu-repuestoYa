@@ -1,123 +1,65 @@
-<!-- 
-  =============================================================
-  ARCHIVO: login.html (Acceso y Registro de Tiendas y Super Admin)
-  VERSIÓN: 3.9.7
-  ÚLTIMO CAMBIO: Integración con lista negra de teléfonos, redirección inteligente a panel de super admin y diseño uniforme.
-  =============================================================
--->
+<!-- =============================================================
+     ARCHIVO: login.html (Portal de Acceso - Versión 4.0)
+     ============================================================= -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Tiendas - TurespuestoYa</title>
+    <title>Acceso de Tiendas v4.0 - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans">
 
-    <!-- Header -->
     <header class="bg-slate-900 border-b border-slate-800 p-4 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <span class="text-2xl">⚡</span>
-                <h1 class="text-xl font-black text-amber-500 tracking-wide uppercase">TurespuestoYa</h1>
+                <h1 class="text-xl font-black text-amber-500 tracking-wide uppercase">TurespuestoYa <span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/30">v4.0</span></h1>
             </div>
-            <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo ↗</a>
+            <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo 🌐</a>
         </div>
     </header>
 
-    <!-- Contenedor Principal -->
-    <main class="max-w-md mx-auto p-4 w-full flex-grow flex items-center justify-center my-6">
-        <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full flex flex-col gap-6">
+    <main class="max-w-md w-full mx-auto p-4 flex-grow flex items-center justify-center">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl w-full flex flex-col gap-6">
             
-            <!-- Selector de Pestañas (Login / Registro) -->
-            <div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-                <button id="tabBtnLogin" onclick="cambiarTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950 cursor-pointer">Iniciar Sesión</button>
-                <button id="tabBtnRegistro" onclick="cambiarTab('registro')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white cursor-pointer">Registrar Tienda</button>
+            <div class="text-center">
+                <span class="text-3xl mb-2 inline-block">🔐</span>
+                <h2 class="text-xl font-black text-white uppercase tracking-wide">Portal de Tiendas</h2>
+                <p class="text-xs text-slate-400 mt-1">Ingresa tus credenciales para administrar tu inventario</p>
             </div>
 
-            <!-- Caja de Alertas / Errores -->
-            <div id="errorBox" class="bg-red-500/20 border border-red-500 text-red-300 p-3 rounded-xl text-xs hidden"></div>
-
-            <!-- FORMULARIO DE INICIO DE SESIÓN -->
             <form id="formLogin" class="flex flex-col gap-4">
-                <h2 class="text-lg font-black text-white uppercase tracking-wide">Acceso Propietarios</h2>
                 <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Correo Electrónico</label>
-                    <input type="email" id="loginEmail" placeholder="tu-correo@gmail.com" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                    <label class="text-xs text-slate-400 font-bold mb-1.5 block">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" placeholder="tu-tienda@correo.com" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-xs focus:border-amber-500 focus:outline-none transition">
                 </div>
+
                 <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                    <label class="text-xs text-slate-400 font-bold mb-1.5 block">Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-100 text-xs focus:border-amber-500 focus:outline-none transition">
                 </div>
-                <button type="submit" id="btnLoginSubmit" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
-                    Ingresar al Panel 🚀
+
+                <button type="submit" id="btnIngresar" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
+                    Iniciar Sesión 🚀
                 </button>
             </form>
 
-            <!-- FORMULARIO DE REGISTRO DE TIENDA -->
-            <form id="formRegistro" class="flex flex-col gap-3.5 hidden">
-                <h2 class="text-lg font-black text-white uppercase tracking-wide">Registro de Nueva Tienda</h2>
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Nombre del Local / Tienda</label>
-                    <input type="text" id="regNombreTienda" placeholder="Ej. Repuestos El Chamo" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none uppercase">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-400 font-bold mb-1 block">Propietario</label>
-                        <input type="text" id="regPropietario" placeholder="Tu nombre" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 font-bold mb-1 block">WhatsApp</label>
-                        <input type="text" id="regTelefono" placeholder="Ej. 04121234567" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs text-slate-400 font-bold mb-1 block">Ciudad</label>
-                        <select id="regCiudad" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                            <option value="San Cristóbal">San Cristóbal</option>
-                            <option value="Maracay">Maracay</option>
-                            <option value="Valencia">Valencia</option>
-                            <option value="Caracas">Caracas</option>
-                            <option value="Barquisimeto">Barquisimeto</option>
-                            <option value="Maracaibo">Maracaibo</option>
-                            <option value="Mérida">Mérida</option>
-                            <option value="Barinas">Barinas</option>
-                            <option value="Puerto La Cruz">Puerto La Cruz</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 font-bold mb-1 block">Dirección Física</label>
-                        <input type="text" id="regDireccion" placeholder="Av. Principal..." required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Correo Electrónico</label>
-                    <input type="email" id="regEmail" placeholder="correo@tienda.com" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 font-bold mb-1 block">Contraseña (mínimo 6 caracteres)</label>
-                    <input type="password" id="regPassword" placeholder="••••••••" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
-                </div>
-                <button type="submit" id="btnRegSubmit" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-xs shadow-lg shadow-amber-500/20 cursor-pointer mt-2">
-                    Registrar Tienda 🏢
-                </button>
-            </form>
-
+            <div class="border-t border-slate-800 pt-4 text-center">
+                <p class="text-xs text-slate-400">¿No tienes una cuenta registrada?</p>
+                <a href="registro.html" class="text-amber-400 hover:text-amber-300 font-bold text-xs mt-1 inline-block transition">Registra tu tienda aquí 🏢</a>
+            </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 border-t border-slate-800 p-4 text-center text-slate-500 text-xs">
-        TurespuestoYa © 2026 — Todos los derechos reservados
+    <footer class="bg-slate-900 border-t border-slate-800 p-4 text-center text-xs text-slate-500">
+        &copy; 2026 TurespuestoYa v4.0 - Todos los derechos reservados.
     </footer>
 
-    <!-- Script de Firebase y Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -128,119 +70,26 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getDatabase(app);
 
-        const CORREO_SUPER_ADMIN = "josegrexx@gmail.com";
-
-        window.cambiarTab = function(tab) {
-            const formLogin = document.getElementById('formLogin');
-            const formRegistro = document.getElementById('formRegistro');
-            const btnLogin = document.getElementById('tabBtnLogin');
-            const btnRegistro = document.getElementById('tabBtnRegistro');
-            ocultarError();
-
-            if (tab === 'login') {
-                formLogin.classList.remove('hidden');
-                formRegistro.classList.add('hidden');
-                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950 cursor-pointer";
-                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white cursor-pointer";
-            } else {
-                formRegistro.classList.remove('hidden');
-                formLogin.classList.add('hidden');
-                btnRegistro.className = "flex-1 py-2 text-xs font-bold rounded-lg transition bg-amber-500 text-slate-950 cursor-pointer";
-                btnLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white cursor-pointer";
-            }
-        };
-
-        function mostrarError(msj) {
-            const box = document.getElementById('errorBox');
-            box.innerText = `⚠️ ${msj}`;
-            box.classList.remove('hidden');
-        }
-
-        function ocultarError() {
-            const box = document.getElementById('errorBox');
-            box.classList.add('hidden');
-        }
-
-        // Manejar Inicio de Sesión
-        document.getElementById('formLogin').addEventListener('submit', async (e) => {
+        document.getElementById('formLogin').addEventListener('submit', (e) => {
             e.preventDefault();
-            ocultarError();
+            
             const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPassword').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const btnIngresar = document.getElementById('btnIngresar');
 
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
+            btnIngresar.innerText = "Iniciando sesión...";
+            btnIngresar.disabled = true;
 
-                // Redirección automática si es el Super Admin
-                if (email.toLowerCase() === CORREO_SUPER_ADMIN.toLowerCase()) {
-                    window.location.href = "admin.html";
-                    return;
-                }
-
-                // Verificar si la tienda está bloqueada
-                const tiendaSnap = await get(ref(db, `tiendas/${user.uid}`));
-                if (tiendaSnap.exists()) {
-                    const tiendaData = tiendaSnap.val();
-                    if (tiendaData.status === 'blocked') {
-                        alert("Tu tienda ha sido bloqueada permanentemente por el administrador.");
-                        await auth.signOut();
-                        return;
-                    }
-                }
-
-                window.location.href = "panel.html";
-            } catch (err) {
-                mostrarError("Error al iniciar sesión: Verifique su correo y contraseña.");
-            }
-        });
-
-        // Manejar Registro de Tienda
-        document.getElementById('formRegistro').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            ocultarError();
-
-            const nombreTienda = document.getElementById('regNombreTienda').value.trim().toUpperCase();
-            const propietario = document.getElementById('regPropietario').value.trim();
-            const telefono = document.getElementById('regTelefono').value.trim();
-            const ciudad = document.getElementById('regCiudad').value;
-            const direccion = document.getElementById('regDireccion').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPassword').value.trim();
-
-            if (pass.length < 6) {
-                return mostrarError("La contraseña debe tener al menos 6 caracteres.");
-            }
-
-            const telLimpio = telefono.replace(/\D/g, '');
-            try {
-                // Comprobar lista negra de teléfonos
-                const blockedSnap = await get(ref(db, `blocked_phones/${telLimpio}`));
-                if (blockedSnap.exists()) {
-                    return mostrarError("Este número de teléfono está bloqueado y no puede registrar una tienda.");
-                }
-
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
-
-                await set(ref(db, `tiendas/${user.uid}`), {
-                    nombreTienda: nombreTienda,
-                    propietario: propietario,
-                    telefonoWsp: telefono,
-                    ciudad: ciudad,
-                    direccionFisica: direccion,
-                    email: email,
-                    status: 'active',
-                    createdAt: new Date().toLocaleString()
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    window.location.href = "panel.html";
+                })
+                .catch(() => {
+                    alert("Error al iniciar sesión: Verifique su correo y contraseña.");
+                    btnIngresar.innerText = "Iniciar Sesión 🚀";
+                    btnIngresar.disabled = false;
                 });
-
-                alert("¡Tienda registrada con éxito!");
-                window.location.href = "panel.html";
-            } catch (err) {
-                mostrarError("Error en el registro: " + err.message);
-            }
         });
     </script>
 </body>

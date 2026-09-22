@@ -1,174 +1,89 @@
-<!-- 
-  =============================================================
-  ARCHIVO: admin.html (Panel de Super Administrador)
-  VERSIÓN: 3.9.9
-  ÚLTIMO CAMBIO: Incorporación de control para verificar/desverificar tiendas en la gestión general.
-  =============================================================
--->
+<!-- =============================================================
+     ARCHIVO: admin.html (Panel de Administración - Versión 4.8)
+     ============================================================= -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Super Admin - TurespuestoYa</title>
+    <title>Panel de Administración v4.8 - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <!-- Header del Super Admin -->
     <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-2">
-                <span class="text-2xl">🛡️</span>
-                <h1 class="text-xl font-black text-amber-500 tracking-wide uppercase">Super Admin - TurespuestoYa</h1>
+                <span class="text-2xl">⚡</span>
+                <h1 class="text-xl font-black text-amber-500 tracking-wide uppercase">Admin - TurespuestoYa <span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/30">v4.8</span></h1>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <span id="adminEmailDisplay" class="text-xs text-emerald-400 font-bold hidden sm:inline border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 rounded-xl">Verificando sesión...</span>
-                <button onclick="cambiarTabAdmin('panel')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700 cursor-pointer">Panel General</button>
-                <button onclick="activarTodasLasTiendas()" class="bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-emerald-500/30 cursor-pointer flex items-center gap-1">🚀 Forzar Activas</button>
-                <button onclick="cambiarTabAdmin('seguridad')" class="bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-amber-500/30 cursor-pointer flex items-center gap-1">🔐 Seguridad</button>
-                <button id="btnLogoutAdmin" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/20 cursor-pointer">Salir</button>
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700">Ver Catálogo 🌐</a>
+                <button id="btnCerrarSesionAdmin" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/30 cursor-pointer">Cerrar Sesión 🚪</button>
             </div>
         </div>
     </header>
 
-    <!-- Contenedor de Alertas / Errores en Pantalla -->
-    <div id="errorContainer" class="max-w-7xl mx-auto px-4 mt-4 w-full hidden">
-        <div class="bg-red-500/20 border border-red-500 text-red-300 p-4 rounded-xl text-xs flex justify-between items-center" id="errorMessage"></div>
-    </div>
-
-    <!-- MAIN: PANEL GENERAL -->
-    <main id="tabPanelGeneral" class="max-w-7xl mx-auto p-4 flex-grow w-full flex flex-col gap-6">
+    <main class="max-w-7xl mx-auto p-4 flex-grow w-full mt-4 flex flex-col gap-6">
         
-        <!-- Sección 1: Gestión de Tiendas -->
-        <section class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                    🏢 Gestión General de Tiendas (<span id="totalTiendasCount" class="text-amber-500">0</span>)
-                </h2>
-                <span class="text-[11px] text-slate-400 italic">Control total de accesos, estados y verificaciones.</span>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+                <span class="text-xs text-slate-400 font-bold uppercase">Total Tiendas Registradas</span>
+                <span id="statTotalTiendas" class="text-2xl font-black text-white mt-2">0</span>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-slate-800 text-[11px] text-slate-400 uppercase tracking-wider">
-                            <th class="p-3">Tienda</th>
-                            <th class="p-3">Propietario</th>
-                            <th class="p-3">WhatsApp</th>
-                            <th class="p-3">Ciudad</th>
-                            <th class="p-3">Estado</th>
-                            <th class="p-3 text-right">Acciones de Control</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaTiendasBody" class="divide-y divide-slate-800/60 text-xs">
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-slate-500 italic">Cargando tiendas desde Firebase...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+                <span class="text-xs text-slate-400 font-bold uppercase">Tiendas Oficiales Verificadas</span>
+                <span id="statTiendasVerificadas" class="text-2xl font-black text-sky-400 mt-2">0</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+                <span class="text-xs text-slate-400 font-bold uppercase">Total Publicaciones en Índice</span>
+                <span id="statTotalPublicaciones" class="text-2xl font-black text-amber-400 mt-2">0</span>
+            </div>
+        </div>
+
+        <!-- Sección 1: Publicaciones Reportadas (Prioritarias) -->
+        <section class="bg-slate-900 border border-red-500/50 p-6 rounded-2xl shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-red-500 text-slate-950 font-black text-[10px] px-4 py-1 rounded-bl-xl uppercase tracking-wider shadow-lg">⚠️ Zona de Alerta</div>
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+                <h2 class="text-base font-black text-red-400 uppercase tracking-wider flex items-center gap-2">🚨 Publicaciones Reportadas (Prioritarias)</h2>
+                <span id="contadorAdminReportes" class="bg-slate-950 text-red-400 font-bold px-3 py-1 rounded-xl text-xs border border-red-500/30">0 reportadas</span>
+            </div>
+
+            <div id="gridAdminReportes" class="flex flex-col gap-3">
+                <p class="text-slate-500 text-xs italic text-center py-6">Cargando publicaciones reportadas...</p>
             </div>
         </section>
 
-        <!-- Sección 2: Auditoría y Control de Tienda Seleccionada -->
-        <div id="seccionDetalleTienda" class="flex flex-col gap-6 hidden">
-            <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex justify-between items-center shadow-lg shadow-amber-500/5">
-                <div>
-                    <span class="text-[10px] uppercase font-bold text-amber-500 tracking-wider block">Tienda Bajo Auditoría</span>
-                    <h3 id="nombreTiendaAuditada" class="text-xl font-black text-white uppercase">Nombre de Tienda</h3>
-                </div>
-                <button onclick="cerrarAuditoria()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer border border-slate-700">Cerrar Auditoría ✕</button>
+        <!-- Sección 2: Gestión de Tiendas -->
+        <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+                <h2 class="text-base font-black text-white uppercase tracking-wider flex items-center gap-2">🏢 Gestión de Tiendas del Mercado</h2>
+                <span id="contadorAdminTiendas" class="bg-slate-950 text-slate-400 font-bold px-3 py-1 rounded-xl text-xs border border-slate-800">0 tiendas</span>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Sub-sección: Publicaciones de la Tienda -->
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col gap-4">
-                    <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">📦 Publicaciones (Inventario)</h3>
-                    <div id="listaProductosAdmin" class="flex flex-col gap-2.5 max-h-96 overflow-y-auto pr-1">
-                        <p class="text-slate-500 text-xs italic text-center py-4">Selecciona una tienda para ver sus productos.</p>
-                    </div>
-                </div>
-
-                <!-- Sub-sección: Pedidos por Fechas y Estados -->
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col gap-4">
-                    <h3 class="text-base font-bold text-slate-100 flex items-center gap-2">🛒 Pedidos por Fechas y Estados</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800">
-                        <div>
-                            <label class="text-[10px] text-slate-400 font-bold block mb-1">Estado</label>
-                            <select id="filtroEstadoPedido" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-                                <option value="todos">Todos</option>
-                                <option value="pendientes">Pendientes</option>
-                                <option value="atendidos">Atendidos</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] text-slate-400 font-bold block mb-1">Desde</label>
-                            <input type="date" id="filtroFechaDesde" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-                        </div>
-                        <div>
-                            <label class="text-[10px] text-slate-400 font-bold block mb-1">Hasta</label>
-                            <input type="date" id="filtroFechaHasta" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500">
-                        </div>
-                    </div>
-                    <button onclick="filtrarPedidosAdmin()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold py-2 rounded-xl text-xs transition border border-slate-700 cursor-pointer">Aplicar Filtros</button>
-                    <div id="listaPedidosAdmin" class="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1">
-                        <p class="text-slate-500 text-xs italic text-center py-4">Selecciona una tienda para revisar sus pedidos.</p>
-                    </div>
-                </div>
+            <div id="gridAdminTiendas" class="flex flex-col gap-3">
+                <p class="text-slate-500 text-xs italic text-center py-6">Cargando listado de tiendas...</p>
             </div>
-        </div>
+        </section>
+
+        <!-- Sección 3: Gestión y Borrado Directo de Publicaciones del Index -->
+        <section class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+                <h2 class="text-base font-black text-white uppercase tracking-wider flex items-center gap-2">📦 Todas las Publicaciones Activas en el Índice</h2>
+                <span id="contadorAdminPublicaciones" class="bg-slate-950 text-slate-400 font-bold px-3 py-1 rounded-xl text-xs border border-slate-800">0 publicaciones</span>
+            </div>
+
+            <div id="gridAdminPublicaciones" class="flex flex-col gap-3">
+                <p class="text-slate-500 text-xs italic text-center py-6">Cargando publicaciones del catálogo...</p>
+            </div>
+        </section>
+
     </main>
 
-    <!-- MAIN: SEGURIDAD Y REGLAS DE FIREBASE (Inicialmente oculto) -->
-    <main id="tabSeguridad" class="max-w-7xl mx-auto p-4 flex-grow w-full hidden flex-col gap-6">
-        
-        <div class="bg-amber-500 border border-amber-600 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row gap-4 items-center justify-between text-slate-950">
-            <div>
-                <h2 class="text-xl font-black mb-1">🔐 Configuración de Reglas de Seguridad</h2>
-                <p class="text-sm font-semibold">Copia este código y pégalo en Firebase para evitar que alteren datos ajenos. Tu UID de administrador ya está inyectado.</p>
-            </div>
-            <button onclick="copiarReglas()" class="bg-slate-950 hover:bg-slate-800 text-amber-500 font-black px-6 py-3 rounded-xl transition cursor-pointer shadow-lg w-full md:w-auto shrink-0">Copiar Reglas</button>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Columna Izquierda: Código de Reglas -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl flex flex-col overflow-hidden">
-                <div class="bg-slate-950 p-3 border-b border-slate-800 flex justify-between items-center">
-                    <span class="text-xs text-slate-400 font-bold">Código JSON (Realtime Database Rules)</span>
-                </div>
-                <pre id="codigoReglas" class="p-4 text-[11px] text-emerald-400 font-mono overflow-auto h-96">Cargando tu UID de administrador...</pre>
-            </div>
-
-            <!-- Columna Derecha: Instrucciones y Botón de Reversión -->
-            <div class="flex flex-col gap-6">
-                <!-- Cómo aplicar -->
-                <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl">
-                    <h3 class="text-base font-bold text-slate-100 flex items-center gap-2 mb-3">✅ ¿Cómo aplicar estas reglas?</h3>
-                    <ol class="list-decimal list-inside text-sm text-slate-300 space-y-2">
-                        <li>Ve a la consola de Firebase (<a href="https://console.firebase.google.com/" target="_blank" class="text-blue-400 hover:underline">console.firebase.google.com</a>).</li>
-                        <li>Entra a tu proyecto <strong>turepuestoya</strong>.</li>
-                        <li>En el menú izquierdo, haz clic en <strong>Realtime Database</strong>.</li>
-                        <li>Arriba, selecciona la pestaña <strong>Reglas (Rules)</strong>.</li>
-                        <li>Borra todo lo que haya allí, pega el código copiado y haz clic en <strong>Publicar</strong>.</li>
-                    </ol>
-                </div>
-
-                <!-- Cómo Revertir -->
-                <div class="bg-red-500/10 border border-red-500/30 p-5 rounded-2xl shadow-xl">
-                    <h3 class="text-base font-bold text-red-400 flex items-center gap-2 mb-3">⚠️ ¿Cómo REVERTIR las reglas si ocurre algún error?</h3>
-                    <p class="text-sm text-slate-300 mb-3">Si notas que la app deja de funcionar, puedes restaurar el acceso público temporalmente pegando este código básico:</p>
-                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-400 font-mono">
-                        <code>{ "rules": { ".read": "true", ".write": "true" } }</code>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Script de Firebase y Lógica -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, set, update, remove, push } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4xzcn6XKdViHsdGnGJukyqcdAOKWtujg",
@@ -178,399 +93,275 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
-
-        const CORREO_SUPER_ADMIN = "josegrexx@gmail.com"; 
-
-        let tiendaSeleccionadaUid = null;
-        let adminActualUid = null;
-        let productosTiendaActual = {};
-        let pedidosPendientesActual = {};
-        let pedidosAtendidosActual = {};
-
-        window.cambiarTabAdmin = function(tab) {
-            const panel = document.getElementById('tabPanelGeneral');
-            const seg = document.getElementById('tabSeguridad');
-            
-            if (tab === 'panel') {
-                panel.classList.remove('hidden');
-                panel.classList.add('flex');
-                seg.classList.add('hidden');
-                seg.classList.remove('flex');
-            } else {
-                seg.classList.remove('hidden');
-                seg.classList.add('flex');
-                panel.classList.add('hidden');
-                panel.classList.remove('flex');
-            }
-        };
+        const auth = getAuth(app);
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                if (user.email.toLowerCase() !== CORREO_SUPER_ADMIN.toLowerCase()) {
-                    mostrarError(`ACCESO DENEGADO: Tu cuenta (${user.email}) no tiene permisos de Super Administrador.`);
-                    signOut(auth);
-                    setTimeout(() => window.location.href = "login.html", 3000);
-                    return;
-                }
-
-                adminActualUid = user.uid;
-                document.getElementById('adminEmailDisplay').innerText = `Admin: ${user.email}`;
-                generarCodigoReglas(adminActualUid);
-
-                onValue(ref(db, 'tiendas'), (snapshot) => {
-                    const tbody = document.getElementById('tablaTiendasBody');
-                    tbody.innerHTML = "";
-                    const data = snapshot.val() || {};
-                    const uids = Object.keys(data);
-
-                    document.getElementById('totalTiendasCount').innerText = uids.length;
-
-                    if (uids.length > 0) {
-                        uids.forEach(uid => {
-                            const t = data[uid];
-                            const estado = t.status || 'active';
-                            const verified = !!t.verified;
-                            
-                            let badgeEstado = `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold text-[10px]">ACTIVA</span>`;
-                            if (estado === 'paused') badgeEstado = `<span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold text-[10px]">PAUSADA</span>`;
-                            if (estado === 'blocked') badgeEstado = `<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold text-[10px]">BLOQUEADA</span>`;
-
-                            const badgeVerificado = verified 
-                                ? `<span class="bg-sky-500/20 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded font-bold text-[10px] inline-flex items-center gap-0.5 ml-1">✓ VERIFICADA</span>` 
-                                : `<span class="text-slate-500 text-[10px] ml-1">(No verif.)</span>`;
-
-                            tbody.innerHTML += `
-                                <tr class="hover:bg-slate-950/50 transition">
-                                    <td class="p-3 font-bold text-white uppercase flex items-center gap-1">
-                                        ${t.nombreTienda || 'Sin Nombre'} ${badgeVerificado}
-                                    </td>
-                                    <td class="p-3 text-slate-300">${t.propietario || 'N/A'}</td>
-                                    <td class="p-3 text-slate-300">${t.telefonoWsp || 'N/A'}</td>
-                                    <td class="p-3 text-slate-400">${t.ciudad || 'N/A'}</td>
-                                    <td class="p-3">${badgeEstado}</td>
-                                    <td class="p-3 text-right space-x-1">
-                                        <button onclick="toggleVerificarTienda('${uid}', ${verified})" class="bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-slate-950 px-2.5 py-1 rounded-lg font-bold text-[11px] border border-sky-500/30 cursor-pointer">
-                                            ${verified ? 'Quitar Verif. ✕' : 'Verificar ✓'}
-                                        </button>
-                                        <button onclick="cambiarEstadoTienda('${uid}', '${estado === 'paused' ? 'active' : 'paused'}')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-1 rounded-lg font-bold text-[11px] border border-slate-700 cursor-pointer">
-                                            ${estado === 'paused' ? 'Reactivar' : 'Pausar'}
-                                        </button>
-                                        <button onclick="bloquearTienda('${uid}', '${t.telefonoWsp || ''}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-2.5 py-1 rounded-lg font-bold text-[11px] border border-red-500/20 cursor-pointer">
-                                            Bloquear 🚫
-                                        </button>
-                                        <button onclick="auditarTienda('${uid}', '${t.nombreTienda}')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1 rounded-lg font-black text-[11px] cursor-pointer shadow-md">
-                                            Auditar 🔍
-                                        </button>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                    } else {
-                        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 italic">No hay tiendas registradas.</td></tr>`;
-                    }
-                }, (error) => {
-                    mostrarError("Error al leer tiendas: " + error.message);
-                });
-
+                cargarDatosAdmin();
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        // 🛡️ Función para alternar la verificación de la tienda y notificar
-        window.toggleVerificarTienda = function(uid, estadoActual) {
-            const nuevoEstado = !estadoActual;
-            update(ref(db, `tiendas/${uid}`), { verified: nuevoEstado }).then(() => {
-                const mensajeNotif = nuevoEstado 
-                    ? "¡Felicidades! Tu tienda ha sido verificada oficialmente por el Administrador 🛡️✓." 
-                    : "El estatus de verificación oficial de tu tienda ha sido retirado por el Administrador.";
-                
-                push(ref(db, `notificaciones/${uid}`), {
-                    tipo: 'VERIFICACION_TIENDA',
-                    titulo: nuevoEstado ? '🛡️ TIENDA VERIFICADA' : 'ℹ️ VERIFICACIÓN RETIRADA',
-                    mensaje: mensajeNotif,
-                    fecha: new Date().toLocaleString(),
-                    timestamp: Date.now()
-                });
-                alert(nuevoEstado ? "¡Tienda marcada como verificada con éxito!" : "Verificación retirada.");
-            });
-        };
-
-        window.activarTodasLasTiendas = function() {
-            if (!confirm("¿Deseas asegurar que todas las tiendas estén con estado 'active' para que se muestren en el index?")) return;
-            get(ref(db, 'tiendas')).then((snap) => {
-                const data = snap.val() || {};
-                const updates = {};
-                Object.keys(data).forEach(uid => {
-                    if (!data[uid].status || data[uid].status !== 'blocked') {
-                        updates[`tiendas/${uid}/status`] = 'active';
-                    }
-                });
-                return update(ref(db), updates);
-            }).then(() => {
-                alert("¡Todas las tiendas habilitadas como 'active'! Ya deberían verse en el index.");
-            }).catch(err => {
-                alert("Error al actualizar tiendas: " + err.message);
-            });
-        };
-
-        window.cambiarEstadoTienda = function(uid, nuevoEstado) {
-            let motivo = "";
-            if (nuevoEstado === 'paused') {
-                motivo = prompt("Motivo por el cual pausas esta tienda:");
-                if (motivo === null) return;
-                if (!motivo.trim()) motivo = "Sin motivo especificado por el administrador";
-            }
-
-            const updates = { status: nuevoEstado };
-            if (nuevoEstado === 'paused') {
-                updates.motivoPausa = motivo;
-            } else {
-                updates.motivoPausa = null;
-            }
-
-            update(ref(db, `tiendas/${uid}`), updates).then(() => {
-                if (nuevoEstado === 'paused') {
-                    push(ref(db, `notificaciones/${uid}`), {
-                        tipo: 'TIENDA_PAUSADA',
-                        titulo: '⚠️ TIENDA PAUSADA',
-                        mensaje: `Tu tienda ha sido pausada por el Administrador.\nMotivo: "${motivo}"`,
-                        fecha: new Date().toLocaleString(),
-                        timestamp: Date.now()
-                    });
-                    alert("⚠️ Tienda pausada y notificación enviada.");
-                } else {
-                    push(ref(db, `notificaciones/${uid}`), {
-                        tipo: 'TIENDA_ACTIVADA',
-                        titulo: '✅ TIENDA REACTIVADA',
-                        mensaje: `Tu tienda ha sido reactivada por el Administrador.`,
-                        fecha: new Date().toLocaleString(),
-                        timestamp: Date.now()
-                    });
-                    alert("✅ Tienda reactivada con éxito.");
-                }
-            });
-        };
-
-        window.bloquearTienda = function(uid, telefono) {
-            const motivo = prompt("Motivo del bloqueo permanente:");
-            if (motivo === null) return;
-            const telefonoLimpio = telefono ? telefono.replace(/\D/g, '') : '';
-
-            update(ref(db, `tiendas/${uid}`), { status: 'blocked', motivoBloqueo: motivo })
-                .then(() => {
-                    if (telefonoLimpio) {
-                        return set(ref(db, `blocked_phones/${telefonoLimpio}`), {
-                            phone: telefono,
-                            reason: motivo,
-                            blockedAt: new Date().toLocaleString()
-                        });
-                    }
-                })
-                .then(() => {
-                    push(ref(db, `notificaciones/${uid}`), {
-                        tipo: 'TIENDA_BLOQUEADA',
-                        titulo: '🚫 TIENDA BLOQUEADA',
-                        mensaje: `Tu tienda ha sido bloqueada permanentemente.\nMotivo: "${motivo}"`,
-                        fecha: new Date().toLocaleString(),
-                        timestamp: Date.now()
-                    });
-                    alert("🚫 Tienda bloqueada y número añadido a la lista negra.");
-                    if (tiendaSeleccionadaUid === uid) cerrarAuditoria();
-                });
-        };
-
-        window.auditarTienda = function(uid, nombreTienda) {
-            tiendaSeleccionadaUid = uid;
-            document.getElementById('nombreTiendaAuditada').innerText = nombreTienda;
-            document.getElementById('seccionDetalleTienda').classList.remove('hidden');
-            document.getElementById('seccionDetalleTienda').scrollIntoView({ behavior: 'smooth' });
-
-            onValue(ref(db, `inventarios/${uid}`), (snap) => {
-                productosTiendaActual = snap.val() || {};
-                renderizarProductosAdmin();
-            }, { onlyOnce: true });
-
-            onValue(ref(db, `pedidos/${uid}`), (snap) => {
-                pedidosPendientesActual = snap.val() || {};
-                filtrarPedidosAdmin();
-            });
-
-            onValue(ref(db, `pedidos_atendidos/${uid}`), (snap) => {
-                pedidosAtendidosActual = snap.val() || {};
-                filtrarPedidosAdmin();
-            }, { onlyOnce: true });
-        };
-
-        window.cerrarAuditoria = function() {
-            tiendaSeleccionadaUid = null;
-            document.getElementById('seccionDetalleTienda').classList.add('hidden');
-        };
-
-        function renderizarProductosAdmin() {
-            const contenedor = document.getElementById('listaProductosAdmin');
-            contenedor.innerHTML = "";
-            const keys = Object.keys(productosTiendaActual);
-
-            if (keys.length > 0) {
-                keys.forEach(prodId => {
-                    const p = productosTiendaActual[prodId];
-                    const nombreMayus = p.nombre ? p.nombre.toUpperCase() : '';
-                    contenedor.innerHTML += `
-                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex justify-between items-center text-xs">
-                            <div class="flex flex-col gap-0.5 pr-2">
-                                <span class="text-amber-400 font-bold uppercase">${nombreMayus}</span>
-                                <span class="text-emerald-400 font-black">$${p.precio} <span class="text-slate-400 font-normal">| Stock: ${p.stock}</span></span>
-                            </div>
-                            <button onclick="adminEliminarProducto('${prodId}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold px-2.5 py-1.5 rounded-lg text-[10px] transition border border-red-500/20 cursor-pointer">
-                                Eliminar ✕
-                            </button>
-                        </div>
-                    `;
-                });
-            } else {
-                contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">Esta tienda no tiene publicaciones.</p>`;
-            }
-        }
-
-        window.adminEliminarProducto = function(prodId) {
-            const motivo = prompt("Motivo por el cual eliminas/pausas este repuesto:");
-            if (motivo === null) return;
-            if (!motivo.trim()) return alert("Debes ingresar un motivo.");
-
-            get(ref(db, `inventarios/${tiendaSeleccionadaUid}/${prodId}`)).then((snap) => {
-                const prod = snap.val() || {};
-                const nombreProd = prod.nombre ? prod.nombre.toUpperCase() : 'REPUESTO';
-
-                remove(ref(db, `inventarios/${tiendaSeleccionadaUid}/${prodId}`)).then(() => {
-                    push(ref(db, `notificaciones/${tiendaSeleccionadaUid}`), {
-                        tipo: 'PRODUCTO_ELIMINADO',
-                        titulo: '❌ PUBLICACIÓN ELIMINADA',
-                        mensaje: `Tu repuesto "${nombreProd}" fue eliminado por el Administrador.\nMotivo: "${motivo}"`,
-                        fecha: new Date().toLocaleString(),
-                        timestamp: Date.now()
-                    });
-                    alert("❌ Publicación eliminada y notificación enviada al propietario.");
-                    auditarTienda(tiendaSeleccionadaUid, document.getElementById('nombreTiendaAuditada').innerText);
-                });
-            });
-        };
-
-        window.filtrarPedidosAdmin = function() {
-            if (!tiendaSeleccionadaUid) return;
-            const contenedor = document.getElementById('listaPedidosAdmin');
-            contenedor.innerHTML = "";
-
-            const estadoFiltro = document.getElementById('filtroEstadoPedido').value;
-            const fechaDesde = document.getElementById('filtroFechaDesde').value;
-            const fechaHasta = document.getElementById('filtroFechaHasta').value;
-
-            let listaCombinada = [];
-
-            if (estadoFiltro === 'todos' || estadoFiltro === 'pendientes') {
-                Object.entries(pedidosPendientesActual).forEach(([id, p]) => {
-                    listaCombinada.push({ id, tipo: 'Pendiente', ...p });
-                });
-            }
-
-            if (estadoFiltro === 'todos' || estadoFiltro === 'atendidos') {
-                Object.entries(pedidosAtendidosActual).forEach(([id, p]) => {
-                    listaCombinada.push({ id, tipo: 'Atendido', ...p });
-                });
-            }
-
-            const listaFiltrada = listaCombinada.filter(item => {
-                if (!fechaDesde && !fechaHasta) return true;
-                const fechaItemStr = item.fechaISO || (item.fecha ? item.fecha.split(',')[0].trim() : '');
-                if (fechaDesde && fechaItemStr < fechaDesde) return false;
-                if (fechaHasta && fechaItemStr > fechaHasta) return false;
-                return true;
-            });
-
-            if (listaFiltrada.length > 0) {
-                listaFiltrada.reverse().forEach(o => {
-                    const badgeTipo = o.tipo === 'Pendiente' 
-                        ? `<span class="bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded text-[9px]">PENDIENTE</span>` 
-                        : `<span class="bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded text-[9px] border border-emerald-500/30">ATENDIDO</span>`;
-                    const repuestoMayus = o.repuesto ? o.repuesto.toUpperCase() : '';
-
-                    contenedor.innerHTML += `
-                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex flex-col gap-1.5 text-xs">
-                            <div class="flex justify-between items-center">
-                                <span class="text-amber-400 font-bold uppercase">${repuestoMayus}</span>
-                                <span class="text-emerald-400 font-black">$${o.precio}</span>
-                            </div>
-                            <div class="flex items-center gap-2 flex-wrap">
-                                ${badgeTipo}
-                                <span class="text-slate-300">👤 ${o.cliente} (📞 ${o.telefono})</span>
-                            </div>
-                            <span class="text-[10px] text-slate-400">📍 Ciudad: ${o.ciudad} | Dir: ${o.direccion}</span>
-                            <span class="text-[9px] text-slate-500">Fecha: ${o.fecha}</span>
-                        </div>
-                    `;
-                });
-            } else {
-                contenedor.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">No hay pedidos con los filtros seleccionados.</p>`;
-            }
-        };
-
-        document.getElementById('btnLogoutAdmin').addEventListener('click', () => {
+        document.getElementById('btnCerrarSesionAdmin').addEventListener('click', () => {
             signOut(auth).then(() => window.location.href = "login.html");
         });
 
-        function generarCodigoReglas(uid) {
-            const codigo = `{
-  "rules": {
-    ".read": "auth.uid === '${uid}'",
-    ".write": "auth.uid === '${uid}'",
-    "inventarios": {
-      ".read": "true",
-      "$tiendaUid": { ".write": "auth.uid === $tiendaUid" }
-    },
-    "tiendas": {
-      ".read": "true",
-      "$tiendaUid": { ".write": "auth.uid === $tiendaUid" }
-    },
-    "pedidos": {
-      "$tiendaUid": {
-        ".read": "auth.uid === $tiendaUid",
-        ".write": "true"
-      }
-    },
-    "pedidos_atendidos": {
-      "$tiendaUid": {
-        ".read": "auth.uid === $tiendaUid",
-        ".write": "auth.uid === $tiendaUid"
-      }
-    },
-    "notificaciones": {
-      "$tiendaUid": {
-        ".read": "auth.uid === $tiendaUid",
-        ".write": "true"
-      }
-    },
-    "blocked_phones": {
-      ".read": "true",
-      ".write": "false"
-    }
-  }
-}`;
-            document.getElementById('codigoReglas').innerText = codigo;
+        function cargarDatosAdmin() {
+            onValue(ref(db), (snapshot) => {
+                const data = snapshot.val() || {};
+                const tiendas = data.tiendas || {};
+                const inventarios = data.inventarios || {};
+
+                // --- 1. RENDERIZAR TIENDAS ---
+                const gridTiendas = document.getElementById('gridAdminTiendas');
+                gridTiendas.innerHTML = "";
+
+                let totalTiendas = 0;
+                let verificadas = 0;
+
+                const keysTiendas = Object.keys(tiendas);
+                totalTiendas = keysTiendas.length;
+
+                if (totalTiendas > 0) {
+                    Object.entries(tiendas).forEach(([uid, tienda]) => {
+                        const isVerified = !!tienda.verified;
+                        const status = tienda.status || 'active';
+
+                        if (isVerified) verificadas++;
+
+                        let estadoBadge = `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Activa 🟢</span>`;
+                        if (status === 'paused') estadoBadge = `<span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Pausada ⏸️</span>`;
+                        if (status === 'blocked') estadoBadge = `<span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-0.5 rounded text-[10px] font-bold">Bloqueada 🚫</span>`;
+
+                        const badgeVerificado = isVerified 
+                            ? `<span class="bg-sky-500 text-slate-950 font-black px-2 py-0.5 rounded-full text-[9px]">✓ Oficial Verificada</span>` 
+                            : `<span class="text-slate-500 text-[9px]">Tienda Estándar</span>`;
+
+                        gridTiendas.innerHTML += `
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h3 class="text-sm font-black text-white uppercase">${tienda.nombreTienda || 'Sin Nombre'}</h3>
+                                        ${badgeVerificado}
+                                        ${estadoBadge}
+                                    </div>
+                                    <p class="text-xs text-slate-400">📧 ${tienda.email || 'Correo no registrado'} | 📍 ${tienda.ciudad || 'Ciudad no especificada'}</p>
+                                    <p class="text-[10px] text-slate-500">📞 WhatsApp: ${tienda.telefonoWsp || 'No especificado'} | Dirección: ${tienda.direccionFisica || 'No especificada'}</p>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                                    <button onclick='toggleVerificarTienda("${uid}", ${!isVerified})' class="bg-sky-600/20 hover:bg-sky-600 text-sky-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-sky-500/30 cursor-pointer">
+                                        ${isVerified ? 'Quitar Verificación ✕' : 'Verificar Tienda ✓'}
+                                    </button>
+                                    <button onclick='cambiarEstadoTienda("${uid}", "${status === 'active' ? 'paused' : 'active'}")' class="bg-amber-500/20 hover:bg-amber-500 text-amber-400 hover:text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-amber-500/30 cursor-pointer">
+                                        ${status === 'active' ? 'Pausar ⏸️' : 'Reactivar ▶️'}
+                                    </button>
+                                    <button onclick='cambiarEstadoTienda("${uid}", "${status === 'blocked' ? 'active' : 'blocked'}")' class="bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-500/30 cursor-pointer">
+                                        ${status === 'blocked' ? 'Desbloquear 🔓' : 'Bloquear 🚫'}
+                                    </button>
+                                    <button onclick='eliminarCuentaTienda("${uid}", "${tienda.nombreTienda || 'Sin Nombre'}")' class="bg-red-950/40 hover:bg-red-600 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-800/50 cursor-pointer">
+                                        Eliminar Cuenta 🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    gridTiendas.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-6">No hay tiendas registradas en la base de datos.</p>`;
+                }
+
+                // --- 2. RECOPILAR Y SEPARAR PUBLICACIONES (Reportadas vs Normales) ---
+                const gridReportes = document.getElementById('gridAdminReportes');
+                const gridPubs = document.getElementById('gridAdminPublicaciones');
+                gridReportes.innerHTML = "";
+                gridPubs.innerHTML = "";
+
+                let totalPubs = 0;
+                let totalReportadas = 0;
+                let listaReportadas = [];
+                let listaNormales = [];
+
+                Object.entries(inventarios).forEach(([uidTienda, repuestos]) => {
+                    const infoTienda = tiendas[uidTienda] || {};
+                    const nombreTienda = infoTienda.nombreTienda || 'Tienda Desconocida';
+
+                    Object.entries(repuestos).forEach(([idProd, prod]) => {
+                        totalPubs++;
+                        const reportesObj = prod.reportes || {};
+                        const cantidadReportes = Object.keys(reportesObj).length;
+
+                        const itemPub = {
+                            uidTienda,
+                            idProd,
+                            prod,
+                            nombreTienda,
+                            cantidadReportes,
+                            reportesObj
+                        };
+
+                        if (cantidadReportes > 0) {
+                            totalReportadas++;
+                            listaReportadas.push(itemPub);
+                        } else {
+                            listaNormales.push(itemPub);
+                        }
+                    });
+                });
+
+                // Ordenar las reportadas de mayor a menor número de reportes
+                listaReportadas.sort((a, b) => b.cantidadReportes - a.cantidadReportes);
+
+                // --- RENDERIZAR REPORTADAS PRIMERO ---
+                if (listaReportadas.length > 0) {
+                    listaReportadas.forEach(item => {
+                        const { uidTienda, idProd, prod, nombreTienda, cantidadReportes, reportesObj } = item;
+                        const nombreProd = prod.nombre ? prod.nombre.toUpperCase() : 'Sin Nombre';
+                        const categoria = prod.categoria || 'General';
+                        const precio = parseFloat(prod.precio) || 0;
+
+                        // Construir lista de motivos de los reportes
+                        let motivosHtml = '<ul class="text-[11px] text-red-300 list-disc list-inside mt-1 bg-red-950/30 p-2 rounded-xl border border-red-500/20">';
+                        Object.values(reportesObj).forEach(rep => {
+                            motivosHtml += `<li><strong>${rep.fecha || 'Fecha desconocida'}:</strong> ${rep.motivo}</li>`;
+                        });
+                        motivosHtml += '</ul>';
+
+                        gridReportes.innerHTML += `
+                            <div class="bg-slate-950 border border-red-500/80 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-lg">
+                                <div class="flex flex-col gap-1 w-full md:w-3/4">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h3 class="text-sm font-black text-white uppercase">${nombreProd}</h3>
+                                        <span class="bg-red-500 text-slate-950 font-black px-2 py-0.5 rounded text-[10px]">🚨 ${cantidadReportes} ${cantidadReportes === 1 ? 'Reporte' : 'Reportes'}</span>
+                                        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded text-[10px] font-bold">${categoria}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400">🏢 Tienda: <strong class="text-slate-200">${nombreTienda}</strong> | 💵 Precio: <strong class="text-emerald-400">$${precio.toFixed(2)}</strong></p>
+                                    <div class="mt-1">
+                                        <span class="text-[10px] font-bold uppercase text-red-400 tracking-wider">Motivos de los usuarios:</span>
+                                        ${motivosHtml}
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                                    <button onclick='eliminarPublicacionIndividual("${uidTienda}", "${idProd}", "${nombreProd}")' class="bg-red-600 hover:bg-red-500 text-slate-950 font-black px-4 py-2 rounded-xl text-xs transition shadow-md cursor-pointer">
+                                        Eliminar Publicación 🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    gridReportes.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-6">No hay publicaciones reportadas actualmente en el sistema.</p>`;
+                }
+
+                // --- RENDERIZAR PUBLICACIONES RESTANTES (NORMALES) ---
+                if (listaNormales.length > 0) {
+                    listaNormales.forEach(item => {
+                        const { uidTienda, idProd, prod, nombreTienda } = item;
+                        const nombreProd = prod.nombre ? prod.nombre.toUpperCase() : 'Sin Nombre';
+                        const categoria = prod.categoria || 'General';
+                        const precio = parseFloat(prod.precio) || 0;
+                        const stock = prod.stock || 0;
+
+                        gridPubs.innerHTML += `
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-md">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <h3 class="text-sm font-black text-white uppercase">${nombreProd}</h3>
+                                        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded text-[10px] font-bold">${categoria}</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400">🏢 Tienda: <strong class="text-slate-200">${nombreTienda}</strong> | 💵 Precio: <strong class="text-emerald-400">$${precio.toFixed(2)}</strong> | 📦 Stock: ${stock}</p>
+                                </div>
+                                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                    <button onclick='eliminarPublicacionIndividual("${uidTienda}", "${idProd}", "${nombreProd}")' class="bg-red-950/40 hover:bg-red-600 text-red-400 hover:text-white font-bold px-3 py-1.5 rounded-xl text-xs transition border border-red-800/50 cursor-pointer">
+                                        Eliminar Publicación 🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    gridPubs.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-6">No hay otras publicaciones en el índice.</p>`;
+                }
+
+                // Actualizar contadores superiores y de sección
+                document.getElementById('statTotalTiendas').innerText = totalTiendas;
+                document.getElementById('statTiendasVerificadas').innerText = verificadas;
+                document.getElementById('statTotalPublicaciones').innerText = totalPubs;
+                document.getElementById('contadorAdminTiendas').innerText = `${totalTiendas} tiendas`;
+                document.getElementById('contadorAdminPublicaciones').innerText = `${listaNormales.length} publicaciones normales`;
+                document.getElementById('contadorAdminReportes').innerText = `${totalReportadas} reportadas`;
+            });
         }
 
-        window.copiarReglas = function() {
-            navigator.clipboard.writeText(document.getElementById('codigoReglas').innerText)
-                .then(() => alert("¡Código JSON copiado al portapapeles!"));
+        window.toggleVerificarTienda = function(uid, nuevoEstado) {
+            update(ref(db, `tiendas/${uid}`), { verified: nuevoEstado })
+                .then(() => alert(nuevoEstado ? "¡Tienda marcada como Oficial Verificada!" : "Verificación retirada."))
+                .catch(err => alert("Error: " + err.message));
         };
 
-        function mostrarError(mensaje) {
-            const container = document.getElementById('errorContainer');
-            const msg = document.getElementById('errorMessage');
-            msg.innerHTML = `<span>⚠️ ${mensaje}</span>`;
-            container.classList.remove('hidden');
-        }
+        window.cambiarEstadoTienda = function(uid, nuevoEstado) {
+            let mensajeSugerido = "";
+            if (nuevoEstado === 'paused') {
+                mensajeSugerido = "Tu tienda ha sido pausada temporalmente por revisión de inventario.";
+            } else if (nuevoEstado === 'blocked') {
+                mensajeSugerido = "Tu tienda ha sido bloqueada por incumplimiento de normas de la plataforma.";
+            } else if (nuevoEstado === 'active') {
+                mensajeSugerido = "¡Tu tienda ha sido reactivada con éxito! Ya puedes operar con normalidad.";
+            }
+
+            let mensajeAdmin = prompt("Escribe el mensaje de notificación para la tienda:", mensajeSugerido);
+            if (mensajeAdmin === null) return; 
+
+            if (mensajeAdmin.trim() === "") {
+                mensajeAdmin = "El estado de tu tienda ha cambiado a: " + nuevoEstado;
+            }
+
+            const datosNotificacion = {
+                mensaje: mensajeAdmin,
+                estado: nuevoEstado,
+                fecha: new Date().toLocaleString(),
+                timestamp: Date.now()
+            };
+
+            const updates = {};
+            updates[`tiendas/${uid}/status`] = nuevoEstado;
+            updates[`notificaciones_tienda/${uid}`] = datosNotificacion;
+
+            update(ref(db), updates)
+                .then(() => alert(`Estado actualizado a "${nuevoEstado}" y mensaje enviado a la tienda.`))
+                .catch(err => alert("Error: " + err.message));
+        };
+
+        window.eliminarCuentaTienda = function(uid, nombreTienda) {
+            const confirmacion1 = confirm(`¿Estás seguro de que deseas eliminar permanentemente la tienda "${nombreTienda}"?`);
+            if (!confirmacion1) return;
+
+            const confirmacion2 = confirm(`ADVERTENCIA: Se borrarán la cuenta, las notificaciones y todo el inventario del índice asociado a "${nombreTienda}". ¿Confirmas?`);
+            if (!confirmacion2) return;
+
+            const updates = {};
+            updates[`tiendas/${uid}`] = null;
+            updates[`notificaciones_tienda/${uid}`] = null;
+            updates[`productos/${uid}`] = null;
+            updates[`inventarios/${uid}`] = null;
+
+            update(ref(db), updates)
+                .then(() => alert("La cuenta y su inventario han sido eliminados con éxito."))
+                .catch(err => alert("Error al eliminar: " + err.message));
+        };
+
+        window.eliminarPublicacionIndividual = function(uidTienda, idProd, nombreProd) {
+            const confirmacion = confirm(`¿Deseas eliminar la publicación "${nombreProd}" del catálogo público?`);
+            if (!confirmacion) return;
+
+            const updates = {};
+            updates[`inventarios/${uidTienda}/${idProd}`] = null;
+            updates[`productos/${uidTienda}/${idProd}`] = null;
+
+            update(ref(db), updates)
+                .then(() => alert("La publicación ha sido eliminada del índice exitosamente."))
+                .catch(err => alert("Error al eliminar la publicación: " + err.message));
+        };
     </script>
 </body>
 </html>
