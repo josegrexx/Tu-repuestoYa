@@ -411,9 +411,9 @@
                     const catProdLabel = prod.categoria || 'Accesorios';
                     const oemBadge = prod.codigoOem ? `<span class="bg-slate-800 text-amber-400 font-bold px-2 py-0.5 rounded-lg text-[10px] border border-amber-500/20">OEM: ${prod.codigoOem.toUpperCase()}</span>` : '';
                     
-                    // Etiqueta de Modelos Compatibles (Ampliación de variantes)
+                    // Etiqueta de Modelos Compatibles (Azul Oscuro)
                     const modelosText = prod.modelos || prod.modelosCompatibles || prod.compatibles || prod.vehiculosCompatibles || prod.compatibilidad || '';
-                    const modelosBadge = modelosText ? `<span class="bg-slate-800 text-cyan-400 font-bold px-2 py-0.5 rounded-lg text-[10px] border border-cyan-500/20">Modelos: ${modelosText.toUpperCase()}</span>` : '';
+                    const modelosBadge = modelosText ? `<span class="bg-blue-950 text-blue-300 font-bold px-2 py-0.5 rounded-lg text-[10px] border border-blue-800">Modelos: ${modelosText.toUpperCase()}</span>` : '';
 
                     const reportesCount = prod.reportes ? Object.keys(prod.reportes).length : 0;
                     const tieneAdvertencia = reportesCount > 0;
