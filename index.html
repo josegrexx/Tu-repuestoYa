@@ -1,5 +1,5 @@
 <!-- =============================================================
-     ARCHIVO: index.html (Versión 4.6 - Logo Tu respuesto ⚡ Ya)
+     ARCHIVO: index.html (Versión 4.8 - Modelos Compatibles Ampliado)
      ============================================================= -->
 <!DOCTYPE html>
 <html lang="es">
@@ -370,6 +370,10 @@
                 const catProd = p.categoria || "Accesorios";
                 const oemProd = p.codigoOem ? p.codigoOem.toLowerCase() : "";
                 
+                // Múltiples variantes para asegurar que lea los modelos sin importar el nombre en el panel
+                const modelosText = p.modelos || p.modelosCompatibles || p.compatibles || p.vehiculosCompatibles || p.compatibilidad || "";
+                const modelosProd = modelosText.toLowerCase();
+                
                 // Filtro Principal (Carro / Moto)
                 let pasaPrincipal = true;
                 if (categoriaPrincipal === "Carro") {
@@ -386,7 +390,7 @@
 
                 const coincideCiudad = ciudadSeleccionada === "Todas" || p.ciudadTienda === ciudadSeleccionada;
                 const coincideTienda = tiendaFiltroUid === "Todas" || p.uidTienda === tiendaFiltroUid;
-                const coincideBusqueda = p.nombre.toLowerCase().includes(busqueda) || oemProd.includes(busqueda) || catProd.toLowerCase().includes(busqueda) || vehProd.toLowerCase().includes(busqueda) || p.ciudadTienda.toLowerCase().includes(busqueda) || p.nombreTienda.toLowerCase().includes(busqueda);
+                const coincideBusqueda = p.nombre.toLowerCase().includes(busqueda) || oemProd.includes(busqueda) || modelosProd.includes(busqueda) || catProd.toLowerCase().includes(busqueda) || vehProd.toLowerCase().includes(busqueda) || p.ciudadTienda.toLowerCase().includes(busqueda) || p.nombreTienda.toLowerCase().includes(busqueda);
                 
                 return pasaPrincipal && pasaSub && coincideCiudad && coincideTienda && coincideBusqueda;
             }).sort((a, b) => {
@@ -406,6 +410,10 @@
                     const vehProdLabel = prod.vehiculo || (prod.categoria === 'Moto' ? 'Moto' : 'Carro');
                     const catProdLabel = prod.categoria || 'Accesorios';
                     const oemBadge = prod.codigoOem ? `<span class="bg-slate-800 text-amber-400 font-bold px-2 py-0.5 rounded-lg text-[10px] border border-amber-500/20">OEM: ${prod.codigoOem.toUpperCase()}</span>` : '';
+                    
+                    // Etiqueta de Modelos Compatibles (Ampliación de variantes)
+                    const modelosText = prod.modelos || prod.modelosCompatibles || prod.compatibles || prod.vehiculosCompatibles || prod.compatibilidad || '';
+                    const modelosBadge = modelosText ? `<span class="bg-slate-800 text-cyan-400 font-bold px-2 py-0.5 rounded-lg text-[10px] border border-cyan-500/20">Modelos: ${modelosText.toUpperCase()}</span>` : '';
 
                     const reportesCount = prod.reportes ? Object.keys(prod.reportes).length : 0;
                     const tieneAdvertencia = reportesCount > 0;
@@ -462,15 +470,19 @@
                             <div>
                                 ${imagenHtml}
                                 
-                                <div class="flex justify-between items-center gap-2 mb-2 flex-wrap">
+                                <!-- Bloque Tienda Arriba y Etiquetas Debajo -->
+                                <div class="flex flex-col gap-2 mb-2">
+                                    <div class="flex justify-end">
+                                        <span onclick='filtrarPorTienda("${prod.uidTienda}", "${prod.nombreTienda.replace(/'/g, "\\'")}")' class="text-xs font-black text-amber-400 bg-slate-950 hover:bg-slate-900 px-3 py-1.5 rounded-xl border border-amber-500/30 truncate shadow-md cursor-pointer transition flex items-center gap-1 inline-flex" title="Ver catálogo de esta tienda">
+                                            🏢 ${prod.nombreTienda} ${insigniaVerificado}
+                                        </span>
+                                    </div>
                                     <div class="flex items-center gap-1.5 flex-wrap">
                                         <span class="text-[10px] uppercase font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">${vehProdLabel}</span>
                                         <span class="text-[10px] uppercase font-bold text-slate-300 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">${catProdLabel}</span>
                                         ${oemBadge}
+                                        ${modelosBadge}
                                     </div>
-                                    <span onclick='filtrarPorTienda("${prod.uidTienda}", "${prod.nombreTienda.replace(/'/g, "\\'")}")' class="text-xs font-black text-amber-400 bg-slate-950 hover:bg-slate-900 px-3 py-1.5 rounded-xl border border-amber-500/30 truncate shadow-md cursor-pointer transition flex items-center gap-1" title="Ver catálogo de esta tienda">
-                                        🏢 ${prod.nombreTienda} ${insigniaVerificado}
-                                    </span>
                                 </div>
 
                                 <h3 class="text-base sm:text-lg font-black text-white tracking-wide leading-snug mt-1 mb-2 uppercase">${nombreMayus}</h3>

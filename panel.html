@@ -1,27 +1,29 @@
 <!-- =============================================================
-     ARCHIVO: panel.html (Panel de Tienda - Versión 4.7 con Menú Unificado)
+     ARCHIVO: panel.html (Panel de Tienda - Versión 4.9 Mobile Optimized)
      ============================================================= -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Tienda v4.7 - TurespuestoYa</title>
+    <title>Panel de Tienda v4.9 - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
     <!-- Header del Panel -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-2xl">⚡</span>
-                <h1 class="text-xl font-black text-amber-500 tracking-wide uppercase">Panel de Tienda <span class="text-xs bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/30">v4.7</span></h1>
+    <header class="bg-slate-900 border-b border-slate-800 p-3 sm:p-4 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center justify-between w-full sm:w-auto">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">⚡</span>
+                    <h1 class="text-base sm:text-xl font-black text-amber-500 tracking-wide uppercase">Panel de Tienda <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/30">v4.9</span></h1>
+                </div>
             </div>
             
-            <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 flex-wrap justify-center sm:justify-end w-full sm:w-auto">
                 <!-- Botón Principal: Notificaciones con Contador -->
-                <button onclick="enfocarPedidos()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700 cursor-pointer flex items-center gap-2 relative shadow-sm">
+                <button onclick="enfocarPedidos()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition border border-slate-700 cursor-pointer flex items-center gap-1.5 relative shadow-sm">
                     <span>🔔 Notificaciones</span>
                     <span id="badgeNotifHeader" class="bg-amber-500 text-slate-950 text-[10px] px-1.5 py-0.2 rounded-full font-black">0</span>
                 </button>
@@ -50,24 +52,24 @@
     </header>
 
     <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-4 flex-grow w-full mt-4 flex flex-col gap-6">
+    <main class="max-w-7xl mx-auto p-3 sm:p-4 flex-grow w-full mt-2 sm:mt-4 flex flex-col gap-4 sm:gap-6">
         
         <!-- Tarjeta de Información de la Tienda -->
-        <section class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <section class="bg-slate-900 border border-slate-800 p-3 sm:p-4 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 text-lg font-black">
+                <div class="w-10 h-10 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 text-lg font-black shrink-0">
                     🏪
                 </div>
-                <div>
-                    <h2 id="infoNombreTienda" class="text-sm font-black text-white uppercase tracking-wider">Cargando tienda...</h2>
-                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-0.5">
-                        <span id="infoCorreoTienda">📧 Cargando correo...</span>
-                        <span>•</span>
-                        <span id="infoTelefonoTienda">📞 Cargando teléfono...</span>
+                <div class="min-w-0">
+                    <h2 id="infoNombreTienda" class="text-sm font-black text-white uppercase tracking-wider truncate">Cargando tienda...</h2>
+                    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400 mt-0.5">
+                        <span id="infoCorreoTienda" class="truncate">📧 Cargando correo...</span>
+                        <span class="hidden sm:inline">•</span>
+                        <span id="infoTelefonoTienda" class="truncate">📞 Cargando teléfono...</span>
                     </div>
                 </div>
             </div>
-            <div class="bg-slate-950 border border-slate-800 px-3 py-2 rounded-xl text-right w-full md:w-auto">
+            <div class="bg-slate-950 border border-slate-800 px-3 py-2 rounded-xl text-left md:text-right w-full md:w-auto">
                 <span id="infoRelojHora" class="text-xs font-black text-amber-400 block">--:--:--</span>
                 <span id="infoRelojFecha" class="text-[10px] text-slate-400 uppercase">Cargando fecha...</span>
             </div>
@@ -77,8 +79,8 @@
         <div id="contenedorAlertaAdmin" class="w-full hidden"></div>
 
         <div class="flex flex-col lg:flex-row gap-6">
-            <!-- Columna Izquierda: Formulario con Mini Ventana de Previsualización -->
-            <section id="seccionFormulario" class="w-full lg:w-1/3 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl h-fit sticky top-24">
+            <!-- Columna Izquierda: Formulario -->
+            <section id="seccionFormulario" class="w-full lg:w-1/3 bg-slate-900 border border-slate-800 p-4 sm:p-6 rounded-2xl shadow-xl h-fit lg:sticky lg:top-24">
                 <h2 id="tituloFormRepuesto" class="text-base font-black text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-3">
                     ➕ Agregar Nuevo Repuesto
                 </h2>
@@ -93,17 +95,32 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-slate-400 font-bold mb-1 block">Categoría</label>
+                            <label class="text-xs text-slate-400 font-bold mb-1 block">Código OEM</label>
+                            <input type="text" id="inputOem" placeholder="Ej. 0K01A-34-710" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none uppercase">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 font-bold mb-1 block">Modelo Compatible</label>
+                            <input type="text" id="inputModeloCompatible" placeholder="Ej. Sportage 2012" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-slate-400 font-bold mb-1 block">Vehículo</label>
+                            <select id="inputVehiculo" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none cursor-pointer">
+                                <option value="Carro">Carro 🚗</option>
+                                <option value="Moto">Moto 🏍️</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 font-bold mb-1 block">Sistema / Parte</label>
                             <select id="inputCategoria" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none cursor-pointer">
                                 <option value="Motor">Motor</option>
                                 <option value="Frenos">Frenos</option>
                                 <option value="Suspensión">Suspensión</option>
                                 <option value="Eléctrico">Eléctrico</option>
+                                <option value="Accesorios">Accesorios</option>
                             </select>
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 font-bold mb-1 block">Stock Disponible</label>
-                            <input type="number" id="inputStock" placeholder="Ej. 5" min="1" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
                         </div>
                     </div>
 
@@ -115,6 +132,13 @@
                         <div>
                             <label class="text-xs text-slate-400 font-bold mb-1 block">Descuento % (Opcional)</label>
                             <input type="number" id="inputDescuento" placeholder="Ej. 15" min="0" max="100" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-slate-400 font-bold mb-1 block">Stock Disponible</label>
+                            <input type="number" id="inputStock" placeholder="Ej. 5" min="1" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none">
                         </div>
                     </div>
 
@@ -187,9 +211,12 @@
                 </div>
 
                 <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-md">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-3 mb-4 gap-3">
                         <h3 class="text-sm font-black text-white uppercase tracking-wider">Mi Inventario Publicado</h3>
-                        <span id="contadorMisRepuestos" class="bg-amber-500/10 text-amber-400 font-bold px-3 py-1 rounded-xl text-xs border border-amber-500/20">0 repuestos</span>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <input type="text" id="inputBuscarMiInventario" placeholder="Buscar en mi inventario..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-slate-100 text-xs focus:border-amber-500 focus:outline-none w-full sm:w-48">
+                            <span id="contadorMisRepuestos" class="bg-amber-500/10 text-amber-400 font-bold px-3 py-1 rounded-xl text-xs border border-amber-500/20 whitespace-nowrap">0 repuestos</span>
+                        </div>
                     </div>
 
                     <div id="gridMisRepuestos" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -202,7 +229,7 @@
 
     <!-- Modal Venta Física -->
     <div id="modalVentaFisica" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-start">
                 <div>
                     <span class="text-[10px] uppercase font-bold text-amber-500 tracking-wider">Punto de Venta Local</span>
@@ -239,7 +266,7 @@
 
     <!-- Modal Cambiar Contraseña -->
     <div id="modalCambiarPassword" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50">
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full flex flex-col gap-4 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-start">
                 <div>
                     <span class="text-[10px] uppercase font-bold text-amber-500 tracking-wider">Seguridad de la Cuenta</span>
@@ -514,7 +541,7 @@
                         `;
                     });
                 } else {
-                    gridVentas.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-2">Aún no hay transacciones registradas.</p>`;
+                    gridVentas.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">Aún no hay transacciones registradas.</p>`;
                 }
 
                 renderizarInventarioYResumen();
@@ -573,15 +600,25 @@
         function renderizarInventarioYResumen() {
             const gridInventario = document.getElementById('gridMisRepuestos');
             const gridResumen = document.getElementById('gridResumenVentasRepuesto');
+            const busquedaInventario = document.getElementById('inputBuscarMiInventario')?.value.toLowerCase().trim() || '';
             
             gridInventario.innerHTML = "";
             gridResumen.innerHTML = "";
 
-            const keys = Object.keys(inventarioActivoMemoria);
-            document.getElementById('contadorMisRepuestos').innerText = `${keys.length} repuestos`;
+            const allEntries = Object.entries(inventarioActivoMemoria);
+            document.getElementById('contadorMisRepuestos').innerText = `${allEntries.length} repuestos`;
+
+            const inventarioFiltrado = allEntries.filter(([id, prod]) => {
+                const nombre = prod.nombre ? prod.nombre.toLowerCase() : '';
+                const oem = prod.codigoOem ? prod.codigoOem.toLowerCase() : '';
+                const modeloComp = prod.modeloCompatible ? prod.modeloCompatible.toLowerCase() : '';
+                const categoria = prod.categoria ? prod.categoria.toLowerCase() : '';
+                const vehiculo = prod.vehiculo ? prod.vehiculo.toLowerCase() : '';
+                return nombre.includes(busquedaInventario) || oem.includes(busquedaInventario) || modeloComp.includes(busquedaInventario) || categoria.includes(busquedaInventario) || vehiculo.includes(busquedaInventario);
+            });
 
             const nombresActivos = new Set();
-            Object.values(inventarioActivoMemoria).forEach(prod => {
+            allEntries.forEach(([id, prod]) => {
                 if (prod.nombre) nombresActivos.add(prod.nombre.trim().toUpperCase());
             });
 
@@ -620,13 +657,18 @@
                 gridResumen.innerHTML = `<p class="text-slate-500 text-xs italic p-2">No hay ventas registradas de los repuestos activos.</p>`;
             }
 
-            if (keys.length > 0) {
-                Object.entries(inventarioActivoMemoria).forEach(([id, prod]) => {
+            if (inventarioFiltrado.length > 0) {
+                inventarioFiltrado.forEach(([id, prod]) => {
                     const nombreMayus = prod.nombre ? prod.nombre.trim().toUpperCase() : '';
                     const descVal = parseInt(prod.descuento) || 0;
                     const precioOriginal = parseFloat(prod.precio) || 0;
                     const precioFinal = descVal > 0 ? precioOriginal * (1 - descVal / 100) : precioOriginal;
                     const stockActual = parseInt(prod.stock) || 0;
+
+                    const vehProdLabel = prod.vehiculo || (prod.categoria === 'Moto' ? 'Moto' : 'Carro');
+                    const catProdLabel = prod.categoria || 'Accesorios';
+                    const oemBadge = prod.codigoOem ? `<span class="bg-slate-950 text-amber-400 font-bold px-2 py-0.5 rounded border border-amber-500/20 text-[9px] block mb-1">OEM: ${prod.codigoOem.toUpperCase()}</span>` : '';
+                    const modeloCompBadge = prod.modeloCompatible ? `<span class="bg-slate-950 text-blue-400 font-bold px-2 py-0.5 rounded border border-blue-500/20 text-[9px] block mb-1">Modelo: ${prod.modeloCompatible}</span>` : '';
 
                     const alertaStockBajo = stockActual <= 5 
                         ? `<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] font-black px-2 py-1 rounded-lg text-center uppercase tracking-wider animate-pulse mb-2">⚠️ ¡Últimas disponibles! (${stockActual})</div>` 
@@ -644,7 +686,12 @@
                         <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex flex-col justify-between shadow-lg gap-3">
                             <div>
                                 ${imgCard}
-                                <span class="text-[9px] uppercase font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${prod.categoria}</span>
+                                <div class="flex items-center gap-1 mb-1 flex-wrap">
+                                    <span class="text-[9px] uppercase font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${vehProdLabel}</span>
+                                    <span class="text-[9px] uppercase font-bold text-slate-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">${catProdLabel}</span>
+                                </div>
+                                ${oemBadge}
+                                ${modeloCompBadge}
                                 <h4 class="text-xs font-black text-white uppercase mt-1 mb-1 truncate" title="${nombreMayus}">${nombreMayus}</h4>
                                 ${alertaStockBajo}
                                 <div class="flex items-center justify-between mb-2">
@@ -678,9 +725,11 @@
                     `;
                 });
             } else {
-                gridInventario.innerHTML = `<p class="text-slate-500 text-xs italic col-span-full text-center py-10">No tienes repuestos publicados aún.</p>`;
+                gridInventario.innerHTML = `<p class="text-slate-500 text-xs italic col-span-full text-center py-10">No se encontraron repuestos en tu inventario con ese criterio de búsqueda.</p>`;
             }
         }
+
+        document.getElementById('inputBuscarMiInventario').addEventListener('input', renderizarInventarioYResumen);
 
         window.procesarVentaDelivery = function(idPedido, ped) {
             if (!confirm(`¿Confirmar venta por delivery del repuesto "${ped.repuesto}" a ${ped.cliente}?`)) return;
@@ -800,6 +849,9 @@
 
             const editId = document.getElementById('editIdProd').value;
             const nombre = document.getElementById('inputNombre').value.trim();
+            const codigoOem = document.getElementById('inputOem').value.trim().toUpperCase();
+            const modeloCompatible = document.getElementById('inputModeloCompatible').value.trim();
+            const vehiculo = document.getElementById('inputVehiculo').value;
             const categoria = document.getElementById('inputCategoria').value;
             const stock = document.getElementById('inputStock').value;
             const precio = document.getElementById('inputPrecio').value;
@@ -809,6 +861,9 @@
 
             const datosRepuesto = {
                 nombre,
+                codigoOem,
+                modeloCompatible,
+                vehiculo,
                 categoria,
                 stock,
                 precio,
@@ -840,7 +895,10 @@
         window.prepararEdicion = function(id, prod) {
             document.getElementById('editIdProd').value = id;
             document.getElementById('inputNombre').value = prod.nombre || '';
-            document.getElementById('inputCategoria').value = prod.categoria || 'Motor';
+            document.getElementById('inputOem').value = prod.codigoOem || '';
+            document.getElementById('inputModeloCompatible').value = prod.modeloCompatible || '';
+            document.getElementById('inputVehiculo').value = prod.vehiculo || (prod.categoria === 'Moto' ? 'Moto' : 'Carro');
+            document.getElementById('inputCategoria').value = ['Carro', 'Moto'].includes(prod.categoria) ? 'Motor' : (prod.categoria || 'Motor');
             document.getElementById('inputStock').value = prod.stock || '';
             document.getElementById('inputPrecio').value = prod.precio || '';
             document.getElementById('inputDescuento').value = prod.descuento || '';
