@@ -1,5 +1,5 @@
 <!-- =============================================================
-     ARCHIVO: index.html (Versión 4.8 - Modelos Compatibles Ampliado)
+     ARCHIVO: index.html (Catálogo Oficial - Versión Búsqueda con Mini Imágenes)
      ============================================================= -->
 <!DOCTYPE html>
 <html lang="es">
@@ -9,31 +9,166 @@
     <title>Catálogo Oficial - TurespuestoYa</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        /* Animación del rayo cruzando el texto */
-        @keyframes rayo-cruce {
+        /* Ajuste visual móvil: conserva la apariencia de escritorio sin alterar la lógica */
+        @media (max-width: 767px) {
+            html, body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            header {
+                padding: 12px !important;
+            }
+
+            header > div {
+                gap: 10px !important;
+            }
+
+            header .flex.items-center.gap-2 {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            header .flex.items-center.gap-2 a {
+                flex: 1 1 0;
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            section, main, #contenedorInfoBusqueda, #bannerFiltroTienda {
+                box-sizing: border-box;
+            }
+
+            /* Buscador y controles permanecen ordenados y ocupan todo el ancho */
+            section.max-w-7xl.mx-auto.px-4.mt-4.w-full.flex.flex-col.lg\:flex-row {
+                align-items: stretch !important;
+            }
+
+            /* Mantiene las tarjetas compactas y uniformes en pantallas pequeñas */
+            #gridCatalogo {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+            }
+
+            #gridCatalogo > div {
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            #gridCatalogo img {
+                max-width: 100%;
+            }
+
+            /* Las categorías mantienen la misma jerarquía visual */
+            #categoriasPrincipales {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+            }
+
+            #categoriasPrincipales .filtro-principal {
+                min-width: 0;
+                padding: 10px !important;
+                gap: 8px !important;
+            }
+
+            #categoriasPrincipales .filtro-principal h4,
+            #categoriasPrincipales .filtro-principal span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* Subcategorías: misma distribución horizontal, adaptada al ancho */
+            #subcategoriasFiltro {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 7px !important;
+            }
+
+            #subcategoriasFiltro .filtro-sub {
+                min-width: 0;
+                padding: 9px 7px !important;
+            }
+
+            #subcategoriasFiltro .filtro-sub span:last-child {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* Ofertas en dos columnas como una versión compacta de escritorio */
+            #gridDescuentos {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+            }
+
+            /* Evita que textos largos rompan las tarjetas */
+            #gridCatalogo h3,
+            #gridCatalogo span,
+            #gridCatalogo button,
+            #gridCatalogo a {
+                min-width: 0;
+            }
+
+            /* Modal siempre centrado y utilizable en celular */
+            #modalZoomImagen > div,
+            #modalReporte > div,
+            #modalFiltroCiudad > div,
+            #modalPedido > div {
+                max-width: calc(100vw - 24px) !important;
+                max-height: calc(100vh - 24px);
+                overflow-y: auto;
+            }
+
+            #modalZoomImagen .h-\[65vh\] {
+                height: 55vh !important;
+            }
+        }
+
+        /* Animación sutil de brillo para la marca de alta gama */
+        @keyframes brillo-lujo {
             0% { transform: translateX(-150%) skewX(-20deg); opacity: 0; }
-            50% { opacity: 1; }
+            50% { opacity: 0.6; }
             100% { transform: translateX(250%) skewX(-20deg); opacity: 0; }
         }
-        .animacion-rayo {
-            animation: rayo-cruce 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        .animacion-brillo {
+            animation: brillo-lujo 3.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-    <!-- Header Público -->
+    <!-- Header Público con Logo de Autoridad y Lema Personalizado -->
     <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
             
-            <!-- Logo: Tu respuesto ⚡ Ya -->
+            <!-- Logo Profesional de Alta Gama -->
             <div class="flex items-center gap-3">
-                <h1 class="text-xl font-black tracking-wider uppercase relative overflow-hidden px-4 py-1.5 rounded-xl bg-slate-950 border border-amber-500/30 shadow-inner flex items-center">
-                    <span class="bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(245,158,11,0.4)]">
-                        Tu respuesto ⚡ Ya
-                    </span>
-                    <div class="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent animacion-rayo pointer-events-none"></div>
-                </h1>
+                <a href="index.html" class="flex items-center gap-3 group cursor-pointer text-left">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-950 border border-amber-500/50 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)] relative overflow-hidden group-hover:border-amber-400 transition duration-300 shrink-0">
+                        <!-- Símbolo Vectorial Preciso y Minimalista -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-amber-400 text-lg font-black tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">TR</span>
+                        </div>
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-500 rounded-tl-lg flex items-center justify-center shadow">
+                            <span class="text-slate-950 text-[9px] font-black">⚡</span>
+                        </div>
+                        <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-amber-400/20 to-transparent animacion-brillo pointer-events-none"></div>
+                    </div>
+                    
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-black tracking-wider uppercase text-white group-hover:text-amber-400 transition duration-300">
+                                Turespuesto<span class="text-amber-400">Ya</span>
+                            </span>
+                            <span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[9px] font-black px-1.5 py-0.2 rounded uppercase tracking-widest shadow-inner">
+                                Official
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[9px] text-amber-400/90 font-extrabold uppercase tracking-wider">Llegamos donde te encuentres</span>
+                            <span class="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
+                        </div>
+                    </div>
+                </a>
             </div>
 
             <div class="flex items-center gap-2">
@@ -43,49 +178,85 @@
         </div>
     </header>
 
-    <!-- Barra de Búsqueda y Filtro de Ciudad -->
-    <section class="max-w-7xl mx-auto px-4 mt-6 w-full flex flex-col lg:flex-row gap-3 items-center justify-between">
+    <!-- SECCIÓN: Cuadrícula de Descuentos Compacta -->
+    <section class="max-w-7xl mx-auto px-4 mt-4 w-full">
+        <div class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border border-red-500/40 p-3 sm:p-4 rounded-2xl shadow-[0_0_15px_rgba(239,68,68,0.15)] relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-red-500/10 rounded-full blur-xl pointer-events-none"></div>
+            
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-2 mb-3 gap-2">
+                <h3 class="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <span class="animate-bounce">🔥</span> Ofertas y Descuentos Destacados
+                </h3>
+                <span class="bg-red-500 text-slate-950 font-black text-[9px] px-2.5 py-0.5 rounded-lg uppercase tracking-wider shadow-md animate-pulse">¡Ahorra hoy!</span>
+            </div>
+
+            <div id="gridDescuentos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <p class="text-slate-500 text-xs italic col-span-full text-center py-4">Buscando ofertas disponibles...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Barra de Búsqueda con Desplegable de Mini Imágenes, Selector de Vista y Filtro de Ciudad -->
+    <section class="max-w-7xl mx-auto px-4 mt-4 w-full flex flex-col lg:flex-row gap-3 items-center justify-between">
         <div class="w-full lg:w-1/2 relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
-            <input type="text" id="inputBuscar" placeholder="Buscar repuesto, marca, modelo o código OEM..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl pl-10 pr-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none text-xs">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 z-10">🔍</span>
+            <input type="text" id="inputBuscar" placeholder="Buscar repuesto, marca, modelo o código OEM..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl pl-10 pr-4 py-3 text-slate-100 focus:border-amber-500 focus:outline-none text-xs relative z-10" autocomplete="off">
+            
+            <!-- Contenedor de Sugerencias con Mini Imágenes -->
+            <div id="sugerenciasBusqueda" class="absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl z-50 hidden max-h-80 overflow-y-auto divide-y divide-slate-800"></div>
         </div>
 
-        <div class="w-full lg:w-auto">
-            <button id="btnAbrirModalCiudad" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-4 py-3 rounded-2xl text-xs transition border border-slate-800 flex items-center justify-between gap-3 cursor-pointer w-full lg:w-auto shadow-md">
+        <div class="w-full lg:w-auto flex flex-wrap items-center gap-2">
+            <!-- Selector de Vista: Cuadrícula o Lista -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-1 flex items-center gap-1 shadow-md">
+                <button id="btnVistaGrid" onclick="cambiarVista('cuadricula')" class="bg-amber-500 text-slate-950 font-bold px-3 py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center gap-1" title="Vista de Cuadrícula">
+                    <span>🔲</span> Cuadrícula
+                </button>
+                <button id="btnVistaLista" onclick="cambiarVista('lista')" class="bg-transparent text-slate-400 hover:text-white font-bold px-3 py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center gap-1" title="Vista de Lista">
+                    <span>📋</span> Lista
+                </button>
+            </div>
+
+            <button id="btnAbrirModalCiudad" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-4 py-3 rounded-2xl text-xs transition border border-slate-800 flex items-center justify-between gap-3 cursor-pointer shadow-md">
                 <span class="flex items-center gap-1.5">📍 Filtrar por Ciudad: <strong id="labelCiudadActual" class="text-white">Todas</strong></span>
                 <span class="text-slate-400">▼</span>
             </button>
         </div>
     </section>
 
+    <!-- Indicador Dinámico Justo Debajo del Buscador -->
+    <div id="contenedorInfoBusqueda" class="max-w-7xl mx-auto px-4 mt-3 w-full hidden">
+        <div class="bg-slate-900 border border-amber-500/40 px-4 py-2.5 rounded-xl flex items-center justify-between text-xs shadow-md">
+            <span class="text-slate-300">🔍 Buscando: <strong id="textoTerminoBuscado" class="text-amber-400 uppercase"></strong> (<span id="contadorResultadosBusqueda" class="text-emerald-400 font-black">0</span> resultados)</span>
+            <button onclick="limpiarBusqueda()" class="text-slate-400 hover:text-white font-bold cursor-pointer bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">Limpiar ✕</button>
+        </div>
+    </div>
+
     <!-- 1. CATEGORÍAS PRINCIPALES (Carro y Moto Arriba) -->
     <section class="max-w-7xl mx-auto px-4 mt-6 w-full">
         <div id="categoriasPrincipales" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
-            <!-- Todos -->
-            <div class="filtro-principal group bg-amber-500 text-slate-950 p-5 rounded-2xl border-2 border-amber-400 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-4 shadow-xl" data-principal="Todos">
-                <div class="w-12 h-12 rounded-xl bg-slate-950/20 flex items-center justify-center text-2xl shrink-0">🌐</div>
+            <div class="filtro-principal group bg-amber-500 text-slate-950 p-4 rounded-2xl border-2 border-amber-400 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-3.5 shadow-xl" data-principal="Todos">
+                <div class="w-10 h-10 rounded-xl bg-slate-950/20 flex items-center justify-center text-xl shrink-0">🌐</div>
                 <div class="overflow-hidden">
-                    <span class="text-[11px] uppercase font-bold opacity-75 block tracking-wider">Ver Todo</span>
-                    <h4 class="text-base sm:text-lg font-black truncate">Todos los Vehículos</h4>
+                    <span class="text-[10px] uppercase font-bold opacity-75 block tracking-wider">Ver Todo</span>
+                    <h4 class="text-sm sm:text-base font-black truncate">Todos los Vehículos</h4>
                 </div>
             </div>
 
-            <!-- Carro -->
-            <div class="filtro-principal group bg-slate-900 hover:bg-slate-800 text-slate-200 p-5 rounded-2xl border-2 border-slate-800 hover:border-amber-500 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-4 shadow-xl" data-principal="Carro">
-                <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl sm:text-3xl shrink-0 group-hover:rotate-12 transition-transform">🚗</div>
+            <div class="filtro-principal group bg-slate-900 hover:bg-slate-800 text-slate-200 p-4 rounded-2xl border-2 border-slate-800 hover:border-amber-500 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-3.5 shadow-xl" data-principal="Carro">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 group-hover:rotate-12 transition-transform">🚗</div>
                 <div class="overflow-hidden">
-                    <span class="text-[11px] uppercase font-bold text-slate-400 block tracking-wider">Categoría Principal</span>
-                    <h4 class="text-lg sm:text-xl font-black truncate group-hover:text-amber-400 transition-colors">CARROS</h4>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Categoría Principal</span>
+                    <h4 class="text-base sm:text-lg font-black truncate group-hover:text-amber-400 transition-colors">CARROS</h4>
                 </div>
             </div>
 
-            <!-- Moto -->
-            <div class="filtro-principal group bg-slate-900 hover:bg-slate-800 text-slate-200 p-5 rounded-2xl border-2 border-slate-800 hover:border-amber-500 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-4 shadow-xl" data-principal="Moto">
-                <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl sm:text-3xl shrink-0 group-hover:rotate-12 transition-transform">🏍️</div>
+            <div class="filtro-principal group bg-slate-900 hover:bg-slate-800 text-slate-200 p-4 rounded-2xl border-2 border-slate-800 hover:border-amber-500 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-3.5 shadow-xl" data-principal="Moto">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl sm:text-2xl shrink-0 group-hover:rotate-12 transition-transform">🏍️</div>
                 <div class="overflow-hidden">
-                    <span class="text-[11px] uppercase font-bold text-slate-400 block tracking-wider">Categoría Principal</span>
-                    <h4 class="text-lg sm:text-xl font-black truncate group-hover:text-amber-400 transition-colors">MOTOS</h4>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Categoría Principal</span>
+                    <h4 class="text-base sm:text-lg font-black truncate group-hover:text-amber-400 transition-colors">MOTOS</h4>
                 </div>
             </div>
 
@@ -94,41 +265,34 @@
 
     <!-- 2. SUBCATEGORÍAS (Sistemas y Partes Abajo) -->
     <section class="max-w-7xl mx-auto px-4 mt-4 w-full">
-        <div id="subcategoriasFiltro" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div id="subcategoriasFiltro" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
             
-            <!-- Todas las Subcategorías -->
-            <div class="filtro-sub group bg-amber-500/20 text-amber-400 p-3 rounded-xl border border-amber-500/40 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md" data-sub="Todas">
-                <span class="text-base">📌</span>
+            <div class="filtro-sub group bg-amber-500/20 text-amber-400 p-2.5 rounded-xl border border-amber-500/40 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md" data-sub="Todas">
+                <span class="text-sm">📌</span>
                 <span class="text-xs font-black truncate">Todas las partes</span>
             </div>
-
-            <!-- Motor -->
-            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-3 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md" data-sub="Motor">
-                <span class="text-base">⚙️</span>
+            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md" data-sub="Motor">
+                <span class="text-sm">⚙</span>
                 <span class="text-xs font-black truncate group-hover:text-amber-400 transition-colors">Motor</span>
             </div>
-
-            <!-- Frenos -->
-            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-3 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md" data-sub="Frenos">
-                <span class="text-base">🛑</span>
+            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md" data-sub="Frenos">
+                <span class="text-sm">🛑</span>
                 <span class="text-xs font-black truncate group-hover:text-amber-400 transition-colors">Frenos</span>
             </div>
-
-            <!-- Suspensión -->
-            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-3 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md" data-sub="Suspensión">
-                <span class="text-base">🔩</span>
+            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md" data-sub="Suspensión">
+                <span class="text-sm">🔩</span>
                 <span class="text-xs font-black truncate group-hover:text-amber-400 transition-colors">Suspensión</span>
             </div>
-
-            <!-- Eléctrico -->
-            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-3 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md" data-sub="Eléctrico">
-                <span class="text-base">⚡</span>
+            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md" data-sub="Eléctrico">
+                <span class="text-sm">⚡</span>
                 <span class="text-xs font-black truncate group-hover:text-amber-400 transition-colors">Eléctrico</span>
             </div>
-
-            <!-- Accesorios -->
-            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-3 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md col-span-2 sm:col-span-1" data-sub="Accesorios">
-                <span class="text-base">🧰</span>
+            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md" data-sub="Lubricantes">
+                <span class="text-sm">🛢️</span>
+                <span class="text-xs font-black truncate group-hover:text-amber-400 transition-colors">Lubricantes</span>
+            </div>
+            <div class="filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md" data-sub="Accesorios">
+                <span class="text-sm">🧰</span>
                 <span class="text-xs font-black truncate group-hover:text-amber-400 transition-colors">Accesorios</span>
             </div>
 
@@ -167,7 +331,7 @@
 
     <!-- Catálogo de Repuestos -->
     <main class="max-w-7xl mx-auto p-4 flex-grow w-full mt-2">
-        <div id="gridCatalogo" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div id="gridCatalogo" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <p class="text-slate-500 text-xs italic col-span-full text-center py-10">Cargando repuestos disponibles...</p>
         </div>
     </main>
@@ -266,7 +430,7 @@
         </div>
     </div>
 
-    <!-- Script de Firebase y Lógica de Filtrado -->
+    <!-- Script de Firebase y Lógica del Catálogo -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
@@ -282,14 +446,30 @@
         const db = getDatabase(app);
 
         let inventarioGlobal = [];
-        let categoriaPrincipal = "Todos"; // "Todos", "Carro", "Moto"
-        let subcategoriaFiltro = "Todas"; // "Todas", "Motor", "Frenos", etc.
+        let categoriaPrincipal = "Todos";
+        let subcategoriaFiltro = "Todas";
         let ciudadSeleccionada = "Todas";
         let tiendaFiltroUid = "Todas";
         let productoSeleccionado = null;
         let productoAReportar = null;
+        let vistaModo = "cuadricula"; // 'cuadricula' o 'lista'
 
         let totalReportesAnterior = -1;
+
+        window.cambiarVista = function(modo) {
+            vistaModo = modo;
+            const btnGrid = document.getElementById('btnVistaGrid');
+            const btnLista = document.getElementById('btnVistaLista');
+
+            if (modo === 'cuadricula') {
+                btnGrid.className = "bg-amber-500 text-slate-950 font-bold px-3 py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center gap-1";
+                btnLista.className = "bg-transparent text-slate-400 hover:text-white font-bold px-3 py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center gap-1";
+            } else {
+                btnLista.className = "bg-amber-500 text-slate-950 font-bold px-3 py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center gap-1";
+                btnGrid.className = "bg-transparent text-slate-400 hover:text-white font-bold px-3 py-2.5 rounded-xl text-xs transition cursor-pointer flex items-center gap-1";
+            }
+            renderizarCatalogo();
+        };
 
         function reproducirSonidoAlerta() {
             try {
@@ -331,6 +511,10 @@
                 }
                 
                 Object.entries(repuestos).forEach(([idProd, prod]) => {
+                    if (prod.archivado) {
+                        return;
+                    }
+
                     if (prod.reportes) {
                         contadorTotalReportesActuales += Object.keys(prod.reportes).length;
                     }
@@ -357,24 +541,198 @@
                 totalReportesAnterior = contadorTotalReportesActuales;
             }
 
+            renderizarDescuentos();
             renderizarCatalogo();
+        });
+
+        function renderizarDescuentos() {
+            const gridDesc = document.getElementById('gridDescuentos');
+            if (!gridDesc) return;
+            gridDesc.innerHTML = "";
+
+            const conDescuento = inventarioGlobal.filter(p => (parseInt(p.descuento) || 0) > 0 && !p.archivado);
+
+            if (conDescuento.length > 0) {
+                conDescuento.forEach(prod => {
+                    const descVal = parseInt(prod.descuento) || 0;
+                    const precioOriginal = parseFloat(prod.precio) || 0;
+                    const precioFinal = precioOriginal * (1 - descVal / 100);
+                    const nombreMayus = prod.nombre ? prod.nombre.toUpperCase() : '';
+                    
+                    const modelosText = prod.modeloCompatible || prod.modelos || prod.modelosCompatibles || prod.compatibles || prod.vehiculosCompatibles || prod.compatibilidad || '';
+                    let modelosBoxDesc = '';
+                    if (modelosText) {
+                        const listaTags = modelosText.split(',').slice(0, 2).map(m => `<span class="bg-amber-500/15 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded text-[9px] font-bold uppercase">${m.trim()}</span>`).join('');
+                        modelosBoxDesc = `
+                            <div class="my-1">
+                                <div class="flex flex-wrap gap-1">
+                                    ${listaTags}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    const imagenHtml = prod.imagenUrl 
+                        ? `<div class="w-14 h-14 bg-white rounded-xl overflow-hidden shrink-0 border border-slate-200 flex items-center justify-center p-0.5 relative">
+                               <img src="${prod.imagenUrl}" class="max-w-full max-h-full object-contain">
+                           </div>` 
+                        : `<div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center text-slate-400 text-lg shrink-0 border border-slate-200">📷</div>`;
+
+                    gridDesc.innerHTML += `
+                        <div class="bg-slate-950 border border-red-500/50 p-2.5 rounded-xl flex items-center gap-2.5 shadow-md relative hover:border-amber-500 transition-all">
+                            <span class="absolute top-2 right-2 bg-red-600 text-slate-950 font-black px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider shadow">-${descVal}%</span>
+                            ${imagenHtml}
+                            <div class="flex-grow overflow-hidden pr-3">
+                                <h4 class="text-[11px] font-black text-white uppercase truncate">${nombreMayus}</h4>
+                                <p class="text-[9px] text-slate-400 truncate">🏢 ${prod.nombreTienda}</p>
+                                ${modelosBoxDesc}
+                                <div class="flex items-center justify-between mt-1">
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-emerald-400 font-black text-xs">$${precioFinal.toFixed(2)}</span>
+                                        <span class="text-slate-500 text-[9px] line-through">$${precioOriginal.toFixed(2)}</span>
+                                    </div>
+                                    <button onclick='abrirModalPedido(${JSON.stringify(prod)})' class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-1 px-2 rounded-lg text-[10px] transition cursor-pointer shadow">
+                                        Pedir 🚚
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                gridDesc.innerHTML = `<p class="text-slate-500 text-xs italic col-span-full text-center py-4">No hay descuentos activos en este momento.</p>`;
+            }
+        }
+
+        // Sistema de Puntuación para Ordenar por Coincidencia Inteligente
+        function calcularRelevancia(p, q) {
+            if (!q) return 0;
+            let score = 0;
+            const nombre = p.nombre ? p.nombre.toLowerCase() : '';
+            const oem = p.codigoOem ? p.codigoOem.toLowerCase() : '';
+            const modelos = (p.modeloCompatible || p.modelos || p.modelosCompatibles || p.compatibles || p.vehiculosCompatibles || p.compatibilidad || '').toLowerCase();
+            const categoria = (p.categoria || '').toLowerCase();
+            const vehiculo = (p.vehiculo || '').toLowerCase();
+            const tienda = (p.nombreTienda || '').toLowerCase();
+            const ciudad = (p.ciudadTienda || '').toLowerCase();
+
+            if (nombre === q) score += 100;
+            else if (nombre.startsWith(q)) score += 80;
+            else if (nombre.includes(q)) score += 50;
+
+            if (oem === q) score += 90;
+            else if (oem.includes(q)) score += 40;
+
+            if (modelos.includes(q)) score += 35;
+            if (categoria.includes(q)) score += 20;
+            if (vehiculo.includes(q)) score += 15;
+            if (tienda.includes(q)) score += 10;
+            if (ciudad.includes(q)) score += 5;
+
+            return score;
+        }
+
+        // Actualizar Sugerencias Desplegables con Mini Imágenes
+        function actualizarSugerencias(busqueda) {
+            const contenedorSugerencias = document.getElementById('sugerenciasBusqueda');
+            if (!busqueda || busqueda.length < 2) {
+                contenedorSugerencias.classList.add('hidden');
+                return;
+            }
+
+            const filtrados = inventarioGlobal.filter(p => {
+                if (p.archivado) return false;
+                const oemProd = p.codigoOem ? p.codigoOem.toLowerCase() : "";
+                const modelosText = p.modeloCompatible || p.modelos || p.modelosCompatibles || p.compatibles || p.vehiculosCompatibles || p.compatibilidad || "";
+                return p.nombre.toLowerCase().includes(busqueda) || oemProd.includes(busqueda) || modelosText.toLowerCase().includes(busqueda) || (p.categoria && p.categoria.toLowerCase().includes(busqueda)) || (p.nombreTienda && p.nombreTienda.toLowerCase().includes(busqueda));
+            }).sort((a, b) => {
+                return calcularRelevancia(b, busqueda) - calcularRelevancia(a, busqueda);
+            }).slice(0, 5);
+
+            if (filtrados.length > 0) {
+                contenedorSugerencias.innerHTML = "";
+                filtrados.forEach(prod => {
+                    const nombreMayus = prod.nombre ? prod.nombre.toUpperCase() : '';
+                    const precioOriginal = parseFloat(prod.precio) || 0;
+                    const descVal = parseInt(prod.descuento) || 0;
+                    const precioFinal = descVal > 0 ? precioOriginal * (1 - descVal / 100) : precioOriginal;
+                    
+                    const miniImg = prod.imagenUrl 
+                        ? `<div class="w-10 h-10 bg-white rounded-lg overflow-hidden shrink-0 border border-slate-800 flex items-center justify-center p-0.5"><img src="${prod.imagenUrl}" class="max-w-full max-h-full object-contain"></div>`
+                        : `<div class="w-10 h-10 bg-slate-950 rounded-lg flex items-center justify-center text-slate-500 text-sm shrink-0 border border-slate-800">📷</div>`;
+
+                    contenedorSugerencias.innerHTML += `
+                        <div onclick='seleccionarSugerencia(${JSON.stringify(prod)})' class="p-2.5 hover:bg-slate-800/80 cursor-pointer flex items-center gap-3 transition">
+                            ${miniImg}
+                            <div class="flex-grow overflow-hidden">
+                                <h4 class="text-xs font-black text-white uppercase truncate">${nombreMayus}</h4>
+                                <div class="flex items-center gap-2 text-[10px] text-slate-400">
+                                    <span class="text-amber-400 font-bold truncate">🏢 ${prod.nombreTienda}</span>
+                                    <span class="shrink-0">📍 ${prod.ciudadTienda}</span>
+                                </div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <span class="text-emerald-400 font-black text-xs">$${precioFinal.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                contenedorSugerencias.classList.remove('hidden');
+            } else {
+                contenedorSugerencias.classList.add('hidden');
+            }
+        }
+
+        window.seleccionarSugerencia = function(prod) {
+            document.getElementById('inputBuscar').value = prod.nombre;
+            document.getElementById('sugerenciasBusqueda').classList.add('hidden');
+            renderizarCatalogo();
+            
+            // Hacer scroll y destacar la tarjeta exacta en el catálogo principal
+            setTimeout(() => {
+                const tarjeta = document.getElementById(`card-${prod.uidTienda}-${prod.id}`);
+                if (tarjeta) {
+                    tarjeta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    tarjeta.classList.add('ring-2', 'ring-amber-400', 'scale-[1.02]');
+                    setTimeout(() => {
+                        tarjeta.classList.remove('ring-2', 'ring-amber-400', 'scale-[1.02]');
+                    }, 2000);
+                }
+            }, 100);
+        };
+
+        // Cerrar sugerencias al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            const busquedaContainer = document.getElementById('inputBuscar').closest('.relative');
+            if (busquedaContainer && !busquedaContainer.contains(e.target)) {
+                document.getElementById('sugerenciasBusqueda').classList.add('hidden');
+            }
         });
 
         function renderizarCatalogo() {
             const grid = document.getElementById('gridCatalogo');
-            const busqueda = document.getElementById('inputBuscar').value.toLowerCase().trim();
-            grid.innerHTML = "";
+            const inputBusquedaEl = document.getElementById('inputBuscar');
+            const busqueda = inputBusquedaEl.value.toLowerCase().trim();
+            const contenedorInfo = document.getElementById('contenedorInfoBusqueda');
+            const textoTermino = document.getElementById('textoTerminoBuscado');
+            const contadorResultados = document.getElementById('contadorResultadosBusqueda');
+
+            if (vistaModo === 'lista') {
+                grid.className = "flex flex-col gap-3";
+            } else {
+                grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3";
+            }
 
             const filtrados = inventarioGlobal.filter(p => {
+                if (p.archivado) return false;
+
                 const vehProd = p.vehiculo || (p.categoria === 'Moto' ? 'Moto' : 'Carro');
                 const catProd = p.categoria || "Accesorios";
                 const oemProd = p.codigoOem ? p.codigoOem.toLowerCase() : "";
                 
-                // Múltiples variantes para asegurar que lea los modelos sin importar el nombre en el panel
-                const modelosText = p.modelos || p.modelosCompatibles || p.compatibles || p.vehiculosCompatibles || p.compatibilidad || "";
+                const modelosText = p.modeloCompatible || p.modelos || p.modelosCompatibles || p.compatibles || p.vehiculosCompatibles || p.compatibilidad || "";
                 const modelosProd = modelosText.toLowerCase();
                 
-                // Filtro Principal (Carro / Moto)
                 let pasaPrincipal = true;
                 if (categoriaPrincipal === "Carro") {
                     pasaPrincipal = (vehProd === "Carro");
@@ -382,10 +740,13 @@
                     pasaPrincipal = (vehProd === "Moto");
                 }
 
-                // Filtro Subcategoría (Sistemas: Motor, Frenos, etc.)
                 let pasaSub = true;
                 if (subcategoriaFiltro !== "Todas") {
-                    pasaSub = (catProd === subcategoriaFiltro);
+                    if (subcategoriaFiltro === "Lubricantes") {
+                        pasaSub = (catProd === "Lubricantes" || catProd === "Aceite de Carro" || catProd === "Aceite de Moto");
+                    } else {
+                        pasaSub = (catProd === subcategoriaFiltro);
+                    }
                 }
 
                 const coincideCiudad = ciudadSeleccionada === "Todas" || p.ciudadTienda === ciudadSeleccionada;
@@ -394,10 +755,30 @@
                 
                 return pasaPrincipal && pasaSub && coincideCiudad && coincideTienda && coincideBusqueda;
             }).sort((a, b) => {
+                if (busqueda) {
+                    const scoreA = calcularRelevancia(a, busqueda);
+                    const scoreB = calcularRelevancia(b, busqueda);
+                    if (scoreA !== scoreB) {
+                        return scoreB - scoreA; // Mayor relevancia primero
+                    }
+                }
+
                 const aVerif = a.verified ? 1 : 0;
                 const bVerif = b.verified ? 1 : 0;
                 return bVerif - aVerif;
             });
+
+            if (busqueda.length > 0) {
+                textoTermino.innerText = busqueda;
+                contadorResultados.innerText = filtrados.length;
+                contenedorInfo.classList.remove('hidden');
+                actualizarSugerencias(busqueda);
+            } else {
+                contenedorInfo.classList.add('hidden');
+                document.getElementById('sugerenciasBusqueda').classList.add('hidden');
+            }
+
+            grid.innerHTML = "";
 
             if (filtrados.length > 0) {
                 filtrados.forEach(prod => {
@@ -409,125 +790,200 @@
                     const nombreMayus = prod.nombre ? prod.nombre.toUpperCase() : '';
                     const vehProdLabel = prod.vehiculo || (prod.categoria === 'Moto' ? 'Moto' : 'Carro');
                     const catProdLabel = prod.categoria || 'Accesorios';
-                    const oemBadge = prod.codigoOem ? `<span class="bg-slate-800 text-amber-400 font-bold px-2 py-0.5 rounded-lg text-[10px] border border-amber-500/20">OEM: ${prod.codigoOem.toUpperCase()}</span>` : '';
+                    const oemBadge = prod.codigoOem ? `<span class="bg-slate-800 text-amber-400 font-bold px-1.5 py-0.5 rounded text-[9px] border border-amber-500/20">OEM: ${prod.codigoOem.toUpperCase()}</span>` : '';
                     
-                    // Etiqueta de Modelos Compatibles (Azul Oscuro)
-                    const modelosText = prod.modelos || prod.modelosCompatibles || prod.compatibles || prod.vehiculosCompatibles || prod.compatibilidad || '';
-                    const modelosBadge = modelosText ? `<span class="bg-blue-950 text-blue-300 font-bold px-2 py-0.5 rounded-lg text-[10px] border border-blue-800">Modelos: ${modelosText.toUpperCase()}</span>` : '';
+                    const modelosText = prod.modeloCompatible || prod.modelos || prod.modelosCompatibles || prod.compatibles || prod.vehiculosCompatibles || prod.compatibilidad || '';
+                    let modelosBox = '';
+                    if (modelosText) {
+                        const listaTags = modelosText.split(',').slice(0, 3).map(m => `<span class="bg-amber-500/15 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded text-[9px] font-bold uppercase">${m.trim()}</span>`).join('');
+                        modelosBox = `
+                            <div class="bg-slate-950 border border-slate-800 p-2 rounded-lg my-1.5 shadow-inner">
+                                <span class="text-[9px] uppercase font-bold text-slate-400 block mb-1">🚗 Modelos:</span>
+                                <div class="flex flex-wrap gap-1">
+                                    ${listaTags}
+                                </div>
+                            </div>
+                        `;
+                    }
 
                     const reportesCount = prod.reportes ? Object.keys(prod.reportes).length : 0;
                     const tieneAdvertencia = reportesCount > 0;
 
                     const insigniaVerificado = prod.verified 
-                        ? `<span class="bg-sky-500 text-slate-950 font-black px-1.5 py-0.5 rounded-full text-[10px] inline-flex items-center justify-center shadow-sm ml-1" title="Tienda Oficial Verificada">✓</span>` 
+                        ? `<span class="bg-sky-500 text-slate-950 font-black px-1 py-0.2 rounded-full text-[9px] inline-flex items-center justify-center shadow-sm ml-1" title="Tienda Oficial Verificada">✓</span>` 
                         : '';
 
                     const alertaAdvertenciaCard = tieneAdvertencia 
-                        ? `<div class="bg-red-500/20 border border-red-500 text-red-400 text-[10px] font-black px-2.5 py-1 rounded-xl text-center uppercase tracking-wider mb-3 flex items-center justify-center gap-1.5 shadow-lg animate-pulse"><span>⚠️</span> ADVERTENCIA: Esta publicación ha sido reportada (${reportesCount})</div>` 
+                        ? `<div class="bg-red-500/20 border border-red-500 text-red-400 text-[9px] font-black px-2 py-0.5 rounded-lg text-center uppercase tracking-wider mb-2 flex items-center justify-center gap-1 shadow-md animate-pulse"><span>⚠</span> REPORTADO (${reportesCount})</div>` 
                         : '';
 
                     const alertaStockBajo = stock <= 5 
-                        ? `<div class="bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-black px-2.5 py-1 rounded-xl text-center uppercase tracking-wider animate-pulse mb-3 flex items-center justify-center gap-1.5 shadow-md"><span>⚠️</span> ¡Últimas disponibles! (${stock})</div>` 
+                        ? `<div class="bg-red-500/20 border border-red-500/40 text-red-400 text-[9px] font-black px-2 py-0.5 rounded-lg text-center uppercase tracking-wider animate-pulse mb-2 flex items-center justify-center gap-1"><span>⚠</span> ¡Últimas (${stock})!</div>` 
                         : '';
 
                     let tagsHtml = '';
-                    if (prod.ofreceDelivery) tagsHtml += `<span class="bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-md text-[10px] border border-blue-500/20 font-bold">Delivery 🚚</span>`;
-                    if (prod.retiroTienda) tagsHtml += `<span class="bg-purple-500/15 text-purple-300 px-2.5 py-1 rounded-md text-[10px] border border-purple-500/30 font-bold">Retiro 🏢</span>`;
+                    if (prod.ofreceDelivery) tagsHtml += `<span class="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded text-[9px] border border-blue-500/20 font-bold">Delivery 🚚</span>`;
+                    if (prod.retiroTienda) tagsHtml += `<span class="bg-purple-500/15 text-purple-300 px-2 py-0.5 rounded text-[9px] border border-purple-500/30 font-bold">Retiro 🏢</span>`;
 
-                    let precioHtml = `<span class="text-emerald-400 font-black text-2xl">$${precioOriginal.toFixed(2)}</span>`;
+                    let precioHtml = `<span class="text-emerald-400 font-black text-xl">$${precioOriginal.toFixed(2)}</span>`;
                     let badgeOfertaCard = '';
 
                     if (descVal > 0) {
-                        badgeOfertaCard = `<span class="absolute top-3 right-3 bg-red-500 text-slate-950 font-black px-2.5 py-1 rounded-xl text-[10px] shadow-lg uppercase tracking-wider z-10">🔥 -${descVal}% OFF</span>`;
+                        badgeOfertaCard = `<span class="absolute top-2.5 right-2.5 bg-red-500 text-slate-950 font-black px-2 py-0.5 rounded-lg text-[9px] shadow-lg uppercase tracking-wider z-10">🔥 -${descVal}%</span>`;
                         precioHtml = `
-                            <div class="flex items-center gap-2">
-                                <span class="text-emerald-400 font-black text-2xl">$${precioFinal.toFixed(2)}</span>
-                                <span class="text-slate-500 text-xs line-through">$${precioOriginal.toFixed(2)}</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-emerald-400 font-black text-xl">$${precioFinal.toFixed(2)}</span>
+                                <span class="text-slate-500 text-[10px] line-through">$${precioOriginal.toFixed(2)}</span>
                             </div>
                         `;
                     }
 
                     const imagenHtml = prod.imagenUrl 
-                        ? `<div onclick='abrirZoomImagen("${prod.imagenUrl}", "${nombreMayus.replace(/'/g, "\\'")}")' class="w-full h-44 bg-slate-950 rounded-xl overflow-hidden mb-3 border border-slate-800 flex items-center justify-center p-1 relative group cursor-pointer">
-                               <img src="${prod.imagenUrl}" class="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-110">
-                               <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-amber-400 text-xs font-bold gap-1 shadow-inner">
-                                   <span class="text-2xl animate-pulse">🔍</span>
-                                   <span>Click para ampliar</span>
+                        ? `<div onclick='abrirZoomImagen("${prod.imagenUrl}", "${nombreMayus.replace(/'/g, "\\'")}")' class="w-full h-32 bg-white rounded-xl overflow-hidden mb-2.5 border border-slate-200 flex items-center justify-center p-1 relative group cursor-pointer shadow-sm">
+                               <img src="${prod.imagenUrl}" class="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105">
+                               <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-amber-400 text-[10px] font-bold gap-0.5">
+                                   <span class="text-lg animate-pulse">🔍</span>
+                                   <span>Ampliar</span>
                                </div>
                            </div>` 
-                        : `<div class="w-full h-24 bg-slate-950 rounded-xl flex items-center justify-center text-slate-600 text-3xl mb-3 border border-slate-800">📷</div>`;
+                        : `<div class="w-full h-24 bg-white rounded-xl flex items-center justify-center text-slate-400 text-2xl mb-2.5 border border-slate-200">📷</div>`;
 
                     const telWspLimpio = prod.telefonoWsp ? prod.telefonoWsp.replace(/\D/g,'') : '';
                     const btnWspTienda = telWspLimpio ? `
-                        <a href="https://wa.me/${telWspLimpio}?text=${encodeURIComponent(`¡Hola! 👋 Vi su repuesto *${nombreMayus}* en *Tu respuesto ⚡ Ya* y me interesa.`)}" target="_blank" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white font-bold px-3 py-2 rounded-xl text-xs transition border border-emerald-500/30 flex items-center gap-1">
-                            💬 WhatsApp
+                        <a href="https://wa.me/${telWspLimpio}?text=${encodeURIComponent(`¡Hola! 👋 Vi su repuesto *${nombreMayus}* en *Tu respuesto ⚡ Ya* y me interesa.`)}" target="_blank" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white font-bold px-2.5 py-1.5 rounded-xl text-[10px] transition border border-emerald-500/30 flex items-center justify-center">
+                            💬
                         </a>
                     ` : '';
 
-                    grid.innerHTML += `
-                        <div class="bg-slate-900 border ${tieneAdvertencia ? 'border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : descVal > 0 ? 'border-red-500/50 shadow-red-500/5' : 'border-slate-800'} p-5 rounded-2xl flex flex-col justify-between gap-4 shadow-xl relative">
-                            ${badgeOfertaCard}
-                            <div>
-                                ${imagenHtml}
-                                
-                                <!-- Bloque Tienda Arriba y Etiquetas Debajo -->
-                                <div class="flex flex-col gap-2 mb-2">
-                                    <div class="flex justify-end">
-                                        <span onclick='filtrarPorTienda("${prod.uidTienda}", "${prod.nombreTienda.replace(/'/g, "\\'")}")' class="text-xs font-black text-amber-400 bg-slate-950 hover:bg-slate-900 px-3 py-1.5 rounded-xl border border-amber-500/30 truncate shadow-md cursor-pointer transition flex items-center gap-1 inline-flex" title="Ver catálogo de esta tienda">
-                                            🏢 ${prod.nombreTienda} ${insigniaVerificado}
-                                        </span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        <span class="text-[10px] uppercase font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">${vehProdLabel}</span>
-                                        <span class="text-[10px] uppercase font-bold text-slate-300 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">${catProdLabel}</span>
-                                        ${oemBadge}
-                                        ${modelosBadge}
+                    const cardIdUnico = `card-${prod.uidTienda}-${prod.id}`;
+
+                    if (vistaModo === 'lista') {
+                        // RENDERIZADO EN VISTA DE LISTA
+                        const imagenListaHtml = prod.imagenUrl 
+                            ? `<div onclick='abrirZoomImagen("${prod.imagenUrl}", "${nombreMayus.replace(/'/g, "\\'")}")' class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-xl overflow-hidden shrink-0 border border-slate-200 flex items-center justify-center p-1 relative group cursor-pointer shadow-sm">
+                                   <img src="${prod.imagenUrl}" class="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105">
+                                   <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-amber-400 text-xs font-bold">
+                                       <span>🔍</span>
+                                   </div>
+                               </div>` 
+                            : `<div class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-xl flex items-center justify-center text-slate-400 text-xl shrink-0 border border-slate-200">📷</div>`;
+
+                        grid.innerHTML += `
+                            <div id="${cardIdUnico}" class="bg-slate-900 border ${tieneAdvertencia ? 'border-red-500 shadow-[0_0_12px_rgba(239,68,68,0.3)]' : descVal > 0 ? 'border-red-500/50' : 'border-slate-800'} p-3.5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg relative transition-all duration-300">
+                                ${badgeOfertaCard}
+                                <div class="flex items-center gap-3.5 w-full sm:w-auto flex-grow overflow-hidden">
+                                    ${imagenListaHtml}
+                                    
+                                    <div class="flex flex-col gap-1 overflow-hidden flex-grow">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="text-[9px] uppercase font-bold text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">${vehProdLabel}</span>
+                                            <span class="text-[9px] uppercase font-bold text-slate-300 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">${catProdLabel}</span>
+                                            ${oemBadge}
+                                            <span onclick='filtrarPorTienda("${prod.uidTienda}", "${prod.nombreTienda.replace(/'/g, "\\'")}")' class="text-[10px] font-black text-amber-400 bg-slate-950 hover:bg-slate-900 px-2 py-0.5 rounded-lg border border-amber-500/30 truncate shadow-sm cursor-pointer transition inline-flex items-center gap-0.5" title="Ver catálogo de esta tienda">
+                                                🏢 ${prod.nombreTienda} ${insigniaVerificado}
+                                            </span>
+                                        </div>
+
+                                        <h3 class="text-xs sm:text-sm font-black text-white tracking-wide uppercase truncate" title="${nombreMayus}">${nombreMayus}</h3>
+                                        
+                                        <div class="flex items-center gap-2 flex-wrap text-[10px]">
+                                            <span class="text-amber-400 font-bold">📍 ${prod.ciudadTienda}</span>
+                                            <span class="text-slate-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Stock: ${stock}</span>
+                                            ${tagsHtml}
+                                            ${tieneAdvertencia ? `<span class="text-red-400 font-bold">⚠ Reportado (${reportesCount})</span>` : ''}
+                                            ${stock <= 5 ? `<span class="text-red-400 font-bold">⚠ ¡Últimas!</span>` : ''}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <h3 class="text-base sm:text-lg font-black text-white tracking-wide leading-snug mt-1 mb-2 uppercase">${nombreMayus}</h3>
-                                
-                                ${alertaAdvertenciaCard}
-                                ${alertaStockBajo}
-                                
-                                <div class="flex items-center gap-1.5 flex-wrap mt-2">
-                                    ${tagsHtml}
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col gap-3 pt-3 border-t border-slate-800">
-                                <div class="flex justify-between items-end mb-1">
-                                    <div>
-                                        <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Precio</span>
+                                <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800 shrink-0">
+                                    <div class="text-left sm:text-right">
+                                        <span class="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">Precio</span>
                                         ${precioHtml}
                                     </div>
-                                    <div class="text-right">
-                                        <span class="text-xs font-bold text-slate-300 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 block">Stock: ${stock}</span>
+                                    <div class="flex items-center gap-2">
+                                        ${btnWspTienda}
+                                        <button onclick='abrirModalPedido(${JSON.stringify(prod)})' class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-md cursor-pointer py-2 px-3 rounded-xl text-xs transition">
+                                            Pedir Delivery 🚚
+                                        </button>
+                                        <button onclick='abrirModalReporte(${JSON.stringify(prod)})' class="text-[10px] text-red-400 hover:text-red-300 font-bold flex items-center gap-1 cursor-pointer transition p-1" title="Reportar">
+                                            🚨
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
-                                    <span class="text-amber-400 font-bold truncate">📍 ${prod.ciudadTienda}</span>
-                                    <span class="text-slate-400 truncate max-w-[60%]">Dir: ${prod.direccionFisica}</span>
+                            </div>
+                        `;
+                    } else {
+                        // RENDERIZADO EN VISTA DE CUADRÍCULA (DEFAULT)
+                        grid.innerHTML += `
+                            <div id="${cardIdUnico}" class="bg-slate-900 border ${tieneAdvertencia ? 'border-red-500 shadow-[0_0_12px_rgba(239,68,68,0.3)]' : descVal > 0 ? 'border-red-500/50' : 'border-slate-800'} p-3.5 rounded-2xl flex flex-col justify-between gap-2.5 shadow-lg relative transition-all duration-300">
+                                ${badgeOfertaCard}
+                                <div>
+                                    ${imagenHtml}
+                                    
+                                    <div class="flex flex-col gap-1.5 mb-1.5">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[9px] uppercase font-bold text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">${vehProdLabel}</span>
+                                            <span onclick='filtrarPorTienda("${prod.uidTienda}", "${prod.nombreTienda.replace(/'/g, "\\'")}")' class="text-[10px] font-black text-amber-400 bg-slate-950 hover:bg-slate-900 px-2 py-0.5 rounded-lg border border-amber-500/30 truncate shadow-sm cursor-pointer transition inline-flex items-center gap-0.5" title="Ver catálogo de esta tienda">
+                                                🏢 ${prod.nombreTienda} ${insigniaVerificado}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-1 flex-wrap">
+                                            <span class="text-[9px] uppercase font-bold text-slate-300 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">${catProdLabel}</span>
+                                            ${oemBadge}
+                                        </div>
+                                    </div>
+
+                                    <h3 class="text-xs sm:text-sm font-black text-white tracking-wide leading-tight mt-1 mb-1.5 uppercase truncate" title="${nombreMayus}">${nombreMayus}</h3>
+                                    
+                                    ${modelosBox}
+                                    ${alertaAdvertenciaCard}
+                                    ${alertaStockBajo}
+                                    
+                                    <div class="flex items-center gap-1 flex-wrap mt-1">
+                                        ${tagsHtml}
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    ${btnWspTienda}
-                                    <button onclick='abrirModalPedido(${JSON.stringify(prod)})' class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-lg shadow-amber-500/20 cursor-pointer py-2.5 px-3 rounded-xl text-xs transition text-center flex-1">
-                                        Solicitar Delivery 🚚
-                                    </button>
-                                </div>
-                                <div class="flex justify-end pt-1">
-                                    <button onclick='abrirModalReporte(${JSON.stringify(prod)})' class="text-[11px] text-red-400 hover:text-red-300 font-bold flex items-center gap-1 cursor-pointer transition">
-                                        🚨 Reportar publicación
-                                    </button>
+
+                                <div class="flex flex-col gap-2 pt-2 border-t border-slate-800">
+                                    <div class="flex justify-between items-end">
+                                        <div>
+                                            <span class="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">Precio</span>
+                                            ${precioHtml}
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-[10px] font-bold text-slate-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-800 block">Stock: ${stock}</span>
+                                        </div>
+                                    </div>
+                                    <div class="bg-slate-950 border border-slate-800 p-2 rounded-lg flex items-center justify-between text-[10px]">
+                                        <span class="text-amber-400 font-bold truncate">📍 ${prod.ciudadTienda}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        ${btnWspTienda}
+                                        <button onclick='abrirModalPedido(${JSON.stringify(prod)})' class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-md cursor-pointer py-2 px-2.5 rounded-xl text-[11px] transition text-center flex-1">
+                                            Pedir Delivery 🚚
+                                        </button>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button onclick='abrirModalReporte(${JSON.stringify(prod)})' class="text-[9px] text-red-400 hover:text-red-300 font-bold flex items-center gap-1 cursor-pointer transition">
+                                            🚨 Reportar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    }
                 });
             } else {
                 grid.innerHTML = `<p class="text-slate-500 text-xs italic col-span-full text-center py-10">No se encontraron repuestos con los filtros seleccionados.</p>`;
             }
         }
+
+        window.limpiarBusqueda = function() {
+            document.getElementById('inputBuscar').value = "";
+            document.getElementById('sugerenciasBusqueda').classList.add('hidden');
+            renderizarCatalogo();
+        };
 
         window.filtrarPorTienda = function(uidTienda, nombreTienda) {
             tiendaFiltroUid = uidTienda;
@@ -604,7 +1060,9 @@
                 .catch(e => alert("Error al enviar el reporte: " + e.message));
         });
 
-        document.getElementById('inputBuscar').addEventListener('input', renderizarCatalogo);
+        document.getElementById('inputBuscar').addEventListener('input', (e) => {
+            renderizarCatalogo();
+        });
 
         const modalFiltroCiudad = document.getElementById('modalFiltroCiudad');
         document.getElementById('btnAbrirModalCiudad').addEventListener('click', () => {
@@ -632,30 +1090,28 @@
             });
         });
 
-        // Eventos para Categorías Principales (Carro / Moto)
         document.querySelectorAll('.filtro-principal').forEach(card => {
             card.addEventListener('click', (e) => {
                 document.querySelectorAll('.filtro-principal').forEach(c => {
-                    c.className = "filtro-principal group bg-slate-900 hover:bg-slate-800 text-slate-200 p-5 rounded-2xl border-2 border-slate-800 hover:border-amber-500 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-4 shadow-xl";
+                    c.className = "filtro-principal group bg-slate-900 hover:bg-slate-800 text-slate-200 p-4 rounded-2xl border-2 border-slate-800 hover:border-amber-500 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-3.5 shadow-xl";
                 });
                 
                 const targetCard = e.currentTarget;
-                targetCard.className = "filtro-principal group bg-amber-500 text-slate-950 p-5 rounded-2xl border-2 border-amber-400 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-4 shadow-xl";
+                targetCard.className = "filtro-principal group bg-amber-500 text-slate-950 p-4 rounded-2xl border-2 border-amber-400 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-3.5 shadow-xl";
                 
                 categoriaPrincipal = targetCard.getAttribute('data-principal');
                 renderizarCatalogo();
             });
         });
 
-        // Eventos para Subcategorías (Sistemas)
         document.querySelectorAll('.filtro-sub').forEach(card => {
             card.addEventListener('click', (e) => {
                 document.querySelectorAll('.filtro-sub').forEach(c => {
-                    c.className = "filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-3 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md";
+                    c.className = "filtro-sub group bg-slate-900 hover:bg-slate-800 text-slate-200 p-2.5 rounded-xl border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md";
                 });
                 
                 const targetCard = e.currentTarget;
-                targetCard.className = "filtro-sub group bg-amber-500/20 text-amber-400 p-3 rounded-xl border border-amber-500/40 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2.5 shadow-md";
+                targetCard.className = "filtro-sub group bg-amber-500/20 text-amber-400 p-2.5 rounded-xl border border-amber-500/40 cursor-pointer transition-all duration-300 hover:scale-[1.02] flex items-center gap-2 shadow-md";
                 
                 subcategoriaFiltro = targetCard.getAttribute('data-sub');
                 renderizarCatalogo();
@@ -721,23 +1177,8 @@
 
             push(ref(db, `pedidos/${productoSeleccionado.uidTienda}`), datosPedido)
                 .then(() => {
-                    alert(`¡Solicitud de delivery enviada con éxito a ${productoSeleccionado.nombreTienda}!\nAbriendo WhatsApp para coordinar...`);
+                    alert("¡Pedido enviado con éxito! Pronto uno de nuestros agentes se comunicará contigo.");
                     cerrarModal();
-
-                    const telWspLimpio = productoSeleccionado.telefonoWsp ? productoSeleccionado.telefonoWsp.replace(/\D/g,'') : '';
-                    const textoWsp = `🛒 *SOLICITUD DE DELIVERY - Tu respuesto ⚡ Ya*\n\n` +
-                        `📦 Repuesto: *${nombreMayus}*\n` +
-                        `💵 Precio: *$${precioFinal.toFixed(2)}*\n\n` +
-                        `👤 Cliente: *${cliente}*\n` +
-                        `📞 Teléfono: *${telefono}*\n` +
-                        `📍 Ciudad: *${ciudad}*\n` +
-                        `🏠 Dirección: *${direccion}*`;
-
-                    if (telWspLimpio) {
-                        window.open(`https://wa.me/${telWspLimpio}?text=${encodeURIComponent(textoWsp)}`, '_blank');
-                    } else {
-                        alert("Nota: Esta tienda no tiene registrado un número de WhatsApp, pero tu pedido fue guardado exitosamente en el panel.");
-                    }
 
                     document.getElementById('pedCliente').value = "";
                     document.getElementById('pedTelefono').value = "";
